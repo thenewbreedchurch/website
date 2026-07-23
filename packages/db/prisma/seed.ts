@@ -172,6 +172,91 @@ async function main() {
     }
   }
 
+  // Real sermons ported verbatim from the legacy homepage's "Latest Sermons"
+  // cards (_legacy-static-site/client/index.html) — title/speaker/date/
+  // scripture/YouTube link are all real, not invented. Thumbnails use the
+  // curated sermons/ fallback photos from Phase F since the legacy site's own
+  // sermon-thumbnail CSS rules never had real backing image files (confirmed
+  // dead by that phase's grep sweep). Homepage teaser queries this table live
+  // (orderBy publishedAt desc, take 3) rather than hardcoding these cards.
+  const sermons: Array<Parameters<typeof prisma.sermon.create>[0]["data"]> = [
+    {
+      slug: "kingdom-excellence-part-2",
+      title: "Kingdom Excellence - Part 2",
+      speaker: "Min. Michael Ilegar",
+      scripture: "1 Corinthians 11:1, Romans 14:14-18",
+      videoUrl: "https://youtu.be/emUxxdXcWJw?si=s_vm_Pc5rvLsPZbv",
+      thumbnailUrl: "/images/sermons/sermons-preaching-1.jpg",
+      publishedAt: new Date("2025-09-14"),
+    },
+    {
+      slug: "kingdom-excellence-part-1",
+      title: "Kingdom Excellence - Part 1",
+      speaker: "Min. Michael Ilegar",
+      scripture: "Daniel 6:3",
+      videoUrl: "https://youtu.be/hbL6nvJ29Sc?si=PkAuYN_RL6mQ-DLZ",
+      thumbnailUrl: "/images/sermons/sermons-preaching-2.jpg",
+      publishedAt: new Date("2025-09-07"),
+    },
+    {
+      slug: "the-power-of-small",
+      title: "The Power of Small",
+      speaker: "Min. Segun Ogbeyemi",
+      scripture: "Luke 18:1",
+      videoUrl: "https://youtu.be/JM5no3uAmRI?si=KVkoWs5hi83g6qUk",
+      thumbnailUrl: "/images/sermons/sermons-preaching-3.jpg",
+      publishedAt: new Date("2025-08-10"),
+    },
+  ];
+  for (const sermon of sermons) {
+    await prisma.sermon.upsert({
+      where: { slug: sermon.slug! },
+      update: {},
+      create: sermon,
+    });
+  }
+
+  // Real testimonies, used verbatim from the legacy homepage's "Testimonies"
+  // section — these are real congregants' own words and must never be
+  // rewritten/paraphrased. No photos exist for these authors in the legacy
+  // site, so authorPhotoUrl is left null rather than substituting a stock
+  // photo. publishedAt dates are approximate (the legacy site didn't record
+  // exact submission dates) and only exist to give deterministic ordering.
+  const testimonies: Array<Parameters<typeof prisma.testimony.create>[0]["data"]> = [
+    {
+      authorName: "Tomiyetan",
+      body:
+        "I thank God for the salvation of my soul, journey mercies for my recent exam trip, and for turning a negative work restructuring into something positive. God truly answers prayers!",
+      isApproved: true,
+      isFeatured: true,
+      publishedAt: new Date("2025-09-21"),
+    },
+    {
+      authorName: "Mary O.",
+      body:
+        "I'm so thankful to God. I completed both my ICAN and CIS exams in the past year and I'm now chartered! I also just got promoted at work. God has been faithful through it all.",
+      isApproved: true,
+      isFeatured: true,
+      publishedAt: new Date("2025-09-14"),
+    },
+    {
+      authorName: "Timilehin T.",
+      body:
+        "Three Sundays ago, I missed church because my ceiling POP came crashing down in the middle of the night. It was terrifying, but I thank God no one was harmed. I could've been walking there at that moment. Thank God for divine protection.",
+      isApproved: true,
+      isFeatured: true,
+      publishedAt: new Date("2025-09-07"),
+    },
+  ];
+  for (const testimony of testimonies) {
+    const existing = await prisma.testimony.findFirst({
+      where: { authorName: testimony.authorName, body: testimony.body },
+    });
+    if (!existing) {
+      await prisma.testimony.create({ data: testimony });
+    }
+  }
+
   // Leadership named in the legacy about.html — confirm spelling/titles with
   // the church before publishing photos (see HANDOFF.md open items).
   const staff: Array<Parameters<typeof prisma.staffMember.create>[0]["data"]> = [

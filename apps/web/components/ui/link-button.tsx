@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "./button-variants";
 
 type LinkButtonProps = LinkProps &
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps | "href"> &
   VariantProps<typeof buttonVariants> & {
     className?: string;
     children: React.ReactNode;

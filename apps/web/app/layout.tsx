@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { getChurchSettings } from "@/lib/settings";
 import { organizationJsonLd, SITE_URL } from "@/lib/metadata";
 import "./globals.css";
@@ -35,6 +33,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// Deliberately no Header/Footer here — this wraps EVERY route including
+// /admin/** and /linktree, which must not show the public marketing nav.
+// The public site chrome lives in app/(site)/layout.tsx instead.
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -65,9 +66,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
