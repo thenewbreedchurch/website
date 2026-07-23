@@ -7,7 +7,12 @@ import { PrismaClient } from "./generated/client";
 // the Prisma CLI (which loads env via prisma.config.ts), or a bare `tsx`
 // invocation (e.g. `tsx prisma/seed.ts`) that has loaded nothing yet.
 if (!process.env.DATABASE_URL) {
-  loadEnv({ path: path.join(__dirname, "..", "..", ".env") });
+  // turbopackIgnore: this fallback only runs for bare `tsx` script
+  // invocations (seed.ts, migrate-legacy-data.mjs) that haven't loaded any
+  // env yet — Next.js and the Prisma CLI both already have DATABASE_URL set
+  // by the time this module loads, so Turbopack's file tracer should not
+  // follow this path into its production bundle.
+  loadEnv({ path: path.join(/* turbopackIgnore: true */ __dirname, "..", "..", ".env") });
 }
 
 declare global {
