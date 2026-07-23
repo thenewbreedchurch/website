@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "NB Church (local)",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "nbchurch",
+      "Username": "nbchurch",
+      "SSLMode": "prefer"
+    }
+  }
+}

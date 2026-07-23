@@ -1,0 +1,54 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# production
+build/
+dist/
+
+# env files (never commit real secrets)
+.env
+.env*.local
+!.env.example
+
+# prisma
+packages/db/generated/
+
+# turbo/vercel
+.vercel
+.turbo
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# editor/os
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# testing
+coverage/
+playwright-report/
+test-results/
+
+# misc
+*.tsbuildinfo
+.eslintcache
+
+# legacy static site is kept on disk for reference and as the image-pipeline
+# source, but its raw media (372MB+ of uncompressed camera photos/video) does
+# not belong in git history — the client code/markup is still tracked.
+_legacy-static-site/client/images/
+_legacy-static-site/client/videos/
+# server/ has its own nested git repo (a different remote); tracking it here
+# would create an embedded-repo gitlink instead of real files. It's kept on
+# disk, untracked, purely for reference during the Phase B rebuild.
+_legacy-static-site/server/

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYYYNX41K1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-CYYYNX41K1');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming Events - The New Breed Church</title>
+
+    <!-- Preconnect for Fonts (Performance Boost) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.5/sweetalert2.all.min.js"></script>
+    
+    <!-- Firebase CDN (placeholder for your config) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.15.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.15.0/firebase-firestore-compat.min.js"></script>
+
+    <link rel="icon" type="image/png" href="./images/NB_logo.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="events.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h4><img src="./images/IMG_7439.PNG" data-src="/" alt="newbreed-logo"></h4>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="events.html" class="active">Events</a></li>
+                <li><a href="donate.html">Give</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+        <div class="mobile-menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="events.html" class="active">Events</a></li>
+                <li><a href="donate.html">Give</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Upcoming Events</h1>
+        </div>
+    </section>
+
+    <section class="events-section" id="events">
+        <div class="container">
+            <div class="events-grid">
+                <!-- Featured Event -->
+                
+                
+
+                <!-- Regular Events -->
+                <!--<div class="event-card stagger-1" data-aos="fade-up">-->
+                <!--    <div class="event-media">-->
+                <!--        <img src="./images/DSC00553.avif" -->
+                <!--             alt="Drama Sunday" -->
+                <!--             class="lazy-load"-->
+                <!--             loading="lazy">-->
+                <!--    </div>-->
+                <!--    <div class="event-content">-->
+                <!--        <div class="event-date">August 24, 2025</div>-->
+                <!--        <h3 class="event-title">Drama Sunday</h3>-->
+                <!--        <p class="event-description">Experience the Word of God come alive this Drama Sunday. Enjoy an inspiring performance that shares scripture in a creative and uplifting way with our church family.</p>-->
+                        <!--<button class="register-btn" onclick="registerForEvent(this)" type="button">Join Us</button>-->
+                        
+                <!--        <a href="https://rccgtnbc.mixlr.com" target="_blank" rel="noopener noreferrer" aria-label="Mixlr" class="register-btn">Join Us</a>-->
+                        
+                <!--    </div>-->
+                <!--</div>-->
+                
+                
+                <div class="event-card featured stagger-1" data-aos="fade-up">
+                    <div class="event-media">
+                        <img src="./images/NB_thanksgiving2.jpg" 
+                             alt="Thanksgiving Service" 
+                             class="lazy-load"
+                             loading="lazy">
+                        <div class="play-button"></div>
+                    </div>
+                    <div class="event-content">
+                        <div class="thanksgivingDate"></div>
+                        <h3 class="event-title">Thanksgiving Service</h3>
+                        <p class="event-description">Gratitude unlocks the miraculous. Join us on the first Sunday of the month as we gather to return thanks for His goodness and mercy. Bring your family, friends, and your testimony. Let's celebrate the faithfulness of God together!</p>
+                        <!--<button class="register-btn" onclick="registerForEvent(this)" type="button">Join Us</button>-->
+                        <a href="https://rccgtnbc.mixlr.com" target="_blank" rel="noopener noreferrer" aria-label="Mixlr" class="register-btn">Join Us</a>
+                    </div>
+                </div>
+                
+                <div class="event-card featured stagger-2" data-aos="fade-up">
+                    <div class="event-media">
+                        <img src="./images/clothes_drive.JPG" 
+                             alt="Clothes Drive" 
+                             class="lazy-load"
+                             loading="lazy">
+                        <!--<div class="play-button"></div>-->
+                    </div>
+                    <div class="event-content">
+                        <div class="event-date">Novemmber 2, 2025</div>
+                        <h3 class="event-title">TNBC Clothes Drive</h3>
+                        <p class="event-description">Join us in making a difference! Donate gently used clothing, shoes, and accessories to bless those in need. Every contribution helps provide dignity and warmth to families in our community.</p>
+                        <!--<button class="register-btn" onclick="registerForEvent(this)" type="button">Join Us</button>-->
+                        <!--<a href="https://rccgtnbc.mixlr.com" target="_blank" rel="noopener noreferrer" aria-label="Mixlr" class="register-btn">Join Us</a>-->
+                    </div>
+                </div>
+                
+                
+                <div class="event-card stagger-3 " data-aos="fade-up">
+                    <div class="event-media">
+                        <img src="./images/ubuntu2.jpg" 
+                             alt="Favoured fund" 
+                             class="lazy-load"
+                             loading="lazy">
+                    </div>
+                    <div class="event-content">
+                        <div class="event-date">November 23, 2025</div>
+                        <h3 class="event-title">Favoured Fund Pitch</h3>
+                        <p class="event-description">Join The New Breed Church in supporting emerging entrepreneurs with grants or register as an entrepreneur to receive funding. Click <a href="https://ffp.thenewbreedchurch.org" style="text-decoration: none; color: #7C3AED;" target="_blank" rel="noopener noreferrer">here</a> to learn more.</p>
+                    </div>
+                </div>
+
+                
+                <div class="event-card stagger-4" data-aos="fade-up">
+                    <div class="event-media">
+                        <img src="./images/DSC00905.avif" 
+                             alt="Community Outreach" 
+                             class="lazy-load"
+                             loading="lazy">
+                    </div>
+                    <div class="event-content">
+                        <div class="event-date">Novemmber 29, 2025</div>
+                        <h3 class="event-title">Community Outreach</h3>
+                        <p class="event-description">Step out with us to reach souls, touch lives, and make Jesus known. Through fun, acts of love, prayer, and the gospel, we bring hope to hearts and light to our city. You are God's vessel, come and shine!</p>
+                        <!-- <button class="register-btn" onclick="registerForEvent(this)" type="button">Join Us</button> -->
+                    </div>
+                </div>
+
+                <div class="event-card featured stagger-5" data-aos="fade-up">
+                    <div class="event-media">
+                        <img src="./images/Worship+Hands+Raised.jpg" 
+                             alt="Worship Experience Service" 
+                             class="lazy-load"
+                             loading="lazy">
+                        <div class="play-button"></div>
+                    </div>
+                    <div class="event-content">
+                        <div class="worshipDate"></div>
+                        <h3 class="event-title">Worship Experience Service</h3>
+                        <p class="event-description">Step into an atmosphere of intense worship, heartfelt prayer, and life-transforming word. This is more than a service, it's an encounter with God's presence. Come and let your faith be stirred as we exalt Jesus together.</p>
+                        <!--<button class="register-btn" onclick="registerForEvent(this)" type="button">Join Us</button>-->
+                        <a href="https://rccgtnbc.mixlr.com" target="_blank" rel="noopener noreferrer" aria-label="Mixlr" class="register-btn">Join Us</a>
+                    </div>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 8th Floor, Trinity Towers, Chief Yesufu Abiodun Way,<br>
+                    Lagos, Nigeria</p>
+                    <p><i class="fas fa-phone"></i> (+234) 9161509000</p>
+                    <p><i class="fas fa-envelope"></i> churchnewbreed@gmail.com</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Weekly Activities</h3>
+                    <ul>
+                        <li>Sunday Service: 8:00 AM - 11:00 AM</li>
+                        <li>Bible Study: Wednesday 8:00 PM - 9:00 PM</li>
+                        <li>Daily Prayers: 7:00 AM & 9:00 PM</li>
+                        <li>Evangelism: Last Saturday Monthly</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <p>Connect with our community and stay updated on events and messages.</p>
+                    <div class="social-links">
+                        <a href="mailto:churchnewbreed@gmail.com" aria-label="mailto"><i class="fas fa-envelope"></i></a>
+                        <a href="https://www.instagram.com/the_newbreedchurch?igsh=MXAxeHV6eHFuOW5yOA==" rel="noopener noreferrer" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://rccgtnbc.mixlr.com" target="_blank" rel="noopener noreferrer" aria-label="Mixlr" class="social-icon mixlr-icon">
+                            <svg width="20" height="20" viewBox="0 0 200 200" fill="red" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="100" cy="100" r="100" />
+                              <path d="M134.6 63.6c-4.4 0-8.6 1-12.5 2.7-5.8-6.2-14-10-23.1-10-17.6 0-31.9 14.3-31.9 31.9 0 2.1.2 4.2.6 6.2-11.2 5.1-19 16.4-19 29.5 0 17.9 14.5 32.4 32.4 32.4h53.5c19.4 0 35.1-15.7 35.1-35.1s-15.7-35-35.1-35z" fill="white"/>
+                            </svg>
+                        </a>
+                        <!-- <iframe src="https://rccgtnbc.mixlr.com/embed" frameborder="0" scrolling="no" height="200px" width="100%"></iframe><small><a href="https://mixlr.com/" style="color:#1a1a1a;display:block;font-family:Helvetica,sans-serif;font-size:11px;text-align:left;padding: 4px 0;">RCCGTNBC is on Mixlr</a></small> -->
+                        <a href="https://www.youtube.com/@the_newbreedchurch" rel="noopener noreferrer" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <!-- <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a> -->
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom lazy-fade">
+                <p>&copy; <span id="currentYear"></span> The New Breed Church. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="events.js"></script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Singleton site-wide content: contact info, socials, livestream/meeting links.
+// Read on nearly every page render (header/footer) — always accessed through
+// the Redis-cached getChurchSettings() helper in apps/web/lib/settings.ts,
+// never queried ad-hoc, so cache invalidation stays centralized.
+// ---------------------------------------------------------------------------
+model ChurchSettings {
+  id                    String   @id @default("singleton")
+  orgName               String   @default("The New Breed Church")
+  tagline               String   @default("A place to grow in faith, hope, and love")
+  missionStatement      String   @default("")
+  visionStatement       String   @default("")
+  streetAddress         String   @default("8th Floor Trinity Towers, Chief Yesufu Abiodun Way")
+  addressLocality       String   @default("Victoria Island")
+  addressRegion         String   @default("Lagos")
+  addressCountry        String   @default("Nigeria")
+  phone                 String   @default("+234 916 150 9000")
+  email                 String   @default("churchnewbreed@gmail.com")
+  mapEmbedUrl           String?
+  facebookUrl           String?
+  instagramUrl          String?  @default("https://www.instagram.com/the_newbreedchurch")
+  youtubeUrl            String?  @default("https://www.youtube.com/@the_newbreedchurch")
+  tiktokUrl             String?
+  livestreamUrl         String?  @default("https://rccgtnbc.mixlr.com")
+  memberRegistrationUrl String?  @default("https://admin.thenewbreedchurch.org/welcome/add-member")
+  onlineMeetingUrl      String?  @default("https://meet.google.com/zkb-qrmi-ooy")
+  updatedAt             DateTime @updatedAt
+}
+
+enum DayOfWeek {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
+// Fixed weekly rhythm (Sunday School, Bible Study, daily prayers). Distinct
+// from Announcement, which is for one-off / occasional items.
+model ServiceTime {
+  id        String    @id @default(cuid())
+  dayOfWeek DayOfWeek
+  label     String
+  startTime String
+  endTime   String?
+  isOnline  Boolean   @default(false)
+  onlineUrl String?
+  location  String?
+  sortOrder Int       @default(0)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([isActive, dayOfWeek, sortOrder])
+}
+
+enum AnnouncementCategory {
+  SERVICE
+  OUTREACH
+  YOUTH
+  SPECIAL
+  FUNDRAISER
+  OTHER
+}
+
+enum AnnouncementStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+}
+
+// Replaces the hardcoded event cards in the legacy events.html. Supports an
+// RRULE for genuinely recurring occasional items (e.g. "last Saturday of the
+// month" evangelism) so the fragile Nth-Sunday JS in the old site goes away.
+model Announcement {
+  id                   String               @id @default(cuid())
+  slug                 String               @unique
+  title                String
+  description          String
+  category             AnnouncementCategory @default(OTHER)
+  startDateTime        DateTime
+  endDateTime          DateTime?
+  recurrenceRule       String?
+  location             String?
+  isOnline             Boolean              @default(false)
+  onlineUrl            String?
+  heroImageUrl         String?
+  registrationRequired Boolean              @default(false)
+  registrationDeadline DateTime?
+  capacity             Int?
+  status               AnnouncementStatus   @default(DRAFT)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  registrations        EventRegistration[]
+
+  @@index([status, startDateTime])
+  @@index([category, status])
+}
+
+model EventRegistration {
+  id             String       @id @default(cuid())
+  announcementId String
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  name           String
+  email          String
+  phone          String?
+  guestsCount    Int          @default(1)
+  notes          String?
+  createdAt      DateTime     @default(now())
+
+  @@unique([announcementId, email])
+  @@index([announcementId, createdAt])
+}
+
+enum SubscriberStatus {
+  ACTIVE
+  UNSUBSCRIBED
+}
+
+// Consolidates the legacy flat-file (data/subscribers.json) + Firestore split
+// into a single store. See scripts/migrate-legacy-data.mjs for the one-time
+// migration of existing subscribers.
+model NewsletterSubscriber {
+  id               String           @id @default(cuid())
+  email            String           @unique
+  name             String?
+  status           SubscriberStatus @default(ACTIVE)
+  source           String?
+  unsubscribeToken String           @unique @default(cuid())
+  subscribedAt     DateTime         @default(now())
+  unsubscribedAt   DateTime?
+
+  @@index([status, subscribedAt])
+}
+
+enum ContactStatus {
+  NEW
+  READ
+  RESPONDED
+}
+
+model ContactMessage {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    ContactStatus @default(NEW)
+  createdAt DateTime      @default(now())
+
+  @@index([status, createdAt])
+}
+
+model Sermon {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  title        String
+  speaker      String
+  series       String?
+  scripture    String?
+  description  String?
+  videoUrl     String
+  thumbnailUrl String?
+  publishedAt  DateTime
+  tags         String[] @default([])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([publishedAt])
+}
+
+model Testimony {
+  id             String    @id @default(cuid())
+  authorName     String
+  authorPhotoUrl String?
+  body           String
+  isFeatured     Boolean   @default(false)
+  isApproved     Boolean   @default(false)
+  submittedAt    DateTime  @default(now())
+  publishedAt    DateTime?
+
+  @@index([isApproved, isFeatured, publishedAt])
+}
+
+model StaffMember {
+  id        String  @id @default(cuid())
+  name      String
+  role      String
+  photoUrl  String?
+  bio       String?
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  @@index([isActive, sortOrder])
+}
+
+model GivingAccount {
+  id            String  @id @default(cuid())
+  fundName      String
+  currency      String
+  bankName      String
+  accountNumber String
+  accountName   String
+  swiftCode     String?
+  sortOrder     Int     @default(0)
+  isActive      Boolean @default(true)
+
+  @@index([isActive, sortOrder])
+}
+
+enum NextStepPage {
+  FIRST_TIMER
+  NEW_CONVERT
+}
+
+model NextStep {
+  id        String       @id @default(cuid())
+  page      NextStepPage
+  title     String
+  body      String
+  imageUrl  String?
+  ctaLabel  String?
+  ctaUrl    String?
+  sortOrder Int          @default(0)
+  isActive  Boolean      @default(true)
+
+  @@index([page, isActive, sortOrder])
+}
+
+// Password-based admin login (NextAuth Credentials provider, see
+// apps/web/lib/auth.ts). Membership is still gated by ADMIN_ALLOWLIST_EMAILS
+// at signup time, but credentials/session state live here, not in env.
+model AdminUser {
+  id                  String                    @id @default(cuid())
+  email               String                    @unique
+  name                String?
+  passwordHash        String
+  mustChangePassword  Boolean                   @default(false)
+  emailVerifiedAt     DateTime?
+  failedLoginAttempts Int                       @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  lastLoginAt         DateTime?
+  verificationTokens  AdminVerificationToken[]
+  passwordResetTokens AdminPasswordResetToken[]
+  sessions            AdminSession[]
+
+  @@index([email, lockedUntil])
+}
+
+// Session records backing NextAuth's database session strategy. Storing
+// sessions server-side (rather than a pure stateless JWT) is what makes
+// "log out everywhere" / force-expiring a session on inactivity actually
+// possible — the session row is deleted, not just a client cookie cleared.
+model AdminSession {
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
+  adminUserId  String
+  adminUser    AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  lastActiveAt DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+
+  @@index([adminUserId])
+  @@index([expiresAt])
+}
+
+// One-time email-verification token issued at admin account creation.
+// Tokens are stored hashed (never plaintext) so a DB read alone can't be
+// used to verify/reset an account.
+model AdminVerificationToken {
+  id          String    @id @default(cuid())
+  adminUserId String
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([adminUserId, expiresAt])
+}
+
+// One-time forgot-password token, same hashed-at-rest treatment as above.
+model AdminPasswordResetToken {
+  id          String    @id @default(cuid())
+  adminUserId String
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([adminUserId, expiresAt])
+}

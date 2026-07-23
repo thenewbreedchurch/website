@@ -1,0 +1,22 @@
+{
+  "name": "nb-church",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@11.16.0",
+  "scripts": {
+    "dev": "pnpm --filter @nb-church/web dev",
+    "build": "pnpm --filter @nb-church/db generate && pnpm --filter @nb-church/web build",
+    "start": "pnpm --filter @nb-church/web start",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "db:migrate": "pnpm --filter @nb-church/db migrate:deploy",
+    "db:migrate:dev": "pnpm --filter @nb-church/db migrate:dev",
+    "db:seed": "pnpm --filter @nb-church/db seed",
+    "db:studio": "pnpm --filter @nb-church/db studio",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  }
+}
