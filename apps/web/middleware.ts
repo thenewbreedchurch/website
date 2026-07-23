@@ -31,13 +31,18 @@ function isPublicAdminPath(pathname: string): boolean {
 // Fonts, YouTube embeds, Mixlr livestream, Google Maps/Meet, Google
 // Analytics (gtag), consentmanager. Reasonably permissive on these specific
 // hosts, default-deny (self-only) everything else.
+//
+// 'unsafe-eval' is added to script-src only outside production — Next.js
+// dev mode (Turbopack HMR, React's dev-mode callstack reconstruction) uses
+// eval() for debugging and is blocked entirely without it; React never uses
+// eval() in a production build, so prod keeps the stricter policy.
 const CSP = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://consentcdn.cookiebot.com https://cdn.consentmanager.net",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://consentcdn.cookiebot.com https://cdn.consentmanager.net`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: https: blob:",

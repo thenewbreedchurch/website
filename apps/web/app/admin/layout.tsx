@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+    <div className="min-h-screen bg-neutral-50 text-neutral-900" style={{ colorScheme: "light" }}>
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4">{children}</div>
     </div>
   );
