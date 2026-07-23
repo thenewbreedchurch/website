@@ -272,6 +272,85 @@ async function main() {
     }
   }
 
+  // Next-step content for the First Timers and New Converts pages. Draft
+  // pastoral copy — flagged in HANDOFF.md as pending review by a church
+  // leader before launch, per the project's explicit requirement not to
+  // present invented pastoral/theological language as final.
+  const nextSteps: Array<Parameters<typeof prisma.nextStep.create>[0]["data"]> = [
+    {
+      page: "FIRST_TIMER",
+      title: "Say Hello",
+      body: "Look out for a member of our welcome team when you arrive — introduce yourself, we'd love to meet you and help you find your way around.",
+      ctaLabel: "Message us before you come",
+      ctaUrl: "/contact",
+      sortOrder: 0,
+    },
+    {
+      page: "FIRST_TIMER",
+      title: "Register as a First Timer",
+      body: "Fill out a short form so we can follow up, answer any questions, and keep you in the loop on what's happening at New Breed.",
+      ctaLabel: "Register now",
+      ctaUrl: "https://admin.thenewbreedchurch.org/welcome/add-member",
+      sortOrder: 1,
+    },
+    {
+      page: "FIRST_TIMER",
+      title: "Join Us Again",
+      body: "Come back for a Sunday Service, or join us online for Wednesday Bible Study — either way, we'd love to keep worshipping alongside you.",
+      ctaLabel: "See this week's activities",
+      ctaUrl: "/announcements",
+      sortOrder: 2,
+    },
+    {
+      page: "NEW_CONVERT",
+      title: "Get Baptized",
+      body: "Baptism is a public declaration of your new life in Christ. Speak with a leader after service to learn about our next baptism class.",
+      ctaLabel: "Meet a leader",
+      ctaUrl: "/contact",
+      sortOrder: 0,
+    },
+    {
+      page: "NEW_CONVERT",
+      title: "Join Bible Study",
+      body: "Our Wednesday Bible Study is a low-pressure place to ask questions and grow in the Word alongside others who are on the same journey.",
+      ctaLabel: "Join online, Wednesdays 8-9PM",
+      ctaUrl: "https://meet.google.com/zkb-qrmi-ooy",
+      sortOrder: 1,
+    },
+    {
+      page: "NEW_CONVERT",
+      title: "Meet a Leader",
+      body: "You don't have to figure this out alone. Reach out and one of our pastors or leaders will personally connect with you.",
+      ctaLabel: "Get in touch",
+      ctaUrl: "/contact",
+      sortOrder: 2,
+    },
+    {
+      page: "NEW_CONVERT",
+      title: "Find a Place to Serve",
+      body: "Serving is one of the fastest ways to grow and belong. From welcoming guests to worship, there's a place for you on a team.",
+      ctaLabel: "Ask how to get involved",
+      ctaUrl: "/contact",
+      sortOrder: 3,
+    },
+    {
+      page: "NEW_CONVERT",
+      title: "Keep Showing Up",
+      body: "Consistency matters more than perfection. Join us for Sunday Service and let this become a rhythm in your life.",
+      ctaLabel: "Plan your next visit",
+      ctaUrl: "/announcements",
+      sortOrder: 4,
+    },
+  ];
+  for (const step of nextSteps) {
+    const existing = await prisma.nextStep.findFirst({
+      where: { page: step.page, title: step.title },
+    });
+    if (!existing) {
+      await prisma.nextStep.create({ data: step });
+    }
+  }
+
   // Bootstrap admin accounts for every allowlisted email that doesn't have one
   // yet. Each gets a random one-time password (never reused, never logged
   // anywhere but this local console) and is marked mustChangePassword so the

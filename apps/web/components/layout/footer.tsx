@@ -3,16 +3,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { InstagramIcon, YoutubeIcon } from "@/components/icons/social-icons";
 import { getChurchSettings, getServiceTimes } from "@/lib/settings";
 import { NAV_LINKS } from "@/lib/nav-links";
-
-const DAY_LABELS: Record<string, string> = {
-  MON: "Mon",
-  TUE: "Tue",
-  WED: "Wed",
-  THU: "Thu",
-  FRI: "Fri",
-  SAT: "Sat",
-  SUN: "Sun",
-};
+import { groupConsecutiveServiceTimes } from "@/lib/service-times";
 
 // The legacy site hand-duplicated service times, contact info, and social
 // links across 4-6 files each; this is now the single rendering of all three,
@@ -70,7 +61,9 @@ export async function Footer() {
               {grouped.map((entry) => (
                 <li key={entry.key}>
                   <span className="font-medium">{entry.days}: </span>
-                  <span className="text-current/80">{entry.label}</span>
+                  <span className="text-current/80">
+                    {entry.time} {entry.label}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -131,31 +124,4 @@ export async function Footer() {
       </div>
     </footer>
   );
-}
-
-function groupConsecutiveServiceTimes(
-  serviceTimes: Awaited<ReturnType<typeof getServiceTimes>>
-) {
-  const byLabel = new Map<string, string[]>();
-  const order: string[] = [];
-
-  for (const st of serviceTimes) {
-    const key = `${st.label}|${st.startTime}|${st.endTime ?? ""}`;
-    if (!byLabel.has(key)) {
-      byLabel.set(key, []);
-      order.push(key);
-    }
-    byLabel.get(key)!.push(st.dayOfWeek);
-  }
-
-  return order.map((key) => {
-    const [label, start, end] = key.split("|");
-    const days = byLabel.get(key)!;
-    const dayLabel =
-      days.length >= 5 && days.includes("MON") && days.includes("SAT")
-        ? "Mon-Sat"
-        : days.map((d) => DAY_LABELS[d] ?? d).join(", ");
-    const time = end ? `${start} - ${end}` : start;
-    return { key, days: dayLabel, label: `${time} ${label}` };
-  });
 }
