@@ -351,3 +351,18 @@ model AdminPasswordResetToken {
 
   @@index([adminUserId, expiresAt])
 }
+
+// Anonymous first-party pageview counter for the admin dashboard's "visits
+// over time" / "most viewed" insight cards — deliberately just a path +
+// timestamp, no IP, no user-agent, no visitor/session id, matching the
+// site's existing no-tracking-cookies stance (see the cookie consent
+// banner). Written by app/api/track/route.ts, fired from
+// components/analytics/page-view-tracker.tsx on every public-page view.
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  createdAt DateTime @default(now())
+
+  @@index([path, createdAt])
+  @@index([createdAt])
+}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RRule } from "rrule";
 
 // Mirrors the style of lib/validation.ts (the public-form schemas) — one
 // schema per admin-mutable entity, inferred types exported alongside.
@@ -63,7 +64,28 @@ export const announcementSchema = z.object({
   category: z.enum(["SERVICE", "OUTREACH", "YOUTH", "SPECIAL", "FUNDRAISER", "OTHER"]),
   startDateTime: z.string().trim().min(1, "Start date/time is required"),
   endDateTime: z.string().trim().optional().or(z.literal("").transform(() => undefined)),
-  recurrenceRule: z.string().trim().max(200).optional().or(z.literal("").transform(() => undefined)),
+  recurrenceRule: z
+    .string()
+    .trim()
+    .max(200)
+    .optional()
+    .or(z.literal("").transform(() => undefined))
+    .refine(
+      (value) => {
+        if (!value) return true;
+        // Mirrors exactly how lib/announcements.ts consumes this value at
+        // render time — rejecting an unparseable rule here, before it ever
+        // reaches the database, is what stops a bad save from crashing the
+        // public homepage/announcement page later.
+        try {
+          RRule.fromString(`RRULE:${value}`);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Doesn't look like valid RRULE syntax — check the format matches the hint below the field." }
+    ),
   location: z.string().trim().max(300).optional().or(z.literal("").transform(() => undefined)),
   isOnline: z.coerce.boolean().default(false),
   onlineUrl: z.string().trim().url().optional().or(z.literal("").transform(() => undefined)),

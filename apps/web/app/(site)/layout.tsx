@@ -1,13 +1,17 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 
 // Every public marketing/content page (home, about, contact, give, sermons,
 // announcements, first-timers, new-converts...) lives under this route group
 // so it gets the shared nav/footer. /admin/** and /linktree deliberately sit
-// outside this group so they render their own minimal chrome instead.
+// outside this group so they render their own minimal chrome instead — the
+// pageview tracker is scoped here for the same reason (public-site insight
+// only, not admin traffic).
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <PageViewTracker />
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />

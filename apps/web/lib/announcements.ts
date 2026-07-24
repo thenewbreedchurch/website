@@ -92,10 +92,17 @@ export function expandAnnouncementOccurrencesInWindow(
       : [];
   }
 
-  const rule = RRule.fromString(
-    `DTSTART:${toRRuleUTCString(announcement.startDateTime)}\nRRULE:${announcement.recurrenceRule}`
-  );
-  return rule.between(window.start, window.end, true);
+  // The admin form validates RRULE syntax at save time (lib/admin-validation.ts),
+  // but this still guards against any pre-existing bad data — a malformed
+  // rule degrades to "no occurrences" instead of crashing the whole page.
+  try {
+    const rule = RRule.fromString(
+      `DTSTART:${toRRuleUTCString(announcement.startDateTime)}\nRRULE:${announcement.recurrenceRule}`
+    );
+    return rule.between(window.start, window.end, true);
+  } catch {
+    return [];
+  }
 }
 
 /** The next occurrence of an announcement strictly after `after`, or null if it has none. */
@@ -106,10 +113,14 @@ export function getNextOccurrence(
   if (!announcement.recurrenceRule) {
     return announcement.startDateTime > after ? announcement.startDateTime : null;
   }
-  const rule = RRule.fromString(
-    `DTSTART:${toRRuleUTCString(announcement.startDateTime)}\nRRULE:${announcement.recurrenceRule}`
-  );
-  return rule.after(after, false);
+  try {
+    const rule = RRule.fromString(
+      `DTSTART:${toRRuleUTCString(announcement.startDateTime)}\nRRULE:${announcement.recurrenceRule}`
+    );
+    return rule.after(after, false);
+  } catch {
+    return null;
+  }
 }
 
 function toRRuleUTCString(date: Date): string {

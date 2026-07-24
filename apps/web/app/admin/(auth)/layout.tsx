@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { AdminFooter } from "@/components/admin/admin-footer";
 
 // Split-screen shell for the public auth pages (login, forgot-password,
 // reset-password, verify, session-timeout): a solid brand-gradient panel
@@ -35,8 +36,12 @@ export default function AdminAuthLayout({ children }: { children: React.ReactNod
         </p>
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-6 py-16 sm:px-12">
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 sm:px-12">
         <div className="w-full max-w-sm">{children}</div>
+        {/* The gradient panel's copyright is lg:flex-only (hidden below
+            that breakpoint) — duplicate it here for narrow screens, same
+            pattern AuthCard already uses for the logo. */}
+        <AdminFooter className="lg:hidden" />
       </div>
     </div>
   );

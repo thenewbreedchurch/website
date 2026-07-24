@@ -93,7 +93,7 @@ export function AnnouncementForm({
         label="Recurrence rule (optional)"
         htmlFor="recurrenceRule"
         error={err("recurrenceRule")}
-        hint="RRULE format, e.g. FREQ=MONTHLY;BYDAY=-1SA for last Saturday monthly"
+        hint="Must be RRULE syntax, not plain English — e.g. FREQ=WEEKLY;BYDAY=SU for every Sunday, or FREQ=MONTHLY;BYDAY=-1SA for the last Saturday of the month. Leave blank for a one-time event."
       >
         <Input id="recurrenceRule" name="recurrenceRule" defaultValue={announcement?.recurrenceRule ?? ""} />
       </Field>
@@ -107,12 +107,22 @@ export function AnnouncementForm({
         <Field label="Location" htmlFor="location" error={err("location")}>
           <Input id="location" name="location" defaultValue={announcement?.location ?? ""} />
         </Field>
-        <Field label="Online URL" htmlFor="onlineUrl" error={err("onlineUrl")}>
+        <Field
+          label="Online URL"
+          htmlFor="onlineUrl"
+          error={err("onlineUrl")}
+          hint="Full web address starting with https:// (e.g. https://meet.google.com/abc-defg-hij) — only needed if this is online."
+        >
           <Input id="onlineUrl" name="onlineUrl" defaultValue={announcement?.onlineUrl ?? ""} />
         </Field>
       </div>
 
-      <Field label="Hero image path" htmlFor="heroImageUrl" error={err("heroImageUrl")} hint="e.g. /images/announcements/announcements-cultural-event.jpg">
+      <Field
+        label="Hero image path"
+        htmlFor="heroImageUrl"
+        error={err("heroImageUrl")}
+        hint="Must be a path to an image already uploaded to this website, starting with /images/... (e.g. /images/announcements/announcements-cultural-event.jpg) — not a link copied from Facebook, Google Photos, or another website, which will break the page. Leave blank to use a default image."
+      >
         <Input id="heroImageUrl" name="heroImageUrl" defaultValue={announcement?.heroImageUrl ?? ""} />
       </Field>
 

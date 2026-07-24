@@ -54,7 +54,12 @@ export function ServiceTimeForm({
         Online
       </label>
 
-      <Field label="Online URL" htmlFor="onlineUrl" error={err("onlineUrl")}>
+      <Field
+        label="Online URL"
+        htmlFor="onlineUrl"
+        error={err("onlineUrl")}
+        hint="Full web address starting with https:// (e.g. https://meet.google.com/abc-defg-hij) — only needed if this service is online."
+      >
         <Input id="onlineUrl" name="onlineUrl" defaultValue={serviceTime?.onlineUrl ?? ""} />
       </Field>
 

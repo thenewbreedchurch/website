@@ -54,7 +54,7 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
         <Link href="/admin" onClick={onNavigate} className="flex flex-1 items-center gap-2.5 min-w-0">
           <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-8 w-8 shrink-0" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-brand-800 dark:text-brand-300">NBC Admin</p>
+            <p className="truncate text-sm font-bold text-brand-800 dark:text-brand-300">TNBC Admin</p>
             <p className="truncate text-[11px] text-neutral-400 dark:text-neutral-500">The New Breed Church</p>
           </div>
         </Link>
@@ -82,6 +82,7 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
         <form action={logoutAction} className="mt-1.5">
           <button
             type="submit"
+            onClick={() => console.clear()}
             className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
           >
             <LogOut size={16} /> Log out
@@ -106,7 +107,7 @@ export function AdminSidebar({ email }: { email: string }) {
       <div className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-3 lg:hidden dark:border-neutral-800 dark:bg-neutral-900">
         <Link href="/admin" className="flex items-center gap-2">
           <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-7 w-7" />
-          <span className="text-sm font-bold text-brand-800 dark:text-brand-300">NBC Admin</span>
+          <span className="text-sm font-bold text-brand-800 dark:text-brand-300">TNBC Admin</span>
         </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />

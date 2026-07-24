@@ -1,17 +1,169 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Megaphone, Inbox, HeartHandshake, ArrowRight } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import {
+  Megaphone,
+  Inbox,
+  HeartHandshake,
+  PlayCircle,
+  Quote,
+  Mail,
+  TrendingUp,
+  Eye,
+} from "lucide-react";
 import { prisma } from "@nb-church/db";
 import { getSessionFromCookie } from "@/lib/session";
-import { ADMIN_NAV_GROUPS } from "@/lib/admin-nav";
+import { VisitsChart, type VisitsChartPoint } from "@/components/admin/visits-chart";
+
+const VISIT_WINDOW_DAYS = 30;
+
+// Known top-level public routes get a friendly label; anything else falls
+// back to the raw path (or, for sermon/announcement detail pages, a real
+// title resolved via a follow-up lookup — see getMostViewed()).
+const STATIC_PATH_LABELS: Record<string, string> = {
+  "/": "Home",
+  "/about": "About",
+  "/sermons": "Sermons",
+  "/announcements": "Announcements",
+  "/give": "Give",
+  "/contact": "Contact",
+  "/first-timers": "First Timers",
+  "/new-converts": "New Converts",
+  "/leadership": "Leadership",
+};
 
 async function getStats() {
-  const [publishedAnnouncements, newContactMessages, pendingInquiries] = await Promise.all([
+  const [
+    publishedAnnouncements,
+    newContactMessages,
+    pendingInquiries,
+    totalSermons,
+    pendingTestimonies,
+    activeSubscribers,
+  ] = await Promise.all([
     prisma.announcement.count({ where: { status: "PUBLISHED" } }),
     prisma.contactMessage.count({ where: { status: "NEW" } }),
     prisma.newConvertInquiry.count({ where: { status: "NEW" } }),
+    prisma.sermon.count(),
+    prisma.testimony.count({ where: { isApproved: false } }),
+    prisma.newsletterSubscriber.count({ where: { status: "ACTIVE" } }),
   ]);
-  return { publishedAnnouncements, newContactMessages, pendingInquiries };
+  return {
+    publishedAnnouncements,
+    newContactMessages,
+    pendingInquiries,
+    totalSermons,
+    pendingTestimonies,
+    activeSubscribers,
+  };
+}
+
+async function getVisitsOverTime(): Promise<VisitsChartPoint[]> {
+  // The interval can't be interpolated directly into the raw SQL string —
+  // $queryRaw treats every `${}` as a bind parameter, and a parameter can't
+  // sit inside a quoted `INTERVAL '...'` literal. Computing the cutoff date
+  // in JS and comparing timestamps directly sidesteps that entirely.
+  const since = new Date(Date.now() - VISIT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const rows = await prisma.$queryRaw<{ day: Date; count: bigint }[]>`
+    SELECT DATE_TRUNC('day', "createdAt") AS day, COUNT(*)::bigint AS count
+    FROM "PageView"
+    WHERE "createdAt" >= ${since}
+    GROUP BY day
+    ORDER BY day ASC
+  `;
+  const countByDay = new Map(rows.map((r) => [r.day.toISOString().slice(0, 10), Number(r.count)]));
+
+  const points: VisitsChartPoint[] = [];
+  for (let i = VISIT_WINDOW_DAYS - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    points.push({ date: key, count: countByDay.get(key) ?? 0 });
+  }
+  return points;
+}
+
+async function getMostViewed() {
+  const since = new Date(Date.now() - VISIT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const grouped = await prisma.pageView.groupBy({
+    by: ["path"],
+    where: { createdAt: { gte: since } },
+    _count: { path: true },
+    orderBy: { _count: { path: "desc" } },
+    take: 8,
+  });
+
+  const sermonSlugs = grouped
+    .filter((g) => g.path.startsWith("/sermons/"))
+    .map((g) => g.path.slice("/sermons/".length));
+  const announcementSlugs = grouped
+    .filter((g) => g.path.startsWith("/announcements/"))
+    .map((g) => g.path.slice("/announcements/".length));
+
+  const [sermons, announcements] = await Promise.all([
+    sermonSlugs.length
+      ? prisma.sermon.findMany({ where: { slug: { in: sermonSlugs } }, select: { slug: true, title: true } })
+      : [],
+    announcementSlugs.length
+      ? prisma.announcement.findMany({
+          where: { slug: { in: announcementSlugs } },
+          select: { slug: true, title: true },
+        })
+      : [],
+  ]);
+  const sermonTitleBySlug = new Map(sermons.map((s) => [s.slug, s.title]));
+  const announcementTitleBySlug = new Map(announcements.map((a) => [a.slug, a.title]));
+
+  return grouped.map((g) => {
+    let label = STATIC_PATH_LABELS[g.path];
+    if (!label && g.path.startsWith("/sermons/")) {
+      const title = sermonTitleBySlug.get(g.path.slice("/sermons/".length));
+      label = title ? `Sermon — ${title}` : g.path;
+    } else if (!label && g.path.startsWith("/announcements/")) {
+      const title = announcementTitleBySlug.get(g.path.slice("/announcements/".length));
+      label = title ? `Announcement — ${title}` : g.path;
+    } else if (!label) {
+      label = g.path;
+    }
+    return { path: g.path, label, count: g._count.path };
+  });
+}
+
+async function getRecentActivity() {
+  const [messages, inquiries] = await Promise.all([
+    prisma.contactMessage.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, subject: true, createdAt: true },
+    }),
+    prisma.newConvertInquiry.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, createdAt: true },
+    }),
+  ]);
+
+  const items = [
+    ...messages.map((m) => ({
+      id: `contact-${m.id}`,
+      type: "contact" as const,
+      title: m.name,
+      subtitle: m.subject,
+      createdAt: m.createdAt,
+      href: "/admin/contact-messages",
+    })),
+    ...inquiries.map((i) => ({
+      id: `inquiry-${i.id}`,
+      type: "inquiry" as const,
+      title: i.name,
+      subtitle: "New convert inquiry",
+      createdAt: i.createdAt,
+      href: "/admin/new-convert-inquiries",
+    })),
+  ];
+
+  items.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  return items.slice(0, 8);
 }
 
 export default async function AdminDashboardPage() {
@@ -23,37 +175,34 @@ export default async function AdminDashboardPage() {
     redirect("/admin/change-password");
   }
 
-  const stats = await getStats();
+  const [stats, visits, mostViewed, recentActivity] = await Promise.all([
+    getStats(),
+    getVisitsOverTime(),
+    getMostViewed(),
+    getRecentActivity(),
+  ]);
+
+  const totalVisits = visits.reduce((sum, v) => sum + v.count, 0);
 
   const statTiles = [
-    {
-      href: "/admin/announcements",
-      label: "Published announcements",
-      value: stats.publishedAnnouncements,
-      icon: Megaphone,
-    },
-    {
-      href: "/admin/contact-messages",
-      label: "New contact messages",
-      value: stats.newContactMessages,
-      icon: Inbox,
-    },
-    {
-      href: "/admin/new-convert-inquiries",
-      label: "Pending new-convert inquiries",
-      value: stats.pendingInquiries,
-      icon: HeartHandshake,
-    },
+    { href: "/admin/announcements", label: "Published announcements", value: stats.publishedAnnouncements, icon: Megaphone },
+    { href: "/admin/contact-messages", label: "New contact messages", value: stats.newContactMessages, icon: Inbox },
+    { href: "/admin/new-convert-inquiries", label: "Pending new-convert inquiries", value: stats.pendingInquiries, icon: HeartHandshake },
+    { href: "/admin/sermons", label: "Total sermons", value: stats.totalSermons, icon: PlayCircle },
+    { href: "/admin/testimonies", label: "Testimonies awaiting approval", value: stats.pendingTestimonies, icon: Quote },
+    { href: "/admin/subscribers", label: "Active newsletter subscribers", value: stats.activeSubscribers, icon: Mail },
   ];
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Welcome back</h1>
+      <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+        Welcome back, {user.name ?? "Admin"}.
+      </h1>
       <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
         Signed in as <strong className="text-neutral-700 dark:text-neutral-300">{user.email}</strong>.
       </p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {statTiles.map((tile) => (
           <Link
             key={tile.href}
@@ -71,33 +220,86 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="mt-10 space-y-8">
-        {ADMIN_NAV_GROUPS.map((group) => (
-          <div key={group.label}>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-              {group.label}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 lg:col-span-2">
+          <div className="flex items-center gap-2">
+            <TrendingUp size={18} className="text-brand-700 dark:text-brand-300" />
+            <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">
+              Site visits — last {VISIT_WINDOW_DAYS} days
             </h2>
-            <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {group.items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="group flex items-start gap-3 rounded-xl border border-l-4 border-neutral-200 border-l-brand-600 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-neutral-800 dark:border-l-brand-500 dark:bg-neutral-900"
-                >
-                  <item.icon size={18} className="mt-0.5 shrink-0 text-brand-700 dark:text-brand-300" />
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">{item.label}</h3>
-                    <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">{item.description}</p>
-                  </div>
-                  <ArrowRight
-                    size={16}
-                    className="mt-1 shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-700 dark:text-neutral-600 dark:group-hover:text-brand-300"
-                  />
-                </Link>
-              ))}
-            </div>
           </div>
-        ))}
+          <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+            {totalVisits.toLocaleString()} page view{totalVisits === 1 ? "" : "s"} on the public site.
+            Anonymous counts only — no visitor tracking.
+          </p>
+          <div className="mt-4">
+            <VisitsChart data={visits} />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+          <div className="flex items-center gap-2">
+            <Eye size={18} className="text-brand-700 dark:text-brand-300" />
+            <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Most viewed</h2>
+          </div>
+          <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">Last {VISIT_WINDOW_DAYS} days</p>
+          {mostViewed.length === 0 ? (
+            <p className="mt-4 text-sm text-neutral-400 dark:text-neutral-500">No page views recorded yet.</p>
+          ) : (
+            <ol className="mt-4 space-y-2.5">
+              {mostViewed.map((item, i) => (
+                <li key={item.path} className="flex items-center gap-3 text-sm">
+                  <span className="w-4 shrink-0 text-neutral-400 dark:text-neutral-600">{i + 1}</span>
+                  <span className="min-w-0 flex-1 truncate text-neutral-700 dark:text-neutral-300">{item.label}</span>
+                  <span className="shrink-0 font-medium text-neutral-900 dark:text-neutral-100">{item.count}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+        <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Recent activity</h2>
+        <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+          Latest contact messages and new-convert inquiries.
+        </p>
+        {recentActivity.length === 0 ? (
+          <p className="mt-4 text-sm text-neutral-400 dark:text-neutral-500">Nothing yet.</p>
+        ) : (
+          <ul className="mt-4 divide-y divide-neutral-100 dark:divide-neutral-800">
+            {recentActivity.map((item) => (
+              <li key={item.id}>
+                <Link
+                  href={item.href}
+                  className="flex items-center gap-3 py-2.5 transition-colors hover:text-brand-700 dark:hover:text-brand-300"
+                >
+                  <span
+                    className={
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-full " +
+                      (item.type === "contact"
+                        ? "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300"
+                        : "bg-rose-50 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300")
+                    }
+                  >
+                    {item.type === "contact" ? <Inbox size={14} /> : <HeartHandshake size={14} />}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      {item.title}
+                    </span>
+                    <span className="block truncate text-xs text-neutral-500 dark:text-neutral-400">
+                      {item.subtitle}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-xs text-neutral-400 dark:text-neutral-500">
+                    {formatDistanceToNow(item.createdAt, { addSuffix: true })}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

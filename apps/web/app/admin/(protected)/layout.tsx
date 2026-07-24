@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSessionFromCookie } from "@/lib/session";
 import { InactivityWatcher } from "@/components/admin/InactivityWatcher";
 import { AdminSidebar } from "@/components/admin/sidebar";
+import { AdminFooter } from "@/components/admin/admin-footer";
 
 // Route group for every admin page that requires an authenticated session.
 // middleware.ts already bounces requests with no session cookie at all, but
@@ -25,7 +26,10 @@ export default async function ProtectedAdminLayout({
       <InactivityWatcher idleMinutes={idleMinutes} />
       <AdminSidebar email={user.email} />
       <main className="min-w-0 flex-1 overflow-x-hidden px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
-        <div className="mx-auto max-w-5xl">{children}</div>
+        <div className="mx-auto max-w-5xl">
+          {children}
+          <AdminFooter />
+        </div>
       </main>
     </div>
   );
