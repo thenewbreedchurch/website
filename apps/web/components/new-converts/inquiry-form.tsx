@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { newConvertInquiryAction } from "@/actions/new-convert-inquiry";
 import type { ActionResult } from "@/lib/action-result";
 import { cn } from "@/lib/utils";
@@ -29,11 +29,14 @@ async function submitInquiry(
   });
 }
 
+const MESSAGE_MAX_LENGTH = 500;
+
 export function NewConvertInquiryForm() {
   const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
     submitInquiry,
     null
   );
+  const [message, setMessage] = useState("");
 
   const fieldError = (field: string): string | undefined =>
     state && !state.ok ? state.fieldErrors?.[field]?.[0] : undefined;
@@ -63,7 +66,7 @@ export function NewConvertInquiryForm() {
             required
             autoComplete="name"
             aria-invalid={Boolean(fieldError("name"))}
-            className={cn(inputClasses, "mt-1.5")}
+            className={cn(inputClasses, "mt-2.5")}
           />
           {fieldError("name") && <p className="mt-1 text-xs text-red-600">{fieldError("name")}</p>}
         </div>
@@ -78,7 +81,7 @@ export function NewConvertInquiryForm() {
             required
             autoComplete="email"
             aria-invalid={Boolean(fieldError("email"))}
-            className={cn(inputClasses, "mt-1.5")}
+            className={cn(inputClasses, "mt-2.5")}
           />
           {fieldError("email") && <p className="mt-1 text-xs text-red-600">{fieldError("email")}</p>}
         </div>
@@ -93,13 +96,13 @@ export function NewConvertInquiryForm() {
           name="phone"
           type="tel"
           autoComplete="tel"
-          className={cn(inputClasses, "mt-1.5 sm:max-w-xs")}
+          className={cn(inputClasses, "mt-2.5 sm:max-w-xs")}
         />
       </div>
 
       <fieldset>
         <legend className="text-sm font-medium">What would you like help with?</legend>
-        <div className="mt-2 grid gap-2.5 sm:grid-cols-2">
+        <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
           {INTEREST_OPTIONS.map((opt) => (
             <label
               key={opt.value}
@@ -128,8 +131,14 @@ export function NewConvertInquiryForm() {
           id="nc-message"
           name="message"
           rows={4}
-          className={cn(inputClasses, "mt-1.5 resize-y")}
+          maxLength={MESSAGE_MAX_LENGTH}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className={cn(inputClasses, "mt-2.5 resize-y")}
         />
+        <p className="mt-1 text-right text-xs text-current/60">
+          {message.length}/{MESSAGE_MAX_LENGTH}
+        </p>
       </div>
 
       {state && !state.ok && !state.fieldErrors && (

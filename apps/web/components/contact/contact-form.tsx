@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { contactAction } from "@/actions/contact";
 import type { ActionResult } from "@/lib/action-result";
 import { cn } from "@/lib/utils";
@@ -29,11 +29,14 @@ const CATEGORY_OPTIONS = [
   { value: "WELFARE", label: "Welfare / Member Care" },
 ] as const;
 
+const MESSAGE_MAX_LENGTH = 500;
+
 export function ContactForm() {
   const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
     submitContact,
     null
   );
+  const [message, setMessage] = useState("");
 
   const fieldError = (field: string): string | undefined =>
     state && !state.ok ? state.fieldErrors?.[field]?.[0] : undefined;
@@ -60,7 +63,7 @@ export function ContactForm() {
   return (
     <form
       action={formAction}
-      className="space-y-5 rounded-3xl border border-border bg-surface p-6 shadow-sm sm:p-8"
+      className="space-y-6 rounded-3xl border border-border bg-surface p-6 shadow-sm sm:p-8"
       noValidate
     >
       <div className="grid gap-5 sm:grid-cols-2">
@@ -75,7 +78,7 @@ export function ContactForm() {
             required
             autoComplete="name"
             aria-invalid={Boolean(fieldError("name"))}
-            className={cn(inputClasses, "mt-1.5")}
+            className={cn(inputClasses, "mt-2.5")}
           />
           {fieldError("name") && (
             <p className="mt-1 text-xs text-red-600">{fieldError("name")}</p>
@@ -93,7 +96,7 @@ export function ContactForm() {
             required
             autoComplete="email"
             aria-invalid={Boolean(fieldError("email"))}
-            className={cn(inputClasses, "mt-1.5")}
+            className={cn(inputClasses, "mt-2.5")}
           />
           {fieldError("email") && (
             <p className="mt-1 text-xs text-red-600">{fieldError("email")}</p>
@@ -111,7 +114,7 @@ export function ContactForm() {
           type="tel"
           autoComplete="tel"
           aria-invalid={Boolean(fieldError("phone"))}
-          className={cn(inputClasses, "mt-1.5")}
+          className={cn(inputClasses, "mt-2.5")}
         />
         {fieldError("phone") && (
           <p className="mt-1 text-xs text-red-600">{fieldError("phone")}</p>
@@ -126,7 +129,7 @@ export function ContactForm() {
           id="category"
           name="category"
           defaultValue="GENERAL"
-          className={cn(inputClasses, "mt-1.5")}
+          className={cn(inputClasses, "mt-2.5")}
         >
           {CATEGORY_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -146,7 +149,7 @@ export function ContactForm() {
           type="text"
           required
           aria-invalid={Boolean(fieldError("subject"))}
-          className={cn(inputClasses, "mt-1.5")}
+          className={cn(inputClasses, "mt-2.5")}
         />
         {fieldError("subject") && (
           <p className="mt-1 text-xs text-red-600">{fieldError("subject")}</p>
@@ -162,9 +165,15 @@ export function ContactForm() {
           name="message"
           rows={5}
           required
+          maxLength={MESSAGE_MAX_LENGTH}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           aria-invalid={Boolean(fieldError("message"))}
-          className={cn(inputClasses, "mt-1.5 resize-y")}
+          className={cn(inputClasses, "mt-2.5 resize-y")}
         />
+        <p className="mt-1 text-right text-xs text-current/60">
+          {message.length}/{MESSAGE_MAX_LENGTH}
+        </p>
         {fieldError("message") && (
           <p className="mt-1 text-xs text-red-600">{fieldError("message")}</p>
         )}

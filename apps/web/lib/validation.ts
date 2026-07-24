@@ -18,7 +18,7 @@ export const contactSchema = z.object({
   phone: z.string().trim().min(7).max(30).optional().or(z.literal("").transform(() => undefined)),
   category: contactCategorySchema.default("GENERAL"),
   subject: z.string().trim().min(3, "Subject is too short").max(150),
-  message: z.string().trim().min(10, "Message is too short").max(5000),
+  message: z.string().trim().min(10, "Message is too short").max(500),
 });
 export type ContactInput = z.infer<typeof contactSchema>;
 
@@ -35,7 +35,7 @@ export const newConvertInquirySchema = z.object({
   email: z.string().trim().min(1, "Email is required").email("Enter a valid email address"),
   phone: z.string().trim().min(7).max(30).optional().or(z.literal("").transform(() => undefined)),
   interests: z.array(newConvertInterestSchema).min(1, "Pick at least one option"),
-  message: z.string().trim().max(2000).optional().or(z.literal("").transform(() => undefined)),
+  message: z.string().trim().max(500).optional().or(z.literal("").transform(() => undefined)),
 });
 export type NewConvertInquiryInput = z.infer<typeof newConvertInquirySchema>;
 
