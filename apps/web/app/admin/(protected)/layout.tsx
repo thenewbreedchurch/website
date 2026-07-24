@@ -22,7 +22,7 @@ export default async function ProtectedAdminLayout({
   const idleMinutes = Number(process.env.ADMIN_SESSION_IDLE_MINUTES ?? "15");
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4">
       <InactivityWatcher idleMinutes={idleMinutes} />
 
       <header className="flex items-center justify-between border-b border-neutral-200 py-4">
