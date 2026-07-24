@@ -152,15 +152,52 @@ enum ContactStatus {
   RESPONDED
 }
 
+// Drives notification routing in lib/email.ts: GENERAL always goes to
+// admin@ alone; PRAYER/MEMBERSHIP/WELFARE each add their own dedicated
+// address (prayer@/followup@/welfare@) in addition to admin@, which is
+// always included regardless of category.
+enum ContactCategory {
+  GENERAL
+  PRAYER
+  MEMBERSHIP
+  WELFARE
+}
+
 model ContactMessage {
-  id        String        @id @default(cuid())
+  id        String          @id @default(cuid())
   name      String
   email     String
   phone     String?
   subject   String
   message   String
-  status    ContactStatus @default(NEW)
-  createdAt DateTime      @default(now())
+  category  ContactCategory @default(GENERAL)
+  status    ContactStatus   @default(NEW)
+  createdAt DateTime        @default(now())
+
+  @@index([status, createdAt])
+  @@index([category, createdAt])
+}
+
+enum NewConvertInterest {
+  BAPTISM
+  BIBLE_STUDY
+  MEET_LEADER
+  SERVING
+  OTHER
+}
+
+// New Converts page intake form — always routed to followup@ (see
+// lib/email.ts), not category-routed like ContactMessage since it's
+// inherently a follow-up-team submission regardless of what's checked.
+model NewConvertInquiry {
+  id        String               @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  interests NewConvertInterest[]
+  message   String?
+  status    ContactStatus        @default(NEW)
+  createdAt DateTime             @default(now())
 
   @@index([status, createdAt])
 }
@@ -196,14 +233,21 @@ model Testimony {
   @@index([isApproved, isFeatured, publishedAt])
 }
 
+// Powers the public /leadership directory as well as the About page's
+// existing leadership section. `role` is the person's title (e.g. "Senior
+// Pastor"); `department` is the ministry/area they oversee (e.g. "Baptism &
+// Discipleship") -- a distinct concept, not always set for every leader.
 model StaffMember {
-  id        String  @id @default(cuid())
-  name      String
-  role      String
-  photoUrl  String?
-  bio       String?
-  sortOrder Int     @default(0)
-  isActive  Boolean @default(true)
+  id         String  @id @default(cuid())
+  name       String
+  role       String
+  department String?
+  email      String?
+  phone      String?
+  photoUrl   String?
+  bio        String?
+  sortOrder  Int     @default(0)
+  isActive   Boolean @default(true)
 
   @@index([isActive, sortOrder])
 }
