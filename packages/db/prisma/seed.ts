@@ -351,33 +351,61 @@ async function main() {
     }
   }
 
-  // Bootstrap admin accounts for every allowlisted email that doesn't have one
-  // yet. Each gets a random one-time password (never reused, never logged
-  // anywhere but this local console) and is marked mustChangePassword so the
-  // real credential is chosen by the person logging in, not by this script.
-  // Real onboarding (Phase E) replaces this with an emailed verification link.
+  // Bootstrap admin accounts for every allowlisted email. If ADMIN_FIXED_PASSWORD
+  // is set (this church's small, closed admin list uses a known shared password
+  // by deliberate choice — see HANDOFF.md — rather than the per-account random
+  // flow below), every allowlisted email is kept in sync with it on every seed
+  // run: existing rows get their password updated too, not just newly-created
+  // ones, so rotating the env var and reseeding is enough to change it — no
+  // code edit required. mustChangePassword is left off in this mode since the
+  // real credential IS the deliberately-chosen one, not a placeholder.
+  //
+  // Without ADMIN_FIXED_PASSWORD set, falls back to the original flow: each
+  // NEW allowlisted email gets a random one-time password (never reused,
+  // never logged anywhere but this local console), marked mustChangePassword
+  // so the real credential is chosen by the person logging in. Existing
+  // accounts are left untouched in this mode.
   const adminEmails = (process.env.ADMIN_ALLOWLIST_EMAILS ?? "churchnewbreed@gmail.com")
     .split(",")
     .map((e) => e.trim())
     .filter(Boolean);
 
-  for (const email of adminEmails) {
-    const existing = await prisma.adminUser.findUnique({ where: { email } });
-    if (existing) continue;
+  const fixedPassword = process.env.ADMIN_FIXED_PASSWORD;
 
-    const tempPassword = crypto.randomBytes(18).toString("base64url");
-    const passwordHash = await argon2.hash(tempPassword, { type: argon2.argon2id });
+  if (fixedPassword) {
+    const passwordHash = await argon2.hash(fixedPassword, { type: argon2.argon2id });
+    for (const email of adminEmails) {
+      await prisma.adminUser.upsert({
+        where: { email },
+        create: { email, passwordHash, mustChangePassword: false, emailVerifiedAt: new Date() },
+        update: {
+          passwordHash,
+          mustChangePassword: false,
+          failedLoginAttempts: 0,
+          lockedUntil: null,
+        },
+      });
+      console.log(`[seed] Synced admin account for ${email} to ADMIN_FIXED_PASSWORD`);
+    }
+  } else {
+    for (const email of adminEmails) {
+      const existing = await prisma.adminUser.findUnique({ where: { email } });
+      if (existing) continue;
 
-    await prisma.adminUser.create({
-      data: { email, passwordHash, mustChangePassword: true },
-    });
+      const tempPassword = crypto.randomBytes(18).toString("base64url");
+      const passwordHash = await argon2.hash(tempPassword, { type: argon2.argon2id });
 
-    console.log(
-      `\n[seed] Created admin account for ${email}\n` +
-        `[seed] One-time temporary password: ${tempPassword}\n` +
-        `[seed] This is shown ONCE and not stored anywhere in plaintext — ` +
-        `save it now. You will be required to set a new password on first login.\n`
-    );
+      await prisma.adminUser.create({
+        data: { email, passwordHash, mustChangePassword: true },
+      });
+
+      console.log(
+        `\n[seed] Created admin account for ${email}\n` +
+          `[seed] One-time temporary password: ${tempPassword}\n` +
+          `[seed] This is shown ONCE and not stored anywhere in plaintext — ` +
+          `save it now. You will be required to set a new password on first login.\n`
+      );
+    }
   }
 
   console.log("Seed complete.");
