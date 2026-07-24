@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/metadata";
 import { Container } from "@/components/ui/container";
 import { LinkButton } from "@/components/ui/link-button";
 import { youtubeEmbedUrl } from "@/lib/youtube";
+import { RevealSection } from "@/components/journey/reveal-section";
 
 export async function generateMetadata({
   params,
@@ -41,6 +42,7 @@ export default async function SermonDetailPage({
           &larr; All Sermons
         </LinkButton>
 
+        <RevealSection>
         {embedUrl ? (
           <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
             <iframe
@@ -107,6 +109,7 @@ export default async function SermonDetailPage({
             </div>
           )}
         </div>
+        </RevealSection>
       </Container>
     </article>
   );

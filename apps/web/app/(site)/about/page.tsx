@@ -6,6 +6,8 @@ import { pageMetadata } from "@/lib/metadata";
 import { Container } from "@/components/ui/container";
 import { LinkButton } from "@/components/ui/link-button";
 import { initials } from "@/lib/utils";
+import { RevealSection } from "@/components/journey/reveal-section";
+import { TiltCard } from "@/components/journey/tilt-card";
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
@@ -90,82 +92,88 @@ export default async function AboutPage() {
       </section>
 
       <section className="py-16 sm:py-20">
-        <Container className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <div>
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">How New Breed Began</h2>
-            <p className="mt-4 text-current/80 leading-relaxed">
-              In 2020, a void emerged for young adults transitioning out of the Teens church —
-              too old for one, and not quite at home in the main sanctuary. They needed a place
-              to grow spiritually and serve purposefully.
-            </p>
-            <p className="mt-4 text-current/80 leading-relaxed">
-              With the support of Pastor Idowu Iluyomade and Pastor Gbenga Olaniyan, The New
-              Breed Church was born — a parish of the Redeemed Christian Church of God (RCCG),
-              and a bridge for young believers discovering who they are in Christ and what
-              they&apos;re called to do.
-            </p>
-          </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-            <Image
-              src="/images/about/about-congregation-attentive.jpg"
-              alt="Congregation attentive during service"
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 40vw, 100vw"
-            />
-          </div>
-        </Container>
+        <RevealSection>
+          <Container className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+            <div>
+              <h2 className="font-display text-2xl font-bold sm:text-3xl">How New Breed Began</h2>
+              <p className="mt-4 text-current/80 leading-relaxed">
+                In 2020, a void emerged for young adults transitioning out of the Teens church —
+                too old for one, and not quite at home in the main sanctuary. They needed a place
+                to grow spiritually and serve purposefully.
+              </p>
+              <p className="mt-4 text-current/80 leading-relaxed">
+                With the support of Pastor Idowu Iluyomade and Pastor Gbenga Olaniyan, The New
+                Breed Church was born — a parish of the Redeemed Christian Church of God (RCCG),
+                and a bridge for young believers discovering who they are in Christ and what
+                they&apos;re called to do.
+              </p>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <Image
+                src="/images/about/about-congregation-attentive.jpg"
+                alt="Congregation attentive during service"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 40vw, 100vw"
+              />
+            </div>
+          </Container>
+        </RevealSection>
       </section>
 
       <section className="bg-surface-muted py-16 sm:py-20">
-        <Container className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl lg:order-2">
-            <Image
-              src="/images/about/about-mission-worship.jpg"
-              alt="Worship service at The New Breed Church"
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 40vw, 100vw"
-            />
-          </div>
-          <div className="lg:order-1">
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">
-              Worship is Our Lifestyle
-            </h2>
-            <p className="mt-4 text-current/80 leading-relaxed">
-              We don&apos;t just worship on Sundays — worship is how we live. Every service is
-              a moment to encounter God, build community, and be equipped for the week ahead.
-            </p>
-            <p className="mt-4 text-current/80 leading-relaxed">
-              Our worship is youthful, spirit-led, and transformative.
-            </p>
-          </div>
-        </Container>
+        <RevealSection>
+          <Container className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl lg:order-2">
+              <Image
+                src="/images/about/about-mission-worship.jpg"
+                alt="Worship service at The New Breed Church"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 40vw, 100vw"
+              />
+            </div>
+            <div className="lg:order-1">
+              <h2 className="font-display text-2xl font-bold sm:text-3xl">
+                Worship is Our Lifestyle
+              </h2>
+              <p className="mt-4 text-current/80 leading-relaxed">
+                We don&apos;t just worship on Sundays — worship is how we live. Every service is
+                a moment to encounter God, build community, and be equipped for the week ahead.
+              </p>
+              <p className="mt-4 text-current/80 leading-relaxed">
+                Our worship is youthful, spirit-led, and transformative.
+              </p>
+            </div>
+          </Container>
+        </RevealSection>
       </section>
 
       <section className="py-16 sm:py-20">
-        <Container className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <div>
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">Our Mission &amp; Vision</h2>
-            <p className="mt-4 text-current/80 leading-relaxed">
-              <span className="font-semibold text-current">Mission: </span>
-              {settings.missionStatement}
-            </p>
-            <p className="mt-4 text-current/80 leading-relaxed">
-              <span className="font-semibold text-current">Vision: </span>
-              {settings.visionStatement}
-            </p>
-          </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-            <Image
-              src="/images/about/about-vision-hall.jpg"
-              alt="The New Breed Church gathering hall"
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 40vw, 100vw"
-            />
-          </div>
-        </Container>
+        <RevealSection>
+          <Container className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+            <div>
+              <h2 className="font-display text-2xl font-bold sm:text-3xl">Our Mission &amp; Vision</h2>
+              <p className="mt-4 text-current/80 leading-relaxed">
+                <span className="font-semibold text-current">Mission: </span>
+                {settings.missionStatement}
+              </p>
+              <p className="mt-4 text-current/80 leading-relaxed">
+                <span className="font-semibold text-current">Vision: </span>
+                {settings.visionStatement}
+              </p>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <Image
+                src="/images/about/about-vision-hall.jpg"
+                alt="The New Breed Church gathering hall"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 40vw, 100vw"
+              />
+            </div>
+          </Container>
+        </RevealSection>
       </section>
 
       <section className="relative overflow-hidden py-20 sm:py-24">
@@ -177,34 +185,38 @@ export default async function AboutPage() {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-brand-900/80" />
-        <Container className="relative flex flex-col items-center gap-4 text-center text-white">
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">
-            Watch Our Services Live
-          </h2>
-          <p className="max-w-lg text-white/85">
-            Can&apos;t make it in person? Experience our services online from anywhere in the
-            world on YouTube.
-          </p>
-          {settings.livestreamUrl && (
-            <LinkButton
-              href={settings.livestreamUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="secondary"
-              size="lg"
-            >
-              Join the Live Stream
-            </LinkButton>
-          )}
-        </Container>
+        <RevealSection>
+          <Container className="relative flex flex-col items-center gap-4 text-center text-white">
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">
+              Watch Our Services Live
+            </h2>
+            <p className="max-w-lg text-white/85">
+              Can&apos;t make it in person? Experience our services online from anywhere in the
+              world on YouTube.
+            </p>
+            {settings.livestreamUrl && (
+              <LinkButton
+                href={settings.livestreamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="secondary"
+                size="lg"
+              >
+                Join the Live Stream
+              </LinkButton>
+            )}
+          </Container>
+        </RevealSection>
       </section>
 
       <section className="py-16 sm:py-20">
         <Container>
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">Weekly Activities</h2>
+          <RevealSection>
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">Weekly Activities</h2>
+          </RevealSection>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {activities.map((entry) => (
-              <div
+              <TiltCard
                 key={entry.key}
                 className="rounded-2xl border border-border bg-surface p-6 shadow-sm"
               >
@@ -224,7 +236,7 @@ export default async function AboutPage() {
                     Join Online
                   </a>
                 )}
-              </div>
+              </TiltCard>
             ))}
           </div>
           <p className="mt-6 text-sm text-current/70">
@@ -236,15 +248,17 @@ export default async function AboutPage() {
 
       <section className="bg-surface-muted py-16 sm:py-20">
         <Container>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">Leadership</h2>
-            <LinkButton href="/leadership" variant="ghost" size="sm">
-              Meet our full leadership team →
-            </LinkButton>
-          </div>
+          <RevealSection>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 className="font-display text-2xl font-bold sm:text-3xl">Leadership</h2>
+              <LinkButton href="/leadership" variant="ghost" size="sm">
+                Meet our full leadership team →
+              </LinkButton>
+            </div>
+          </RevealSection>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {leadership.map((member) => (
-              <div
+              <TiltCard
                 key={member.id}
                 className="flex flex-col items-center rounded-2xl border border-border bg-surface p-8 text-center shadow-sm"
               >
@@ -268,32 +282,34 @@ export default async function AboutPage() {
                 {member.bio && (
                   <p className="mt-3 text-sm text-current/70 leading-relaxed">{member.bio}</p>
                 )}
-              </div>
+              </TiltCard>
             ))}
           </div>
         </Container>
       </section>
 
       <section className="py-16 sm:py-20">
-        <Container className="flex flex-col items-center gap-6 text-center">
-          <div className="relative h-48 w-full max-w-2xl overflow-hidden rounded-2xl">
-            <Image
-              src="/images/about/about-scripture-hands.jpg"
-              alt="Hands over an open Bible"
-              fill
-              className="object-cover"
-              sizes="(min-width: 768px) 640px, 100vw"
-            />
-          </div>
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">Visit Us</h2>
-          <p className="max-w-lg text-current/80">
-            We&apos;d love to have you join us in person or online. New here? Start with our
-            First Timers guide to know exactly what to expect.
-          </p>
-          <LinkButton href="/first-timers" variant="primary" size="lg">
-            Plan Your Visit
-          </LinkButton>
-        </Container>
+        <RevealSection>
+          <Container className="flex flex-col items-center gap-6 text-center">
+            <div className="relative h-48 w-full max-w-2xl overflow-hidden rounded-2xl">
+              <Image
+                src="/images/about/about-scripture-hands.jpg"
+                alt="Hands over an open Bible"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 640px, 100vw"
+              />
+            </div>
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">Visit Us</h2>
+            <p className="max-w-lg text-current/80">
+              We&apos;d love to have you join us in person or online. New here? Start with our
+              First Timers guide to know exactly what to expect.
+            </p>
+            <LinkButton href="/first-timers" variant="primary" size="lg">
+              Plan Your Visit
+            </LinkButton>
+          </Container>
+        </RevealSection>
       </section>
     </>
   );

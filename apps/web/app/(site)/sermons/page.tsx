@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { prisma } from "@nb-church/db";
+import { getChurchSettings } from "@/lib/settings";
 import { pageMetadata } from "@/lib/metadata";
 import { Container } from "@/components/ui/container";
 import { LinkButton } from "@/components/ui/link-button";
 import { SermonCard } from "@/components/sermons/sermon-card";
+import { RevealSection } from "@/components/journey/reveal-section";
+import { TiltCard } from "@/components/journey/tilt-card";
 
 const PAGE_SIZE = 12;
 
@@ -24,13 +27,14 @@ export default async function SermonsPage({
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
 
-  const [sermons, total] = await Promise.all([
+  const [sermons, total, settings] = await Promise.all([
     prisma.sermon.findMany({
       orderBy: { publishedAt: "desc" },
       take: PAGE_SIZE,
       skip: (pageNum - 1) * PAGE_SIZE,
     }),
     prisma.sermon.count(),
+    getChurchSettings(),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -38,31 +42,37 @@ export default async function SermonsPage({
   return (
     <section className="py-16">
       <Container>
-        <div className="max-w-2xl">
+        <RevealSection className="max-w-2xl">
           <h1 className="font-display text-4xl font-bold sm:text-5xl">Sermons</h1>
           <p className="mt-3 text-lg text-current/70">
             Messages from our services — teaching to help you grow, wherever you are in
             your walk.
           </p>
-        </div>
+        </RevealSection>
 
         {sermons.length === 0 ? (
           <p className="mt-10 text-current/70">
             Sermons are being added — check back soon, or watch live on our{" "}
-            <a
-              href="https://www.youtube.com/@the_newbreedchurch"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-brand-700 hover:underline dark:text-brand-300"
-            >
-              YouTube channel
-            </a>
+            {settings.youtubeUrl ? (
+              <a
+                href={settings.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-brand-700 hover:underline dark:text-brand-300"
+              >
+                YouTube channel
+              </a>
+            ) : (
+              "YouTube channel"
+            )}
             .
           </p>
         ) : (
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sermons.map((sermon, i) => (
-              <SermonCard key={sermon.id} sermon={sermon} index={i} />
+              <TiltCard key={sermon.id}>
+                <SermonCard sermon={sermon} index={i} />
+              </TiltCard>
             ))}
           </div>
         )}
@@ -91,6 +101,25 @@ export default async function SermonsPage({
               </LinkButton>
             )}
           </div>
+        )}
+
+        {settings.youtubeUrl && (
+          <RevealSection className="mt-16 flex flex-col items-center gap-3 rounded-3xl bg-brand-700 px-6 py-10 text-center text-white sm:px-12">
+            <h2 className="font-display text-2xl font-bold">Want to see more?</h2>
+            <p className="max-w-md text-white/85">
+              Every sermon we&apos;ve ever preached lives on our YouTube channel — full
+              services, not just clips.
+            </p>
+            <LinkButton
+              href={settings.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="secondary"
+              size="lg"
+            >
+              View More on YouTube
+            </LinkButton>
+          </RevealSection>
         )}
       </Container>
     </section>
