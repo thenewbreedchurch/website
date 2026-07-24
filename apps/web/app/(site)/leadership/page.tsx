@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Mail, Phone } from "lucide-react";
-import { prisma } from "@nb-church/db";
+import { prisma, type StaffMember } from "@nb-church/db";
 import { pageMetadata } from "@/lib/metadata";
 import { initials } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
@@ -17,15 +17,98 @@ export function generateMetadata(): Metadata {
   });
 }
 
+// Groups leaders under their department when set, so a growing team reads as
+// distinct ministries rather than one flat grid. Falls back to a single
+// undivided grid (no section headers) when nobody has a department assigned
+// yet — matches today's reality of two seeded leaders with no department
+// data, without needing a special-cased "empty" layout.
+function groupByDepartment(leaders: StaffMember[]) {
+  const order: string[] = [];
+  const byDepartment = new Map<string, StaffMember[]>();
+
+  for (const leader of leaders) {
+    const key = leader.department ?? "";
+    if (!byDepartment.has(key)) {
+      byDepartment.set(key, []);
+      order.push(key);
+    }
+    byDepartment.get(key)!.push(leader);
+  }
+
+  const groups = order.map((key) => ({ department: key || null, leaders: byDepartment.get(key)! }));
+  const showHeaders = groups.length > 1 || groups[0]?.department !== null;
+  return { groups, showHeaders };
+}
+
+function LeaderCard({ leader }: { leader: StaffMember }) {
+  return (
+    <TiltCard>
+      <div className="group overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <div className="relative aspect-[4/5] overflow-hidden bg-brand-50 dark:bg-white/5">
+          {leader.photoUrl ? (
+            <Image
+              src={leader.photoUrl}
+              alt={leader.name}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-5xl font-semibold text-brand-800 dark:text-white">
+              {initials(leader.name)}
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 text-center">
+          <h2 className="font-display text-lg font-semibold">{leader.name}</h2>
+          <p className="mt-1 text-sm text-current/70">{leader.role}</p>
+          {leader.department && (
+            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-brand-700 dark:text-brand-300">
+              {leader.department}
+            </p>
+          )}
+          {leader.bio && (
+            <p className="mt-3 text-sm leading-relaxed text-current/70">{leader.bio}</p>
+          )}
+
+          {(leader.email || leader.phone) && (
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              {leader.email && (
+                <a
+                  href={`mailto:${leader.email}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-muted px-3.5 py-1.5 text-xs font-medium text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-white/10"
+                >
+                  <Mail size={13} /> Email
+                </a>
+              )}
+              {leader.phone && (
+                <a
+                  href={`tel:${leader.phone.replace(/\s+/g, "")}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-muted px-3.5 py-1.5 text-xs font-medium text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-white/10"
+                >
+                  <Phone size={13} /> Call
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </TiltCard>
+  );
+}
+
 export default async function LeadershipPage() {
   const leaders = await prisma.staffMember.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
   });
 
+  const { groups, showHeaders } = groupByDepartment(leaders);
+
   return (
     <>
-      <section className="bg-brand-900 py-16 text-white">
+      <section className="bg-brand-900 py-16 text-white sm:py-20">
         <Container className="max-w-2xl">
           <h1 className="font-display text-4xl font-bold sm:text-5xl">Our Leadership</h1>
           <p className="mt-3 text-lg text-white/85">
@@ -35,8 +118,8 @@ export default async function LeadershipPage() {
         </Container>
       </section>
 
-      <section className="py-16">
-        <Container>
+      <section className="py-16 sm:py-20">
+        <Container className="space-y-14">
           {leaders.length === 0 ? (
             <RevealSection className="text-center text-current/70">
               We&apos;re updating this page — in the meantime,{" "}
@@ -46,61 +129,22 @@ export default async function LeadershipPage() {
               .
             </RevealSection>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {leaders.map((leader) => (
-                <TiltCard
-                  key={leader.id}
-                  className="flex flex-col items-center rounded-2xl border border-border bg-surface p-8 text-center shadow-sm"
-                >
-                  {leader.photoUrl ? (
-                    <div className="relative h-28 w-28 overflow-hidden rounded-full">
-                      <Image
-                        src={leader.photoUrl}
-                        alt={leader.name}
-                        fill
-                        className="object-cover"
-                        sizes="112px"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-brand-100 text-2xl font-semibold text-brand-800 dark:bg-white/10 dark:text-white">
-                      {initials(leader.name)}
-                    </div>
-                  )}
-                  <h2 className="mt-4 font-display text-lg font-semibold">{leader.name}</h2>
-                  <p className="mt-1 text-sm text-current/70">{leader.role}</p>
-                  {leader.department && (
-                    <p className="mt-1 text-xs font-medium uppercase tracking-wide text-brand-700 dark:text-brand-300">
-                      {leader.department}
-                    </p>
-                  )}
-                  {leader.bio && (
-                    <p className="mt-3 text-sm leading-relaxed text-current/70">{leader.bio}</p>
-                  )}
-
-                  {(leader.email || leader.phone) && (
-                    <div className="mt-5 flex flex-col items-center gap-1.5 text-sm">
-                      {leader.email && (
-                        <a
-                          href={`mailto:${leader.email}`}
-                          className="flex items-center gap-1.5 font-medium text-brand-700 hover:underline dark:text-brand-300"
-                        >
-                          <Mail size={14} /> {leader.email}
-                        </a>
-                      )}
-                      {leader.phone && (
-                        <a
-                          href={`tel:${leader.phone.replace(/\s+/g, "")}`}
-                          className="flex items-center gap-1.5 font-medium text-brand-700 hover:underline dark:text-brand-300"
-                        >
-                          <Phone size={14} /> {leader.phone}
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </TiltCard>
-              ))}
-            </div>
+            groups.map((group) => (
+              <div key={group.department ?? "_all"}>
+                {showHeaders && (
+                  <RevealSection>
+                    <h2 className="mb-6 font-display text-2xl font-bold">
+                      {group.department ?? "Leadership"}
+                    </h2>
+                  </RevealSection>
+                )}
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {group.leaders.map((leader) => (
+                    <LeaderCard key={leader.id} leader={leader} />
+                  ))}
+                </div>
+              </div>
+            ))
           )}
         </Container>
       </section>

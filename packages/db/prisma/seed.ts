@@ -259,9 +259,11 @@ async function main() {
 
   // Leadership named in the legacy about.html — confirm spelling/titles with
   // the church before publishing photos (see HANDOFF.md open items).
+  // Pastor Idowu Iluyomade is no longer with the church (removed per the
+  // church's explicit request) — not seeded here, and the pre-existing DB
+  // row was deleted directly.
   const staff: Array<Parameters<typeof prisma.staffMember.create>[0]["data"]> = [
-    { name: "Pastor Idowu Iluyomade", role: "Senior Pastor", sortOrder: 0 },
-    { name: "Pastor Gbenga Olaniyan", role: "Pastor", sortOrder: 1 },
+    { name: "Pastor Gbenga Olaniyan", role: "Pastor", sortOrder: 0 },
   ];
   for (const member of staff) {
     const existing = await prisma.staffMember.findFirst({
