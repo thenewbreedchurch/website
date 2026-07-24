@@ -26,7 +26,7 @@ export default async function NewConvertsPage() {
 
   return (
     <>
-      <section className="relative flex min-h-[55vh] items-center overflow-hidden">
+      <section className="relative flex min-h-[70vh] items-center overflow-hidden">
         <Image
           src="/images/new-converts/new-converts-altar-prayer.jpg"
           alt="Prayer at the altar"

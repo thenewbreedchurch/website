@@ -35,7 +35,7 @@ export default async function FirstTimersPage() {
 
   return (
     <>
-      <section className="relative flex min-h-[60vh] items-center overflow-hidden">
+      <section className="relative flex min-h-[70vh] items-center overflow-hidden">
         <Image
           src="/images/first-timers/first-timers-welcome-smiles.jpg"
           alt="Members of The New Breed Church welcoming a guest"
