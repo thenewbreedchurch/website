@@ -68,16 +68,16 @@ export default async function AdminAnnouncementsPage({
               </Td>
               <Td>
                 {a.registrationRequired ? (
-                  <Link href={`/admin/announcements/${a.id}/registrations`} className="text-brand-700 hover:underline">
+                  <Link href={`/admin/announcements/${a.id}/registrations`} className="text-brand-700 hover:underline dark:text-brand-300">
                     {a._count.registrations}
                   </Link>
                 ) : (
-                  <span className="text-neutral-400">—</span>
+                  <span className="text-neutral-400 dark:text-neutral-500">—</span>
                 )}
               </Td>
               <Td className="text-right">
                 <div className="flex justify-end gap-3">
-                  <Link href={`/admin/announcements/${a.id}`} className="text-xs font-medium text-brand-700 hover:underline">
+                  <Link href={`/admin/announcements/${a.id}`} className="text-xs font-medium text-brand-700 hover:underline dark:text-brand-300">
                     Edit
                   </Link>
                   <DeleteRowButton id={a.id} action={deleteAnnouncementAction} />

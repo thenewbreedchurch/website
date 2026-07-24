@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Supports both automatic (OS prefers-color-scheme, the site-wide default —
+   see the plain @media block below, unaffected by this) and an explicit
+   manual override via a .dark/.light class on <html> (set server-side from
+   a cookie in app/layout.tsx, with a one-time inline script to resolve the
+   very first, cookie-less visit — see that file for the full explanation).
+   This only changes what the `dark:` utility PREFIX targets; it does not
+   touch the plain CSS custom properties below, which still respond to the
+   media query directly regardless of any class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #17131f;
@@ -46,14 +56,27 @@
   --font-display: var(--font-heading);
 }
 
+/* Automatic default: follows the OS, unless an explicit .light override is
+   present on <html> (set when a visitor picks light manually while their OS
+   prefers dark — see app/layout.tsx). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #100c18;
     --foreground: #f3f0fa;
     --color-surface: #17121f;
     --color-surface-muted: #1c1727;
     --color-border: #2c2438;
   }
+}
+
+/* Explicit .dark override — applies dark values even when the OS prefers
+   light, for a visitor who picked dark manually. */
+:root.dark {
+  --background: #100c18;
+  --foreground: #f3f0fa;
+  --color-surface: #17121f;
+  --color-surface-muted: #1c1727;
+  --color-border: #2c2438;
 }
 
 html {
@@ -99,9 +122,13 @@ h4 {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --give-bg-text-color: rgba(196, 181, 253, 0.07);
   }
+}
+
+:root.dark {
+  --give-bg-text-color: rgba(196, 181, 253, 0.07);
 }
 
 .give-bg-text {

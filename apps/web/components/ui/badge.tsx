@@ -1,14 +1,11 @@
 import { cn } from "@/lib/utils";
 
-// Admin panel is a fixed light-mode surface (see app/admin/layout.tsx) —
-// no dark: variants, so tones stay readable regardless of the visitor's OS
-// color-scheme preference.
 const TONES = {
-  neutral: "bg-neutral-100 text-neutral-700",
-  brand: "bg-brand-50 text-brand-800",
-  green: "bg-green-50 text-green-700",
-  amber: "bg-amber-50 text-amber-700",
-  red: "bg-red-50 text-red-700",
+  neutral: "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
+  brand: "bg-brand-50 text-brand-800 dark:bg-brand-500/15 dark:text-brand-300",
+  green: "bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-400",
+  amber: "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  red: "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-400",
 } as const;
 
 export function Badge({

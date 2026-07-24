@@ -10,7 +10,7 @@ export function FormStatus({ state }: { state: ActionResult | null }) {
     );
   }
   return (
-    <p role="alert" className="text-sm font-medium text-red-600">
+    <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">
       {state.error}
     </p>
   );

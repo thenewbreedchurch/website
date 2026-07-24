@@ -8,13 +8,10 @@ import Link from "next/link";
 // screens (lg:hidden here avoids showing it twice); on narrower screens,
 // where that panel is hidden, it's shown inline above the heading instead.
 //
-// Deliberately stays on the admin panel's existing "always light"
-// neutral-*/brand-* palette rather than the public site's surface/border/
-// current tokens — those flip with prefers-color-scheme, and the admin
-// shell forces colorScheme: light (see app/admin/layout.tsx), so theme
-// tokens would silently invert here on a dark-mode OS. brand-* is a safe,
-// non-flipping palette (see globals.css — only background/foreground/
-// surface/border change in the dark media block).
+// Deliberately stays on neutral-*/brand-* (with explicit dark: companions)
+// rather than the public site's surface/border/current tokens, which flip
+// on the raw OS media query regardless of the admin theme toggle's explicit
+// .dark class — see components/admin/theme-toggle.tsx and app/admin/layout.tsx.
 export function AuthCard({
   title,
   subtitle,
@@ -43,12 +40,12 @@ export function AuthCard({
         />
       </Link>
       <h1
-        className="text-3xl font-bold tracking-tight text-neutral-900"
+        className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100"
         style={{ fontFamily: "var(--font-body), ui-sans-serif, system-ui, sans-serif" }}
       >
         {title}
       </h1>
-      {subtitle && <p className="mt-2 text-sm text-neutral-500">{subtitle}</p>}
+      {subtitle && <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{subtitle}</p>}
       <div className="mt-8">{children}</div>
     </div>
   );

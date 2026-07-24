@@ -56,8 +56,8 @@ export default async function AdminNewConvertInquiriesPage({
             <tr key={inq.id}>
               <Td>
                 <div className="font-medium">{inq.name}</div>
-                <div className="text-xs text-neutral-500">{inq.email}</div>
-                {inq.phone && <div className="text-xs text-neutral-500">{inq.phone}</div>}
+                <div className="text-xs text-neutral-500 dark:text-neutral-400">{inq.email}</div>
+                {inq.phone && <div className="text-xs text-neutral-500 dark:text-neutral-400">{inq.phone}</div>}
               </Td>
               <Td>
                 <div className="flex flex-wrap gap-1">

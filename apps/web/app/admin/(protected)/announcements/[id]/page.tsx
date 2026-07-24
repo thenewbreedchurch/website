@@ -25,7 +25,7 @@ export default async function EditAnnouncementPage({
       {announcement.registrationRequired && (
         <Link
           href={`/admin/announcements/${id}/registrations`}
-          className="inline-block text-sm font-medium text-brand-700 hover:underline"
+          className="inline-block text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
         >
           View registrations &rarr;
         </Link>

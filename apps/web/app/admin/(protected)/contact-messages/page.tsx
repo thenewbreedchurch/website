@@ -62,7 +62,7 @@ export default async function AdminContactMessagesPage({
             <tr key={m.id}>
               <Td>
                 <div className="font-medium">{m.name}</div>
-                <div className="text-xs text-neutral-500">{m.email}</div>
+                <div className="text-xs text-neutral-500 dark:text-neutral-400">{m.email}</div>
               </Td>
               <Td>
                 <Badge tone={CATEGORY_TONE[m.category]}>{CATEGORY_LABELS[m.category]}</Badge>

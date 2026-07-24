@@ -33,15 +33,17 @@ export default function SessionTimeoutPage() {
 
   return (
     <AuthCard title="Session Expired" center>
-      <p className="text-sm text-neutral-600">
+      <p className="text-sm text-neutral-600 dark:text-neutral-400">
         Your session has expired due to inactivity. For your security, you&apos;ve been signed
         out.
       </p>
-      <p className="mt-2 text-xs text-neutral-400">Redirecting to sign in in {secondsLeft}s…</p>
+      <p className="mt-2 text-xs text-neutral-400 dark:text-neutral-500">
+        Redirecting to sign in in {secondsLeft}s…
+      </p>
       <button
         type="button"
         onClick={() => router.push("/admin/login")}
-        className="mt-6 w-full rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-brand-800"
+        className="mt-6 w-full rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-brand-800 dark:bg-brand-600 dark:hover:bg-brand-500"
       >
         Return to sign in
       </button>

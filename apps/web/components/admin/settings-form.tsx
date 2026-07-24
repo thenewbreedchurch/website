@@ -19,7 +19,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
   return (
     <form action={formAction} className="max-w-2xl space-y-8">
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Organization
         </h2>
         <Field label="Organization name" htmlFor="orgName" error={err("orgName")}>
@@ -45,7 +45,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Contact
         </h2>
         <Field label="Street address" htmlFor="streetAddress" error={err("streetAddress")}>
@@ -76,7 +76,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Links
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -116,7 +116,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60"
+          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save Settings"}
         </button>

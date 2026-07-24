@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import { getChurchSettings } from "@/lib/settings";
 import { organizationJsonLd, SITE_URL } from "@/lib/metadata";
 import { CookieConsentBanner } from "@/components/consent/cookie-consent-banner";
 import "./globals.css";
+
+// Only the admin panel exposes a manual toggle today, but the cookie/class
+// is read here at the root so it works for any route. Absence of the cookie
+// means "never chosen" — the plain `prefers-color-scheme` media query in
+// globals.css keeps following the OS automatically, no class needed.
+const THEME_COOKIE = "nbc_theme";
 
 // Carried forward from the legacy site's actual brand fonts (Montserrat body
 // / Playfair Display headings, loaded from Google Fonts CDN there) — now
@@ -43,6 +50,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getChurchSettings();
+  const themeCookie = (await cookies()).get(THEME_COOKIE)?.value;
+  const resolvedThemeClass =
+    themeCookie === "dark" ? "dark" : themeCookie === "light" ? "light" : "";
   const jsonLd = organizationJsonLd({
     orgName: settings.orgName,
     tagline: settings.tagline,
@@ -60,7 +70,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bodyFont.variable} ${headingFont.variable} h-full antialiased`}
+      className={`${bodyFont.variable} ${headingFont.variable} h-full antialiased ${resolvedThemeClass}`.trim()}
     >
       <body className="min-h-full flex flex-col">
         <script
