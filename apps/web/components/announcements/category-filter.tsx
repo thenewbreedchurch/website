@@ -22,6 +22,7 @@ export function CategoryFilter({ active }: { active?: string }) {
           <Link
             key={c.label}
             href={c.value ? `/announcements?category=${c.value}` : "/announcements"}
+            scroll={false}
             className={cn(
               "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
               isActive

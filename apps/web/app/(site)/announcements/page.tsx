@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import type { AnnouncementCategory } from "@nb-church/db";
 import { prisma } from "@nb-church/db";
 import { pageMetadata } from "@/lib/metadata";
@@ -12,6 +13,7 @@ import { Container } from "@/components/ui/container";
 import { WeekAgenda } from "@/components/announcements/week-agenda";
 import { CategoryFilter } from "@/components/announcements/category-filter";
 import { AnnouncementCard } from "@/components/announcements/announcement-card";
+import { RevealSection } from "@/components/journey/reveal-section";
 
 const UPCOMING_CANDIDATE_LIMIT = 50;
 const UPCOMING_PAGE_SIZE = 9;
@@ -69,12 +71,21 @@ export default async function AnnouncementsPage({
 
   return (
     <>
-      <section className="bg-brand-900 py-16 text-white">
-        <Container className="max-w-2xl">
+      <section className="relative flex min-h-[55vh] items-center overflow-hidden">
+        <Image
+          src="/images/announcements/announcements-cultural-gathering.jpg"
+          alt="Members of The New Breed Church at a church gathering"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        <Container className="relative py-16 text-white">
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
             Weekly Announcements
           </h1>
-          <p className="mt-3 text-lg text-white/85">
+          <p className="mt-3 max-w-xl text-lg text-white/85">
             What&apos;s happening this week, and what&apos;s coming up — no hardcoded
             events, always current.
           </p>
@@ -83,27 +94,31 @@ export default async function AnnouncementsPage({
 
       <section className="py-14">
         <Container>
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">This Week</h2>
-          <div className="mt-6">
-            {agenda.length > 0 ? (
-              <WeekAgenda items={agenda} />
-            ) : (
-              <p className="text-current/70">Nothing scheduled this week yet.</p>
-            )}
-          </div>
+          <RevealSection>
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">This Week</h2>
+            <div className="mt-6">
+              {agenda.length > 0 ? (
+                <WeekAgenda items={agenda} />
+              ) : (
+                <p className="text-current/70">Nothing scheduled this week yet.</p>
+              )}
+            </div>
+          </RevealSection>
         </Container>
       </section>
 
       <section className="bg-surface-muted py-14">
         <Container>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">
-              Upcoming Announcements
-            </h2>
-          </div>
-          <div className="mt-5">
-            <CategoryFilter active={category} />
-          </div>
+          <RevealSection>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="font-display text-2xl font-bold sm:text-3xl">
+                Upcoming Announcements
+              </h2>
+            </div>
+            <div className="mt-5">
+              <CategoryFilter active={category} />
+            </div>
+          </RevealSection>
 
           {upcoming.length === 0 ? (
             <p className="mt-10 text-current/70">
