@@ -4,6 +4,8 @@ import { prisma } from "@nb-church/db";
 import { pageMetadata } from "@/lib/metadata";
 import { Container } from "@/components/ui/container";
 import { CopyAccountButton } from "@/components/give/copy-account-button";
+import { RevealSection } from "@/components/journey/reveal-section";
+import { TiltCard } from "@/components/journey/tilt-card";
 
 export function generateMetadata(): Metadata {
   return pageMetadata({
@@ -23,8 +25,14 @@ export default async function GivePage() {
   const funds = groupByFund(accounts);
 
   return (
-    <>
-      <section className="bg-brand-900 py-20 text-white">
+    <div className="relative overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <span className="give-bg-text">Give</span>
+        <span className="give-bg-text">Give</span>
+        <span className="give-bg-text">Give</span>
+      </div>
+
+      <section className="relative z-10 bg-brand-900 py-20 text-white">
         <Container className="max-w-3xl text-center">
           <HeartHandshake size={32} className="mx-auto text-brand-200" />
           <h1 className="mt-4 font-display text-4xl font-bold sm:text-5xl">Give</h1>
@@ -36,10 +44,10 @@ export default async function GivePage() {
         </Container>
       </section>
 
-      <section className="py-16">
+      <section className="relative z-10 py-16">
         <Container className="space-y-14">
           {funds.map((fund) => (
-            <div key={fund.name}>
+            <RevealSection key={fund.name}>
               <h2 className="font-display text-2xl font-bold sm:text-3xl">{fund.name}</h2>
               {fund.name === "Favoured Fund" && (
                 <p className="mt-3 max-w-2xl text-current/75">
@@ -60,34 +68,35 @@ export default async function GivePage() {
 
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 {fund.accounts.map((account) => (
-                  <div
-                    key={account.id}
-                    className="rounded-2xl border border-border bg-surface p-6"
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300">
-                      {account.currency} Account
-                    </p>
-                    <dl className="mt-3 space-y-2 text-sm">
-                      <div className="flex items-center justify-between gap-3">
-                        <dt className="text-current/60">Account No.</dt>
-                        <dd className="flex items-center gap-2 font-medium">
-                          {account.accountNumber}
-                          <CopyAccountButton value={account.accountNumber} />
-                        </dd>
-                      </div>
-                      <div className="flex items-center justify-between gap-3">
-                        <dt className="text-current/60">Bank</dt>
-                        <dd className="font-medium">{account.bankName}</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="shrink-0 text-current/60">Account Name</dt>
-                        <dd className="text-right font-medium">{account.accountName}</dd>
-                      </div>
-                    </dl>
-                  </div>
+                  <TiltCard key={account.id}>
+                    <div className="rounded-2xl border border-border border-l-4 border-l-brand-600 bg-surface p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300">
+                        {account.currency} Account
+                      </p>
+                      <dl className="mt-4 divide-y divide-border text-sm">
+                        <div className="flex items-center justify-between gap-3 py-2.5 first:pt-0">
+                          <dt className="text-current/60">Account No.</dt>
+                          <dd className="flex items-center gap-2">
+                            <span className="rounded-md bg-surface-muted px-2 py-1 font-mono font-medium">
+                              {account.accountNumber}
+                            </span>
+                            <CopyAccountButton value={account.accountNumber} />
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 py-2.5">
+                          <dt className="text-current/60">Bank</dt>
+                          <dd className="font-medium">{account.bankName}</dd>
+                        </div>
+                        <div className="flex items-start justify-between gap-3 py-2.5 last:pb-0">
+                          <dt className="shrink-0 text-current/60">Account Name</dt>
+                          <dd className="text-right font-medium">{account.accountName}</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </TiltCard>
                 ))}
               </div>
-            </div>
+            </RevealSection>
           ))}
 
           {funds.length === 0 && (
@@ -98,7 +107,7 @@ export default async function GivePage() {
           )}
         </Container>
       </section>
-    </>
+    </div>
   );
 }
 
