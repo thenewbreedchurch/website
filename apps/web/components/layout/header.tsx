@@ -13,13 +13,21 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/70">
       <div className="relative mx-auto flex h-18 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" aria-label="The New Breed Church — home">
+        <Link href="/" aria-label="The New Breed Church — home" className="flex items-center gap-2.5">
           <Image
             src="/logo-mark.png"
-            alt="The New Breed Church"
+            alt=""
             width={166}
             height={160}
-            className="h-12 w-auto sm:h-14"
+            className="h-10 w-auto sm:h-12"
+            priority
+          />
+          <Image
+            src="/logo-wordmark.png"
+            alt="The New Breed Church"
+            width={467}
+            height={160}
+            className="h-6 w-auto dark:invert sm:h-7"
             priority
           />
         </Link>
