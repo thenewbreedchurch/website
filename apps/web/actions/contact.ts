@@ -21,13 +21,13 @@ export async function contactAction(input: unknown): Promise<ActionResult> {
       fieldErrors: parsed.error.flatten().fieldErrors,
     };
   }
-  const { name, email, phone, subject, message } = parsed.data;
+  const { name, email, phone, category, subject, message } = parsed.data;
 
   await prisma.contactMessage.create({
-    data: { name, email, phone, subject, message, status: "NEW" },
+    data: { name, email, phone, category, subject, message, status: "NEW" },
   });
 
-  void sendContactNotificationEmail({ name, email, phone, subject, message });
+  void sendContactNotificationEmail({ name, email, phone, category, subject, message });
 
   return { ok: true, message: "Thanks for reaching out — we'll get back to you soon." };
 }

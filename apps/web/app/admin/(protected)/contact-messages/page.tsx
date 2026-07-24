@@ -5,13 +5,25 @@ import { DataTable, DataTableHead, DataTableBody, Th, Td, EmptyRow, Pagination }
 import { Badge } from "@/components/ui/badge";
 import { ToggleRowButton } from "@/components/admin/toggle-row-button";
 import { advanceContactMessageStatusAction } from "@/actions/admin/contact-messages";
-import type { ContactStatus } from "@nb-church/db";
+import type { ContactCategory, ContactStatus } from "@nb-church/db";
 
 const PAGE_SIZE = 25;
 const STATUS_TONE: Record<ContactStatus, "amber" | "brand" | "green"> = {
   NEW: "amber",
   READ: "brand",
   RESPONDED: "green",
+};
+const CATEGORY_LABELS: Record<ContactCategory, string> = {
+  GENERAL: "General",
+  PRAYER: "Prayer",
+  MEMBERSHIP: "Membership",
+  WELFARE: "Welfare",
+};
+const CATEGORY_TONE: Record<ContactCategory, "neutral" | "brand" | "green" | "amber"> = {
+  GENERAL: "neutral",
+  PRAYER: "brand",
+  MEMBERSHIP: "green",
+  WELFARE: "amber",
 };
 
 export default async function AdminContactMessagesPage({
@@ -38,18 +50,22 @@ export default async function AdminContactMessagesPage({
       <DataTable>
         <DataTableHead>
           <Th>From</Th>
+          <Th>Category</Th>
           <Th>Subject</Th>
           <Th>Message</Th>
           <Th>Status</Th>
           <Th>Received</Th>
         </DataTableHead>
         <DataTableBody>
-          {messages.length === 0 && <EmptyRow colSpan={5}>No messages yet.</EmptyRow>}
+          {messages.length === 0 && <EmptyRow colSpan={6}>No messages yet.</EmptyRow>}
           {messages.map((m) => (
             <tr key={m.id}>
               <Td>
                 <div className="font-medium">{m.name}</div>
                 <div className="text-xs text-neutral-500">{m.email}</div>
+              </Td>
+              <Td>
+                <Badge tone={CATEGORY_TONE[m.category]}>{CATEGORY_LABELS[m.category]}</Badge>
               </Td>
               <Td>{m.subject}</Td>
               <Td className="max-w-xs truncate">{m.message}</Td>

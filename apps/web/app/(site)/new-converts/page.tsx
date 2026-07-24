@@ -7,6 +7,7 @@ import { pageMetadata } from "@/lib/metadata";
 import { Container } from "@/components/ui/container";
 import { RevealSection } from "@/components/journey/reveal-section";
 import { TiltCard } from "@/components/journey/tilt-card";
+import { NewConvertInquiryForm } from "@/components/new-converts/inquiry-form";
 
 export function generateMetadata(): Metadata {
   return pageMetadata({
@@ -95,6 +96,23 @@ export default async function NewConvertsPage() {
               ))}
             </div>
           )}
+        </Container>
+      </section>
+
+      <section className="bg-surface-muted py-16">
+        <Container className="max-w-2xl">
+          <RevealSection className="text-center">
+            <h2 className="font-display text-3xl font-bold sm:text-4xl">
+              Tell Us You&apos;re Here
+            </h2>
+            <p className="mt-3 text-current/70">
+              Fill this out and someone from our team will personally reach out — no
+              generic replies, just a real person glad to walk this with you.
+            </p>
+          </RevealSection>
+          <RevealSection className="mt-10">
+            <NewConvertInquiryForm />
+          </RevealSection>
         </Container>
       </section>
     </>

@@ -124,3 +124,20 @@ export const nextStepSchema = z.object({
   sortOrder: z.coerce.number().int().default(0),
   isActive: z.coerce.boolean().default(true),
 });
+
+export const staffMemberSchema = z.object({
+  name: z.string().trim().min(1).max(150),
+  role: z.string().trim().min(1).max(150),
+  department: z.string().trim().max(150).optional().or(z.literal("").transform(() => undefined)),
+  email: z
+    .string()
+    .trim()
+    .email("Enter a valid email address")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+  phone: z.string().trim().max(50).optional().or(z.literal("").transform(() => undefined)),
+  photoUrl: z.string().trim().max(500).optional().or(z.literal("").transform(() => undefined)),
+  bio: z.string().trim().max(2000).optional().or(z.literal("").transform(() => undefined)),
+  sortOrder: z.coerce.number().int().default(0),
+  isActive: z.coerce.boolean().default(true),
+});

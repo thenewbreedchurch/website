@@ -10,8 +10,10 @@ const SECTIONS = [
   { href: "/admin/testimonies", label: "Testimonies", description: "Approve and feature congregant testimonies." },
   { href: "/admin/giving-accounts", label: "Giving Accounts", description: "Bank details shown on the Give page." },
   { href: "/admin/next-steps", label: "Next Steps", description: "Cards on First Timers and New Converts." },
+  { href: "/admin/staff", label: "Staff / Leadership", description: "Powers About and the public Leadership directory." },
   { href: "/admin/subscribers", label: "Newsletter Subscribers", description: "View and export the mailing list." },
   { href: "/admin/contact-messages", label: "Contact Messages", description: "Messages submitted via the Contact page." },
+  { href: "/admin/new-convert-inquiries", label: "New Convert Inquiries", description: "Submissions from the New Converts intake form." },
 ];
 
 export default async function AdminDashboardPage() {

@@ -5,6 +5,7 @@ import { getChurchSettings, getServiceTimes } from "@/lib/settings";
 import { pageMetadata } from "@/lib/metadata";
 import { Container } from "@/components/ui/container";
 import { LinkButton } from "@/components/ui/link-button";
+import { initials } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
@@ -55,16 +56,6 @@ function groupServiceTimes(serviceTimes: ServiceTime[]) {
         : entry.days.map((d) => DAY_LABELS[d] ?? d).join(", ");
     return { key, ...entry, dayLabel };
   });
-}
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .filter((part) => part.length > 0 && part[0] === part[0].toUpperCase())
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 }
 
 export default async function AboutPage() {
@@ -245,7 +236,12 @@ export default async function AboutPage() {
 
       <section className="bg-surface-muted py-16 sm:py-20">
         <Container>
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">Leadership</h2>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">Leadership</h2>
+            <LinkButton href="/leadership" variant="ghost" size="sm">
+              Meet our full leadership team →
+            </LinkButton>
+          </div>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {leadership.map((member) => (
               <div

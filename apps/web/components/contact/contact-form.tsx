@@ -13,6 +13,7 @@ async function submitContact(
     name: formData.get("name"),
     email: formData.get("email"),
     phone: formData.get("phone"),
+    category: formData.get("category"),
     subject: formData.get("subject"),
     message: formData.get("message"),
   });
@@ -20,6 +21,13 @@ async function submitContact(
 
 const inputClasses =
   "w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-current transition-colors focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/25";
+
+const CATEGORY_OPTIONS = [
+  { value: "GENERAL", label: "General" },
+  { value: "PRAYER", label: "Prayer Request" },
+  { value: "MEMBERSHIP", label: "Membership & Follow-up" },
+  { value: "WELFARE", label: "Welfare / Member Care" },
+] as const;
 
 export function ContactForm() {
   const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
@@ -50,7 +58,11 @@ export function ContactForm() {
   }
 
   return (
-    <form action={formAction} className="space-y-5" noValidate>
+    <form
+      action={formAction}
+      className="space-y-5 rounded-3xl border border-border bg-surface p-6 shadow-sm sm:p-8"
+      noValidate
+    >
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="block text-sm font-medium">
@@ -104,6 +116,24 @@ export function ContactForm() {
         {fieldError("phone") && (
           <p className="mt-1 text-xs text-red-600">{fieldError("phone")}</p>
         )}
+      </div>
+
+      <div>
+        <label htmlFor="category" className="block text-sm font-medium">
+          What&apos;s this about?
+        </label>
+        <select
+          id="category"
+          name="category"
+          defaultValue="GENERAL"
+          className={cn(inputClasses, "mt-1.5")}
+        >
+          {CATEGORY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

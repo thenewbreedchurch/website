@@ -304,9 +304,9 @@ async function main() {
     {
       page: "NEW_CONVERT",
       title: "Get Baptized",
-      body: "Baptism is a public declaration of your new life in Christ. Speak with a leader after service to learn about our next baptism class.",
-      ctaLabel: "Meet a leader",
-      ctaUrl: "/contact",
+      body: "Baptism is a public declaration of your new life in Christ. Find the leader who oversees baptism and reach out to learn about our next class.",
+      ctaLabel: "Find a leader",
+      ctaUrl: "/leadership",
       sortOrder: 0,
     },
     {
@@ -320,9 +320,9 @@ async function main() {
     {
       page: "NEW_CONVERT",
       title: "Meet a Leader",
-      body: "You don't have to figure this out alone. Reach out and one of our pastors or leaders will personally connect with you.",
-      ctaLabel: "Get in touch",
-      ctaUrl: "/contact",
+      body: "You don't have to figure this out alone. Browse our leadership team and reach out to whoever's the right fit for you.",
+      ctaLabel: "See our leaders",
+      ctaUrl: "/leadership",
       sortOrder: 2,
     },
     {

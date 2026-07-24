@@ -1,15 +1,5 @@
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from "@react-email/components";
+import { Link, Text } from "@react-email/components";
+import { EmailLayout, textStyle } from "./components/email-layout";
 
 // JSX-rendered email — user-supplied values (name) are interpolated as React
 // children, so they're auto-escaped. This is the structural fix for the
@@ -28,43 +18,33 @@ export default function NewsletterWelcomeEmail({
   unsubscribeUrl,
 }: NewsletterWelcomeEmailProps) {
   return (
-    <Html>
-      <Head />
-      <Preview>Welcome to the {orgName} family</Preview>
-      <Body style={{ backgroundColor: "#f5f5f5", fontFamily: "Arial, sans-serif" }}>
-        <Container
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            margin: "40px auto",
-            padding: 32,
-            maxWidth: 560,
-          }}
-        >
-          <Heading style={{ color: "#5B21B6", fontSize: 22 }}>
-            Welcome{name ? `, ${name}` : ""}!
-          </Heading>
-          <Text style={{ color: "#333333", fontSize: 15, lineHeight: 1.6 }}>
-            Thank you for subscribing to the {orgName} newsletter. We&apos;re
-            blessed to have you join our community and look forward to
-            growing together in faith and fellowship.
-          </Text>
-          <Text style={{ color: "#333333", fontSize: 15, lineHeight: 1.6 }}>
-            You&apos;ll hear from us with service updates, announcements, and
-            news from the church.
-          </Text>
-          <Hr style={{ borderColor: "#e5e5e5", margin: "24px 0" }} />
-          <Section>
-            <Text style={{ color: "#666666", fontSize: 12 }}>
-              If you no longer wish to receive these emails, you can{" "}
-              <Link href={unsubscribeUrl} style={{ color: "#5B21B6" }}>
-                unsubscribe here
-              </Link>
-              .
-            </Text>
-          </Section>
-        </Container>
-      </Body>
-    </Html>
+    <EmailLayout
+      preview={`Welcome to the ${orgName} family`}
+      eyebrow="Welcome"
+      orgName={orgName}
+      footerNote={
+        <>
+          If you no longer wish to receive these emails, you can{" "}
+          <Link href={unsubscribeUrl} style={{ color: "#6b46c1" }}>
+            unsubscribe here
+          </Link>
+          .
+        </>
+      }
+    >
+      <Text style={{ ...textStyle, fontSize: 19, fontWeight: 700, color: "#1f1730" }}>
+        Welcome{name ? `, ${name}` : ""} — we&apos;re so glad you&apos;re here! 🎉
+      </Text>
+      <Text style={textStyle}>
+        Thank you for subscribing to the {orgName} newsletter. Whether you&apos;ve been part of
+        our family for years or just found us, we&apos;re genuinely happy to have you along.
+      </Text>
+      <Text style={textStyle}>
+        You&apos;ll hear from us with service updates, upcoming announcements, and news from
+        around the church — nothing more, nothing spammy.
+      </Text>
+      <Text style={textStyle}>See you soon,</Text>
+      <Text style={{ ...textStyle, fontWeight: 700, margin: 0 }}>The {orgName} Team</Text>
+    </EmailLayout>
   );
 }

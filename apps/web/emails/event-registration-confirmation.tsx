@@ -1,14 +1,5 @@
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Preview,
-  Section,
-  Text,
-} from "@react-email/components";
+import { Hr, Section, Text } from "@react-email/components";
+import { EmailLayout, labelStyle, textStyle, valueStyle } from "./components/email-layout";
 
 export interface EventRegistrationConfirmationEmailProps {
   name: string;
@@ -30,50 +21,43 @@ export default function EventRegistrationConfirmationEmail({
   guestsCount,
 }: EventRegistrationConfirmationEmailProps) {
   return (
-    <Html>
-      <Head />
-      <Preview>You&apos;re registered for {eventTitle}</Preview>
-      <Body style={{ backgroundColor: "#f5f5f5", fontFamily: "Arial, sans-serif" }}>
-        <Container
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            margin: "40px auto",
-            padding: 32,
-            maxWidth: 560,
-          }}
-        >
-          <Heading style={{ color: "#5B21B6", fontSize: 22 }}>Hi {name},</Heading>
-          <Text style={{ color: "#333333", fontSize: 15, lineHeight: 1.6 }}>
-            Thank you for registering for <strong>{eventTitle}</strong> at{" "}
-            {orgName}. We&apos;re excited to see you there!
-          </Text>
-          <Hr style={{ borderColor: "#e5e5e5", margin: "20px 0" }} />
-          <Section>
-            <Text style={{ margin: "4px 0", fontSize: 14 }}>
-              <strong>When:</strong> {eventDateTime}
-            </Text>
-            {location && (
-              <Text style={{ margin: "4px 0", fontSize: 14 }}>
-                <strong>Where:</strong> {location}
-              </Text>
-            )}
-            {onlineUrl && (
-              <Text style={{ margin: "4px 0", fontSize: 14 }}>
-                <strong>Join online:</strong> {onlineUrl}
-              </Text>
-            )}
-            <Text style={{ margin: "4px 0", fontSize: 14 }}>
-              <strong>Guests:</strong> {guestsCount}
-            </Text>
-          </Section>
-          <Hr style={{ borderColor: "#e5e5e5", margin: "20px 0" }} />
-          <Text style={{ fontSize: 12, color: "#666666" }}>
-            This is an automated message from {orgName}. Please do not reply
-            to this email.
-          </Text>
-        </Container>
-      </Body>
-    </Html>
+    <EmailLayout
+      preview={`You're registered for ${eventTitle}`}
+      eyebrow="You're Registered"
+      orgName={orgName}
+      footerNote={`This is an automated confirmation from ${orgName}. If anything about your registration needs to change, just reach out — we're happy to help.`}
+    >
+      <Text style={{ ...textStyle, fontSize: 19, fontWeight: 700, color: "#1f1730" }}>
+        Hi {name}, you&apos;re all set! ✅
+      </Text>
+      <Text style={textStyle}>
+        Thank you for registering for <strong>{eventTitle}</strong> — we can&apos;t wait to see
+        you there.
+      </Text>
+
+      <Hr style={{ borderColor: "#efeaf7", margin: "20px 0" }} />
+
+      <Section>
+        <Text style={labelStyle}>When</Text>
+        <Text style={valueStyle}>{eventDateTime}</Text>
+
+        {location && (
+          <>
+            <Text style={labelStyle}>Where</Text>
+            <Text style={valueStyle}>{location}</Text>
+          </>
+        )}
+
+        {onlineUrl && (
+          <>
+            <Text style={labelStyle}>Join Online</Text>
+            <Text style={valueStyle}>{onlineUrl}</Text>
+          </>
+        )}
+
+        <Text style={labelStyle}>Guests</Text>
+        <Text style={{ ...valueStyle, margin: 0 }}>{guestsCount}</Text>
+      </Section>
+    </EmailLayout>
   );
 }
