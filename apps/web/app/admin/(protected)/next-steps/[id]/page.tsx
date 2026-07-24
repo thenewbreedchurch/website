@@ -17,7 +17,10 @@ export default async function EditNextStepPage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Edit Next Step" />
+      <AdminPageHeader
+        title="Edit Next Step"
+        breadcrumbs={[{ label: "Next Steps", href: "/admin/next-steps" }, { label: nextStep.title }]}
+      />
       <NextStepForm nextStep={nextStep} action={updateNextStepAction.bind(null, id)} />
     </div>
   );

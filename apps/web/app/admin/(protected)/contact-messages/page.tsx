@@ -3,16 +3,11 @@ import { requireAdmin } from "@/lib/require-admin";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { DataTable, DataTableHead, DataTableBody, Th, Td, EmptyRow, Pagination } from "@/components/admin/data-table";
 import { Badge } from "@/components/ui/badge";
-import { ToggleRowButton } from "@/components/admin/toggle-row-button";
-import { advanceContactMessageStatusAction } from "@/actions/admin/contact-messages";
-import type { ContactCategory, ContactStatus } from "@nb-church/db";
+import { StatusSelect } from "@/components/admin/status-select";
+import { setContactMessageStatusAction } from "@/actions/admin/contact-messages";
+import type { ContactCategory } from "@nb-church/db";
 
 const PAGE_SIZE = 25;
-const STATUS_TONE: Record<ContactStatus, "amber" | "brand" | "green"> = {
-  NEW: "amber",
-  READ: "brand",
-  RESPONDED: "green",
-};
 const CATEGORY_LABELS: Record<ContactCategory, string> = {
   GENERAL: "General",
   PRAYER: "Prayer",
@@ -46,7 +41,12 @@ export default async function AdminContactMessagesPage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Contact Messages" description={`${total} total`} />
+      <AdminPageHeader
+        title="Contact Messages"
+        description={`${total} total`}
+        newHref="/admin/contact-messages/export"
+        newLabel="Export CSV"
+      />
       <DataTable>
         <DataTableHead>
           <Th>From</Th>
@@ -70,11 +70,7 @@ export default async function AdminContactMessagesPage({
               <Td>{m.subject}</Td>
               <Td className="max-w-xs truncate">{m.message}</Td>
               <Td>
-                <ToggleRowButton
-                  id={m.id}
-                  action={advanceContactMessageStatusAction}
-                  label={<Badge tone={STATUS_TONE[m.status]}>{m.status} — click to advance</Badge>}
-                />
+                <StatusSelect id={m.id} status={m.status} action={setContactMessageStatusAction} />
               </Td>
               <Td>{m.createdAt.toLocaleDateString()}</Td>
             </tr>

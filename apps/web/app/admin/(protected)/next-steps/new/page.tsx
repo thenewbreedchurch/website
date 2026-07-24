@@ -7,7 +7,10 @@ export default async function NewNextStepPage() {
   await requireAdmin();
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="New Next Step" />
+      <AdminPageHeader
+        title="New Next Step"
+        breadcrumbs={[{ label: "Next Steps", href: "/admin/next-steps" }, { label: "New" }]}
+      />
       <NextStepForm action={createNextStepAction} />
     </div>
   );

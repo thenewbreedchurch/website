@@ -5,19 +5,12 @@ import { prisma } from "@nb-church/db";
 import { requireAdmin } from "@/lib/require-admin";
 import type { ContactStatus } from "@nb-church/db";
 
-const NEXT_STATUS: Record<ContactStatus, ContactStatus> = {
-  NEW: "READ",
-  READ: "RESPONDED",
-  RESPONDED: "NEW",
-};
-
-/** Cycles NEW -> READ -> RESPONDED -> NEW, one click at a time from the list page. */
-export async function advanceContactMessageStatusAction(id: string): Promise<void> {
+/** Sets a contact message's status to an explicit value, chosen from the list page's status dropdown. */
+export async function setContactMessageStatusAction(id: string, status: ContactStatus): Promise<void> {
   await requireAdmin();
-  const existing = await prisma.contactMessage.findUniqueOrThrow({ where: { id } });
   await prisma.contactMessage.update({
     where: { id },
-    data: { status: NEXT_STATUS[existing.status] },
+    data: { status },
   });
   revalidatePath("/admin/contact-messages");
 }

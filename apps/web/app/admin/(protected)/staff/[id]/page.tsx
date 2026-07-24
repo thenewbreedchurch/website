@@ -17,7 +17,10 @@ export default async function EditStaffMemberPage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Edit Leader" />
+      <AdminPageHeader
+        title="Edit Leader"
+        breadcrumbs={[{ label: "Staff / Leadership", href: "/admin/staff" }, { label: staffMember.name }]}
+      />
       <StaffMemberForm staffMember={staffMember} action={updateStaffMemberAction.bind(null, id)} />
     </div>
   );

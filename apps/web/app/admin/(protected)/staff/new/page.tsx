@@ -7,7 +7,10 @@ export default async function NewStaffMemberPage() {
   await requireAdmin();
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Add Leader" />
+      <AdminPageHeader
+        title="Add Leader"
+        breadcrumbs={[{ label: "Staff / Leadership", href: "/admin/staff" }, { label: "New" }]}
+      />
       <StaffMemberForm action={createStaffMemberAction} />
     </div>
   );

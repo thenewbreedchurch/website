@@ -7,7 +7,10 @@ export default async function NewSermonPage() {
   await requireAdmin();
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="New Sermon" />
+      <AdminPageHeader
+        title="New Sermon"
+        breadcrumbs={[{ label: "Sermons", href: "/admin/sermons" }, { label: "New" }]}
+      />
       <SermonForm action={createSermonAction} />
     </div>
   );

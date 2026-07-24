@@ -3,16 +3,11 @@ import { requireAdmin } from "@/lib/require-admin";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { DataTable, DataTableHead, DataTableBody, Th, Td, EmptyRow, Pagination } from "@/components/admin/data-table";
 import { Badge } from "@/components/ui/badge";
-import { ToggleRowButton } from "@/components/admin/toggle-row-button";
-import { advanceNewConvertInquiryStatusAction } from "@/actions/admin/new-convert-inquiries";
-import type { ContactStatus, NewConvertInterest } from "@nb-church/db";
+import { StatusSelect } from "@/components/admin/status-select";
+import { setNewConvertInquiryStatusAction } from "@/actions/admin/new-convert-inquiries";
+import type { NewConvertInterest } from "@nb-church/db";
 
 const PAGE_SIZE = 25;
-const STATUS_TONE: Record<ContactStatus, "amber" | "brand" | "green"> = {
-  NEW: "amber",
-  READ: "brand",
-  RESPONDED: "green",
-};
 const INTEREST_LABELS: Record<NewConvertInterest, string> = {
   BAPTISM: "Baptism",
   BIBLE_STUDY: "Bible Study",
@@ -44,6 +39,8 @@ export default async function AdminNewConvertInquiriesPage({
       <AdminPageHeader
         title="New Convert Inquiries"
         description={`${total} total — submissions from the New Converts page's "Tell Us You're Here" form.`}
+        newHref="/admin/new-convert-inquiries/export"
+        newLabel="Export CSV"
       />
       <DataTable>
         <DataTableHead>
@@ -73,11 +70,7 @@ export default async function AdminNewConvertInquiriesPage({
               </Td>
               <Td className="max-w-xs truncate">{inq.message ?? "—"}</Td>
               <Td>
-                <ToggleRowButton
-                  id={inq.id}
-                  action={advanceNewConvertInquiryStatusAction}
-                  label={<Badge tone={STATUS_TONE[inq.status]}>{inq.status} — click to advance</Badge>}
-                />
+                <StatusSelect id={inq.id} status={inq.status} action={setNewConvertInquiryStatusAction} />
               </Td>
               <Td>{inq.createdAt.toLocaleDateString()}</Td>
             </tr>

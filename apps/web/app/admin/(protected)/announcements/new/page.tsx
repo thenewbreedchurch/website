@@ -7,7 +7,10 @@ export default async function NewAnnouncementPage() {
   await requireAdmin();
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="New Announcement" />
+      <AdminPageHeader
+        title="New Announcement"
+        breadcrumbs={[{ label: "Announcements", href: "/admin/announcements" }, { label: "New" }]}
+      />
       <AnnouncementForm action={createAnnouncementAction} />
     </div>
   );

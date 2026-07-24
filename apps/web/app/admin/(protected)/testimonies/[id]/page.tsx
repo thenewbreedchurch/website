@@ -17,7 +17,10 @@ export default async function EditTestimonyPage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Edit Testimony" />
+      <AdminPageHeader
+        title="Edit Testimony"
+        breadcrumbs={[{ label: "Testimonies", href: "/admin/testimonies" }, { label: testimony.authorName }]}
+      />
       <TestimonyForm testimony={testimony} action={updateTestimonyAction.bind(null, id)} />
     </div>
   );

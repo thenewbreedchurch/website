@@ -13,7 +13,7 @@ export function DataTable({ children }: { children: React.ReactNode }) {
 
 export function DataTableHead({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
+    <thead className="border-b border-neutral-200 bg-brand-50/40 text-xs uppercase tracking-wide text-neutral-500">
       <tr>{children}</tr>
     </thead>
   );

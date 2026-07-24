@@ -29,6 +29,11 @@ export default async function AnnouncementRegistrationsPage({
         description={`${registrations.length} registered`}
         newHref={`/admin/announcements/${id}/registrations/export`}
         newLabel="Export CSV"
+        breadcrumbs={[
+          { label: "Announcements", href: "/admin/announcements" },
+          { label: announcement.title, href: `/admin/announcements/${id}` },
+          { label: "Registrations" },
+        ]}
       />
       <DataTable>
         <DataTableHead>

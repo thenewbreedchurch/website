@@ -7,7 +7,10 @@ export default async function NewGivingAccountPage() {
   await requireAdmin();
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="New Giving Account" />
+      <AdminPageHeader
+        title="New Giving Account"
+        breadcrumbs={[{ label: "Giving Accounts", href: "/admin/giving-accounts" }, { label: "New" }]}
+      />
       <GivingAccountForm action={createGivingAccountAction} />
     </div>
   );

@@ -7,7 +7,10 @@ export default async function NewServiceTimePage() {
   await requireAdmin();
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="New Service Time" />
+      <AdminPageHeader
+        title="New Service Time"
+        breadcrumbs={[{ label: "Service Times", href: "/admin/service-times" }, { label: "New" }]}
+      />
       <ServiceTimeForm action={createServiceTimeAction} />
     </div>
   );

@@ -18,7 +18,10 @@ export default async function EditAnnouncementPage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Edit Announcement" />
+      <AdminPageHeader
+        title="Edit Announcement"
+        breadcrumbs={[{ label: "Announcements", href: "/admin/announcements" }, { label: announcement.title }]}
+      />
       {announcement.registrationRequired && (
         <Link
           href={`/admin/announcements/${id}/registrations`}

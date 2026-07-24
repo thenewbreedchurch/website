@@ -7,7 +7,10 @@ export default async function NewTestimonyPage() {
   await requireAdmin();
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="New Testimony" />
+      <AdminPageHeader
+        title="New Testimony"
+        breadcrumbs={[{ label: "Testimonies", href: "/admin/testimonies" }, { label: "New" }]}
+      />
       <TestimonyForm action={createTestimonyAction} />
     </div>
   );

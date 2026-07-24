@@ -17,7 +17,10 @@ export default async function EditSermonPage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Edit Sermon" />
+      <AdminPageHeader
+        title="Edit Sermon"
+        breadcrumbs={[{ label: "Sermons", href: "/admin/sermons" }, { label: sermon.title }]}
+      />
       <SermonForm sermon={sermon} action={updateSermonAction.bind(null, id)} />
     </div>
   );

@@ -17,7 +17,10 @@ export default async function EditServiceTimePage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Edit Service Time" />
+      <AdminPageHeader
+        title="Edit Service Time"
+        breadcrumbs={[{ label: "Service Times", href: "/admin/service-times" }, { label: serviceTime.label }]}
+      />
       <ServiceTimeForm serviceTime={serviceTime} action={updateServiceTimeAction.bind(null, id)} />
     </div>
   );
