@@ -23,13 +23,13 @@ async function main() {
       addressRegion: "Lagos",
       addressCountry: "Nigeria",
       phone: "+234 916 150 9000",
-      email: "churchnewbreed@gmail.com",
+      email: "admin@thenewbreedchurch.org",
       instagramUrl:
         "https://www.instagram.com/the_newbreedchurch?igsh=MXAxeHV6eHFuOW5yOA==",
       youtubeUrl: "https://www.youtube.com/@the_newbreedchurch",
-      livestreamUrl: "https://rccgtnbc.mixlr.com",
+      livestreamUrl: "https://www.youtube.com/@the_newbreedchurch/live",
       memberRegistrationUrl:
-        "https://admin.thenewbreedchurch.org/welcome/add-member",
+        "https://apps.thenewbreedchurch.org/mebership-form",
       onlineMeetingUrl: "https://meet.google.com/zkb-qrmi-ooy",
     },
   });
@@ -290,7 +290,7 @@ async function main() {
       title: "Register as a First Timer",
       body: "Fill out a short form so we can follow up, answer any questions, and keep you in the loop on what's happening at New Breed.",
       ctaLabel: "Register now",
-      ctaUrl: "https://admin.thenewbreedchurch.org/welcome/add-member",
+      ctaUrl: "https://apps.thenewbreedchurch.org/mebership-form",
       sortOrder: 1,
     },
     {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Radio, Music2, Globe, UserPlus } from "lucide-react";
+import { Music2, Globe, UserPlus } from "lucide-react";
 import { getChurchSettings } from "@/lib/settings";
 import { SITE_URL } from "@/lib/metadata";
 import { InstagramIcon, YoutubeIcon } from "@/components/icons/social-icons";
@@ -31,7 +31,7 @@ export default async function LinktreePage() {
       ? [{ label: "Watch on YouTube", href: settings.youtubeUrl, icon: YoutubeIcon }]
       : []),
     ...(settings.livestreamUrl
-      ? [{ label: "Listen on Mixlr", href: settings.livestreamUrl, icon: Radio }]
+      ? [{ label: "Watch Live on YouTube", href: settings.livestreamUrl, icon: YoutubeIcon }]
       : []),
     {
       label: "Follow on TikTok",

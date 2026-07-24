@@ -103,7 +103,7 @@ export async function Footer() {
                   rel="noopener noreferrer"
                   className="text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
                 >
-                  Listen Live
+                  Watch Live
                 </a>
               )}
             </div>

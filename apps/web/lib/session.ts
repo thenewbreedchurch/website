@@ -64,9 +64,19 @@ export async function getSessionFromCookie(): Promise<AdminUser | null> {
 
   if (session.expiresAt < now || idleCutoff < now) {
     // Fail closed: destroy the stale/idle session server-side rather than
-    // silently letting the cookie linger.
+    // silently letting the cookie linger. The DB row is the source of
+    // truth for "is this session valid" (checked again on every read), so
+    // it's always deleted; clearing the cookie itself is best-effort since
+    // getSessionFromCookie() is called from plain Server Component renders
+    // (the admin layout/dashboard), where Next.js forbids cookie writes —
+    // only Server Actions/Route Handlers may mutate cookies.
     await prisma.adminSession.delete({ where: { id: session.id } }).catch(() => {});
-    cookieStore.delete(SESSION_COOKIE_NAME);
+    try {
+      cookieStore.delete(SESSION_COOKIE_NAME);
+    } catch {
+      // Expected when called from a Server Component render; the stale
+      // cookie is harmless since the DB session is already gone.
+    }
     return null;
   }
 

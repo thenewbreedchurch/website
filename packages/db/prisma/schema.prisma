@@ -26,14 +26,14 @@ model ChurchSettings {
   addressRegion         String   @default("Lagos")
   addressCountry        String   @default("Nigeria")
   phone                 String   @default("+234 916 150 9000")
-  email                 String   @default("churchnewbreed@gmail.com")
+  email                 String   @default("admin@thenewbreedchurch.org")
   mapEmbedUrl           String?
   facebookUrl           String?
   instagramUrl          String?  @default("https://www.instagram.com/the_newbreedchurch")
   youtubeUrl            String?  @default("https://www.youtube.com/@the_newbreedchurch")
   tiktokUrl             String?
-  livestreamUrl         String?  @default("https://rccgtnbc.mixlr.com")
-  memberRegistrationUrl String?  @default("https://admin.thenewbreedchurch.org/welcome/add-member")
+  livestreamUrl         String?  @default("https://www.youtube.com/@the_newbreedchurch/live")
+  memberRegistrationUrl String?  @default("https://apps.thenewbreedchurch.org/mebership-form")
   onlineMeetingUrl      String?  @default("https://meet.google.com/zkb-qrmi-ooy")
   updatedAt             DateTime @updatedAt
 }

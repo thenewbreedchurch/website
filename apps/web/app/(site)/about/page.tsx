@@ -192,7 +192,7 @@ export default async function AboutPage() {
           </h2>
           <p className="max-w-lg text-white/85">
             Can&apos;t make it in person? Experience our services online from anywhere in the
-            world via Mixlr.
+            world on YouTube.
           </p>
           {settings.livestreamUrl && (
             <LinkButton
