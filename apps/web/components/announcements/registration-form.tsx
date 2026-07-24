@@ -107,6 +107,22 @@ export function RegistrationForm({ announcementId }: { announcementId: string })
         </div>
       </div>
 
+      <div>
+        <label htmlFor="reg-notes" className="block text-sm font-medium">
+          Anything we should know? <span className="font-normal text-current/50">(optional)</span>
+        </label>
+        <textarea
+          id="reg-notes"
+          name="notes"
+          maxLength={1000}
+          rows={3}
+          className={cn(inputClasses, "mt-1.5")}
+        />
+        {fieldError("notes") && (
+          <p className="mt-1 text-xs text-red-600">{fieldError("notes")}</p>
+        )}
+      </div>
+
       {state && !state.ok && (
         <p role="alert" className="text-sm text-red-600">
           {state.error}

@@ -121,6 +121,7 @@ async function main() {
       startDateTime: nextLastSaturdayOfMonth(),
       recurrenceRule: "FREQ=MONTHLY;BYDAY=-1SA",
       status: "PUBLISHED",
+      registrationRequired: true,
     },
   });
 
