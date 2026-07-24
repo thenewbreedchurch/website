@@ -52,11 +52,11 @@ export default async function LinktreePage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-brand-900 via-brand-800 to-brand-950 px-4 py-16 text-white">
       <Image
-        src="/logo.png"
+        src="/logo-mark.png"
         alt={settings.orgName}
-        width={72}
-        height={72}
-        className="h-18 w-18 rounded-full bg-white/10 object-contain p-2"
+        width={166}
+        height={160}
+        className="h-20 w-auto"
       />
       <h1 className="mt-4 font-display text-2xl font-bold">{settings.orgName}</h1>
       <p className="mt-1 text-sm text-white/70">{settings.tagline}</p>

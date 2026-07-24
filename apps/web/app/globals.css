@@ -56,6 +56,13 @@
   }
 }
 
+html {
+  /* Suppresses the browser's native overscroll "glow"/rubber-band effect at
+     scroll boundaries (most noticeable on Android Chrome) — reported as a
+     distracting glow around the page edges. */
+  overscroll-behavior-y: none;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
