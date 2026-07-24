@@ -79,8 +79,9 @@ export default async function AnnouncementsPage({
           priority
           sizes="100vw"
           className="object-cover"
+          style={{ objectPosition: "65% 20%" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <Container className="relative py-16 text-white">
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
             Weekly Announcements
@@ -92,7 +93,7 @@ export default async function AnnouncementsPage({
         </Container>
       </section>
 
-      <section className="py-14">
+      <section className="py-16 sm:py-20">
         <Container>
           <RevealSection>
             <h2 className="font-display text-2xl font-bold sm:text-3xl">This Week</h2>
@@ -107,7 +108,7 @@ export default async function AnnouncementsPage({
         </Container>
       </section>
 
-      <section className="bg-surface-muted py-14">
+      <section className="bg-surface-muted py-16 sm:py-20">
         <Container>
           <RevealSection>
             <div className="flex flex-wrap items-center justify-between gap-4">

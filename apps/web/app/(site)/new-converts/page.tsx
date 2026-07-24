@@ -34,8 +34,9 @@ export default async function NewConvertsPage() {
           priority
           sizes="100vw"
           className="object-cover"
+          style={{ objectPosition: "50% 35%" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <Container className="relative py-24 text-center text-white">
           <HeartHandshake size={32} className="mx-auto text-brand-200" />
           <h1 className="mx-auto mt-5 max-w-xl font-display text-4xl font-bold sm:text-5xl">
@@ -48,7 +49,7 @@ export default async function NewConvertsPage() {
         </Container>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 sm:py-20">
         <Container>
           <RevealSection className="mx-auto max-w-xl text-center">
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
@@ -99,7 +100,7 @@ export default async function NewConvertsPage() {
         </Container>
       </section>
 
-      <section className="bg-surface-muted py-16">
+      <section className="bg-surface-muted py-16 sm:py-20">
         <Container className="max-w-2xl">
           <RevealSection className="text-center">
             <h2 className="font-display text-3xl font-bold sm:text-4xl">

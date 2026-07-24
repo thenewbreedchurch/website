@@ -43,8 +43,9 @@ export default async function FirstTimersPage() {
           priority
           sizes="100vw"
           className="object-cover"
+          style={{ objectPosition: "60% 25%" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <Container className="relative py-24 text-white">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-medium backdrop-blur">
             <Sparkles size={14} /> We&apos;re glad you&apos;re here
@@ -59,7 +60,7 @@ export default async function FirstTimersPage() {
         </Container>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 sm:py-20">
         <Container className="grid gap-6 sm:grid-cols-2">
           <RevealSection className="rounded-3xl border border-border bg-surface p-8">
             <Clock size={26} className="text-brand-700 dark:text-brand-300" />
@@ -92,7 +93,7 @@ export default async function FirstTimersPage() {
         </Container>
       </section>
 
-      <section className="bg-surface-muted py-16">
+      <section className="bg-surface-muted py-16 sm:py-20">
         <Container className="grid items-center gap-10 lg:grid-cols-2">
           <RevealSection className="relative aspect-[4/3] overflow-hidden rounded-3xl">
             <Image
@@ -118,7 +119,7 @@ export default async function FirstTimersPage() {
         </Container>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 sm:py-20">
         <Container className="grid items-center gap-10 lg:grid-cols-2">
           <RevealSection className="order-2 lg:order-1">
             <BookOpen size={26} className="text-brand-700 dark:text-brand-300" />
@@ -149,7 +150,7 @@ export default async function FirstTimersPage() {
         </Container>
       </section>
 
-      <section className="bg-brand-900 py-16 text-white">
+      <section className="bg-brand-900 py-16 text-white sm:py-20">
         <Container className="flex flex-col items-center gap-6 text-center">
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
             We can&apos;t wait to meet you

@@ -184,7 +184,7 @@ export default async function AboutPage() {
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-brand-900/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-900/75 via-brand-900/35 to-brand-900/10" />
         <RevealSection>
           <Container className="relative flex flex-col items-center gap-4 text-center text-white">
             <h2 className="font-display text-2xl font-bold sm:text-3xl">
