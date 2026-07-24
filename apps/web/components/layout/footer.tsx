@@ -89,7 +89,7 @@ export async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-brand-800 transition-colors hover:bg-brand-700 hover:text-white dark:bg-white/10 dark:text-white"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-brand-800 transition-[transform,background-color,color] duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:text-white dark:bg-white/10 dark:text-white"
                 >
                   <InstagramIcon width={16} height={16} />
                 </a>
@@ -100,7 +100,7 @@ export async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-brand-800 transition-colors hover:bg-brand-700 hover:text-white dark:bg-white/10 dark:text-white"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-brand-800 transition-[transform,background-color,color] duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:text-white dark:bg-white/10 dark:text-white"
                 >
                   <YoutubeIcon width={16} height={16} />
                 </a>

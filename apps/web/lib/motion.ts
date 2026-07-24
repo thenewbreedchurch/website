@@ -30,7 +30,7 @@ export function usePrefersReducedMotion(): boolean {
 
 /** Standard fade-up entrance, the default for scroll-revealed content. */
 export const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 36 },
   visible: {
     opacity: 1,
     y: 0,
@@ -61,7 +61,7 @@ export const tiltIn: Variants = {
 /** Variants to hand a motion component when reduced motion is preferred — no movement, just an opacity crossfade. */
 export const reducedMotionVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.2 } },
+  visible: { opacity: 1, transition: { duration: 0.4 } },
 };
 
 /**

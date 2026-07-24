@@ -18,7 +18,7 @@ export function TiltCard({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, amount: 0.2 }}
       variants={variants}
       style={{ transformPerspective: 800 }}
       className={cn(className)}

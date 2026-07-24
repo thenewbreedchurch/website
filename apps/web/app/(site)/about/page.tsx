@@ -201,6 +201,7 @@ export default async function AboutPage() {
                 rel="noopener noreferrer"
                 variant="secondary"
                 size="lg"
+                className="w-full sm:w-auto"
               >
                 Join the Live Stream
               </LinkButton>
@@ -218,7 +219,7 @@ export default async function AboutPage() {
             {activities.map((entry) => (
               <TiltCard
                 key={entry.key}
-                className="rounded-2xl border border-border bg-surface p-6 shadow-sm"
+                className="rounded-2xl border border-border bg-surface p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg"
               >
                 <h3 className="font-display text-lg font-semibold">{entry.label}</h3>
                 <p className="mt-2 text-sm text-current/70">
@@ -260,7 +261,7 @@ export default async function AboutPage() {
             {leadership.map((member) => (
               <TiltCard
                 key={member.id}
-                className="flex flex-col items-center rounded-2xl border border-border bg-surface p-8 text-center shadow-sm"
+                className="group flex flex-col items-center rounded-2xl border border-border bg-surface p-8 text-center shadow-sm transition-shadow duration-300 hover:shadow-lg"
               >
                 {member.photoUrl ? (
                   <div className="relative h-28 w-28 overflow-hidden rounded-full">
@@ -268,7 +269,7 @@ export default async function AboutPage() {
                       src={member.photoUrl}
                       alt={member.name}
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                       sizes="112px"
                     />
                   </div>
@@ -305,7 +306,7 @@ export default async function AboutPage() {
               We&apos;d love to have you join us in person or online. New here? Start with our
               First Timers guide to know exactly what to expect.
             </p>
-            <LinkButton href="/first-timers" variant="primary" size="lg">
+            <LinkButton href="/first-timers" variant="primary" size="lg" className="w-full sm:w-auto">
               Plan Your Visit
             </LinkButton>
           </Container>
