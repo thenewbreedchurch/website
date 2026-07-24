@@ -79,6 +79,7 @@ export default async function AboutPage() {
           priority
           className="object-cover"
           sizes="100vw"
+          style={{ objectPosition: "50% 55%" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
         <Container className="relative py-16 text-white">

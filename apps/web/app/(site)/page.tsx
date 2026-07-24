@@ -114,16 +114,17 @@ export default async function Home() {
 
       <SermonsTeaser />
 
-      <section className="relative overflow-hidden py-20">
+      <section className="relative flex min-h-[45vh] items-center overflow-hidden">
         <Image
           src="/images/hero/hero-sanctuary-wide.jpg"
           alt=""
           fill
           sizes="100vw"
           className="object-cover"
+          style={{ objectPosition: "50% 55%" }}
         />
-        <div className="absolute inset-0 bg-brand-900/85" />
-        <Container className="relative text-center text-white">
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-900/75 via-brand-900/35 to-brand-900/10" />
+        <Container className="relative py-20 text-center text-white">
           <h2 className="font-display text-3xl font-bold sm:text-4xl">Stay Connected</h2>
           <p className="mx-auto mt-3 max-w-lg text-white/85">
             Sign up for our newsletter to receive updates about upcoming events, sermons, and

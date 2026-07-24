@@ -7,6 +7,7 @@ import { groupConsecutiveServiceTimes } from "@/lib/service-times";
 import { Container } from "@/components/ui/container";
 import { LinkButton } from "@/components/ui/link-button";
 import { RevealSection } from "@/components/journey/reveal-section";
+import { TiltCard } from "@/components/journey/tilt-card";
 
 export function generateMetadata(): Metadata {
   return pageMetadata({
@@ -43,9 +44,9 @@ export default async function FirstTimersPage() {
           priority
           sizes="100vw"
           className="object-cover"
-          style={{ objectPosition: "60% 25%" }}
+          style={{ objectPosition: "55% 20%" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-transparent" />
         <Container className="relative py-24 text-white">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-medium backdrop-blur">
             <Sparkles size={14} /> We&apos;re glad you&apos;re here
@@ -62,7 +63,7 @@ export default async function FirstTimersPage() {
 
       <section className="py-16 sm:py-20">
         <Container className="grid gap-6 sm:grid-cols-2">
-          <RevealSection className="rounded-3xl border border-border bg-surface p-8">
+          <TiltCard className="rounded-3xl border border-border bg-surface p-8 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
             <Clock size={26} className="text-brand-700 dark:text-brand-300" />
             <h2 className="mt-4 font-display text-2xl font-bold">When We Meet</h2>
             <ul className="mt-3 space-y-1.5 text-current/80">
@@ -72,9 +73,9 @@ export default async function FirstTimersPage() {
                 </li>
               ))}
             </ul>
-          </RevealSection>
+          </TiltCard>
 
-          <RevealSection className="rounded-3xl border border-border bg-surface p-8">
+          <TiltCard className="rounded-3xl border border-border bg-surface p-8 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
             <MapPin size={26} className="text-brand-700 dark:text-brand-300" />
             <h2 className="mt-4 font-display text-2xl font-bold">Where We Are</h2>
             <p className="mt-3 text-current/80">
@@ -89,7 +90,7 @@ export default async function FirstTimersPage() {
             >
               Get directions <ArrowRight size={14} />
             </a>
-          </RevealSection>
+          </TiltCard>
         </Container>
       </section>
 

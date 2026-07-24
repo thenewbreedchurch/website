@@ -27,7 +27,7 @@ export function TestimonyReveal({ testimonies }: { testimonies: TestimonyCardDat
         <motion.figure
           key={t.id}
           variants={cardVariants}
-          className="flex flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm"
+          className="flex flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
           <Quote size={22} className="text-brand-400" />
           <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-current/85">

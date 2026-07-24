@@ -14,6 +14,7 @@ import { WeekAgenda } from "@/components/announcements/week-agenda";
 import { CategoryFilter } from "@/components/announcements/category-filter";
 import { AnnouncementCard } from "@/components/announcements/announcement-card";
 import { RevealSection } from "@/components/journey/reveal-section";
+import { TiltCard } from "@/components/journey/tilt-card";
 
 const UPCOMING_CANDIDATE_LIMIT = 50;
 const UPCOMING_PAGE_SIZE = 9;
@@ -71,15 +72,15 @@ export default async function AnnouncementsPage({
 
   return (
     <>
-      <section className="relative flex min-h-[55vh] items-center overflow-hidden">
+      <section className="relative flex min-h-[65vh] items-center overflow-hidden">
         <Image
-          src="/images/announcements/announcements-cultural-gathering.jpg"
-          alt="Members of The New Breed Church at a church gathering"
+          src="/images/announcements/announcements-cultural-event.jpg"
+          alt="Cultural dancers performing on stage at The New Breed Church"
           fill
           priority
           sizes="100vw"
           className="object-cover"
-          style={{ objectPosition: "65% 20%" }}
+          style={{ objectPosition: "50% 30%" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <Container className="relative py-16 text-white">
@@ -87,8 +88,8 @@ export default async function AnnouncementsPage({
             Weekly Announcements
           </h1>
           <p className="mt-3 max-w-xl text-lg text-white/85">
-            What&apos;s happening this week, and what&apos;s coming up — no hardcoded
-            events, always current.
+            Stay up to date on what&apos;s happening in church this week, and what&apos;s
+            coming up next.
           </p>
         </Container>
       </section>
@@ -128,12 +129,13 @@ export default async function AnnouncementsPage({
           ) : (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {upcoming.map(({ announcement, occurrence }, i) => (
-                <AnnouncementCard
-                  key={announcement.id}
-                  announcement={announcement}
-                  occurrence={occurrence}
-                  index={i}
-                />
+                <TiltCard key={announcement.id}>
+                  <AnnouncementCard
+                    announcement={announcement}
+                    occurrence={occurrence}
+                    index={i}
+                  />
+                </TiltCard>
               ))}
             </div>
           )}

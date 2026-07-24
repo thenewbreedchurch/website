@@ -74,7 +74,7 @@ export default async function NewConvertsPage() {
               {steps.map((step, i) => (
                 <TiltCard
                   key={step.id}
-                  className="flex flex-col rounded-3xl border border-border bg-surface p-7"
+                  className="flex flex-col rounded-3xl border border-border bg-surface p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">
                     {i + 1}

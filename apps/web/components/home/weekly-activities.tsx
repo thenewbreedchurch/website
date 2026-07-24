@@ -1,5 +1,6 @@
 import { Clock, Video } from "lucide-react";
 import type { ServiceTime, DayOfWeek } from "@nb-church/db";
+import { TiltCard } from "@/components/journey/tilt-card";
 
 const WEEK_ORDER: DayOfWeek[] = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const DAY_LABELS: Record<DayOfWeek, string> = {
@@ -87,9 +88,9 @@ export function WeeklyActivities({ serviceTimes }: { serviceTimes: ServiceTime[]
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card) => (
-            <div
+            <TiltCard
               key={card.key}
-              className="rounded-2xl border border-border bg-surface p-6 shadow-sm"
+              className="rounded-2xl border border-border bg-surface p-6 shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
               <h3 className="font-display text-xl font-semibold text-brand-700 dark:text-brand-300">
                 {card.daysLabel}
@@ -115,7 +116,7 @@ export function WeeklyActivities({ serviceTimes }: { serviceTimes: ServiceTime[]
                   </li>
                 ))}
               </ul>
-            </div>
+            </TiltCard>
           ))}
         </div>
       </div>
