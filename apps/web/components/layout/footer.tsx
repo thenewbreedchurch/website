@@ -57,7 +57,16 @@ export async function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wide text-current/60">
               Weekly Activities
             </h3>
-            <ul className="mt-3 space-y-2 text-sm">
+            {/* Condensed on mobile — the full list is a lot of vertical
+                scroll to repeat below the address/contact block; a link to
+                the full schedule on /about covers it. */}
+            <Link
+              href="/about"
+              className="mt-3 inline-block text-sm font-medium text-brand-700 hover:underline dark:text-brand-300 sm:hidden"
+            >
+              See service times &rarr;
+            </Link>
+            <ul className="mt-3 hidden space-y-2 text-sm sm:block">
               {grouped.map((entry) => (
                 <li key={entry.key}>
                   <span className="font-medium">{entry.days}: </span>
@@ -108,7 +117,13 @@ export async function Footer() {
               )}
             </div>
 
-            <nav className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm text-current/70" aria-label="Footer">
+            {/* Hidden below sm: — the mobile hamburger menu (MobileNav)
+                already lists every one of these links, so repeating them
+                here just adds scroll on narrow screens. */}
+            <nav
+              className="mt-6 hidden flex-wrap gap-x-4 gap-y-2 text-sm text-current/70 sm:flex"
+              aria-label="Footer"
+            >
               {NAV_LINKS.map((link) => (
                 <Link key={link.href} href={link.href} className="hover:underline">
                   {link.label}
