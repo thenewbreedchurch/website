@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import { getChurchSettings } from "@/lib/settings";
 import { organizationJsonLd, SITE_URL } from "@/lib/metadata";
+import { CookieConsentBanner } from "@/components/consent/cookie-consent-banner";
 import "./globals.css";
 
 // Carried forward from the legacy site's actual brand fonts (Montserrat body
@@ -67,6 +68,9 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
+        {/* Site-wide since consent is a site-wide concern — covers /admin
+            and /linktree too, not just the (site) route group. */}
+        <CookieConsentBanner />
       </body>
     </html>
   );
