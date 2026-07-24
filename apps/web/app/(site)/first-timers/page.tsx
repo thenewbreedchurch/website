@@ -155,7 +155,7 @@ export default async function FirstTimersPage() {
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
             We can&apos;t wait to meet you
           </h2>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex w-full flex-wrap justify-center gap-3 sm:w-auto">
             {settings.memberRegistrationUrl && (
               <LinkButton
                 href={settings.memberRegistrationUrl}
@@ -163,6 +163,7 @@ export default async function FirstTimersPage() {
                 rel="noopener noreferrer"
                 variant="secondary"
                 size="lg"
+                className="w-full sm:w-auto"
               >
                 Register as a First Timer
               </LinkButton>
@@ -171,7 +172,7 @@ export default async function FirstTimersPage() {
               href="/contact"
               variant="outline"
               size="lg"
-              className="border-white/40 text-white hover:bg-white/10"
+              className="w-full border-white/40 text-white hover:bg-white/10 sm:w-auto"
             >
               Message us before you come
             </LinkButton>

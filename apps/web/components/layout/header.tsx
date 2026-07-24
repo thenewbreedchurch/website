@@ -54,7 +54,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             href={GIVE_LINK.href}
-            className="hidden rounded-full bg-brand-700 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-800 md:inline-flex"
+            className="hidden h-10 items-center rounded-full bg-brand-700 px-5 text-sm font-medium text-white transition-[background-color,transform] hover:bg-brand-800 active:scale-[0.98] md:inline-flex"
           >
             {GIVE_LINK.label}
           </Link>

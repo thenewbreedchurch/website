@@ -117,7 +117,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 href={slide.ctaHref}
                 target={slide.external ? "_blank" : undefined}
                 rel={slide.external ? "noopener noreferrer" : undefined}
-                className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-brand-600 px-8 text-base font-medium text-white transition-colors hover:bg-brand-700"
+                className="mt-8 flex h-12 w-full items-center justify-center rounded-full bg-brand-600 px-8 text-base font-medium text-white transition-[background-color,transform] hover:bg-brand-700 active:scale-[0.98] sm:inline-flex sm:w-auto"
               >
                 {slide.ctaLabel}
               </Link>

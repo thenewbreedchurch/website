@@ -54,7 +54,7 @@ export function MobileNav() {
               <Link
                 href={GIVE_LINK.href}
                 onClick={() => setOpen(false)}
-                className="mt-2 rounded-full bg-brand-700 px-4 py-3 text-center text-base font-medium text-white hover:bg-brand-800"
+                className="mt-2 w-full rounded-full bg-brand-700 px-4 py-3 text-center text-base font-medium text-white transition-[background-color,transform] hover:bg-brand-800 active:scale-[0.98]"
               >
                 {GIVE_LINK.label}
               </Link>

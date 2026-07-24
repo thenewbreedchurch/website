@@ -94,15 +94,15 @@ export default async function Home() {
             Whether it&apos;s your first visit or you&apos;re looking for what&apos;s happening
             this week, we&apos;ve got you covered.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <LinkButton href="/first-timers" variant="secondary" size="lg">
+          <div className="flex w-full flex-wrap justify-center gap-3 sm:w-auto">
+            <LinkButton href="/first-timers" variant="secondary" size="lg" className="w-full sm:w-auto">
               I&apos;m New <ArrowRight size={16} />
             </LinkButton>
             <LinkButton
               href="/announcements"
               variant="outline"
               size="lg"
-              className="border-white/40 text-white hover:bg-white/10"
+              className="w-full border-white/40 text-white hover:bg-white/10 sm:w-auto"
             >
               This Week <ArrowRight size={16} />
             </LinkButton>
