@@ -13,10 +13,21 @@ export interface HeroSlide {
   ctaLabel: string;
   ctaHref: string;
   external?: boolean;
+  /** CSS object-position for the background image; falls back to a per-image default below. */
+  objectPosition?: string;
 }
 
 const AUTO_ADVANCE_MS = 6000;
 const SWIPE_THRESHOLD_PX = 50;
+
+/** Focal points for the current hero photo set, keyed by image path, since the
+ * source slides don't set `objectPosition` themselves. Add an entry here (or
+ * pass `objectPosition` on the slide) when a new hero image needs a specific crop. */
+const DEFAULT_OBJECT_POSITIONS: Record<string, string> = {
+  "/images/hero/hero-congregation-worship.jpg": "45% 30%",
+  "/images/hero/hero-preaching-purple.jpg": "50% 20%",
+  "/images/hero/hero-community-embrace.jpg": "50% 35%",
+};
 
 /**
  * Full-bleed auto-advancing hero carousel. Parallax depth (background image
@@ -93,21 +104,25 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             priority={index === 0}
             sizes="100vw"
             className="object-cover"
+            style={{
+              objectPosition:
+                slide.objectPosition ?? DEFAULT_OBJECT_POSITIONS[slide.image] ?? "center",
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/40" />
         </motion.div>
       </AnimatePresence>
 
       <div className="relative z-10 flex h-full items-center">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          <AnimatePresence mode="wait">
+        <div className="mx-auto grid w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <AnimatePresence mode="sync">
             <motion.div
               key={slide.title}
               initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-xl text-white"
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="col-start-1 row-start-1 max-w-xl text-white"
             >
               <h1 className="font-display text-4xl font-bold sm:text-5xl lg:text-6xl">
                 {slide.title}

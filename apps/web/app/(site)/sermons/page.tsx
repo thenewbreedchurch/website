@@ -70,7 +70,7 @@ export default async function SermonsPage({
         ) : (
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sermons.map((sermon, i) => (
-              <TiltCard key={sermon.id}>
+              <TiltCard key={sermon.id} className="h-full">
                 <SermonCard sermon={sermon} index={i} />
               </TiltCard>
             ))}
@@ -107,8 +107,8 @@ export default async function SermonsPage({
           <RevealSection className="mt-16 flex flex-col items-center gap-3 rounded-3xl bg-brand-700 px-6 py-10 text-center text-white sm:px-12">
             <h2 className="font-display text-2xl font-bold">Want to see more?</h2>
             <p className="max-w-md text-white/85">
-              Every sermon we&apos;ve ever preached lives on our YouTube channel — full
-              services, not just clips.
+              Experience more teaching and worship on our YouTube channel — full services,
+              whenever you need one.
             </p>
             <LinkButton
               href={settings.youtubeUrl}
@@ -117,7 +117,7 @@ export default async function SermonsPage({
               variant="secondary"
               size="lg"
             >
-              View More on YouTube
+              Watch on YouTube
             </LinkButton>
           </RevealSection>
         )}
