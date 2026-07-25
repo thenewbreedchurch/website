@@ -64,11 +64,11 @@ export function ServiceTimeForm({
       </Field>
 
       <Field label="Location (optional)" htmlFor="location" error={err("location")}>
-        <Input id="location" name="location" defaultValue={serviceTime?.location ?? ""} />
+        <Input id="location" name="location" defaultValue={serviceTime?.location ?? ""} placeholder="Main Sanctuary" />
       </Field>
 
-      <Field label="Sort order" htmlFor="sortOrder" error={err("sortOrder")}>
-        <Input id="sortOrder" name="sortOrder" type="number" defaultValue={serviceTime?.sortOrder ?? 0} />
+      <Field label="Sort order" htmlFor="sortOrder" error={err("sortOrder")} hint="Lower numbers appear first">
+        <Input id="sortOrder" name="sortOrder" type="number" defaultValue={serviceTime?.sortOrder ?? 0} placeholder="0" />
       </Field>
 
       <label className="flex items-center gap-2 text-sm">
@@ -80,7 +80,7 @@ export function ServiceTimeForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
+          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save"}
         </button>

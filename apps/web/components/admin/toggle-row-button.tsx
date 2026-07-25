@@ -17,7 +17,7 @@ export function ToggleRowButton({
       type="button"
       disabled={isPending}
       onClick={() => startTransition(() => action(id))}
-      className="text-xs font-medium text-brand-700 hover:underline disabled:opacity-50 dark:text-brand-300"
+      className="text-xs font-medium text-brand-700 hover:underline disabled:opacity-50 admin-dark:text-brand-300"
     >
       {label}
     </button>

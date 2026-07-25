@@ -46,7 +46,7 @@ export default async function AdminTestimoniesPage() {
                     action={toggleTestimonyApprovalAction}
                     label={t.isApproved ? "Unapprove" : "Approve"}
                   />
-                  <Link href={`/admin/testimonies/${t.id}`} className="text-xs font-medium text-brand-700 hover:underline dark:text-brand-300">
+                  <Link href={`/admin/testimonies/${t.id}`} className="text-xs font-medium text-brand-700 hover:underline admin-dark:text-brand-300">
                     Edit
                   </Link>
                   <DeleteRowButton id={t.id} action={deleteTestimonyAction} />

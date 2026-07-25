@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
-/* Supports both automatic (OS prefers-color-scheme, the site-wide default —
-   see the plain @media block below, unaffected by this) and an explicit
-   manual override via a .dark/.light class on <html> (set server-side from
-   a cookie in app/layout.tsx, with a one-time inline script to resolve the
-   very first, cookie-less visit — see that file for the full explanation).
-   This only changes what the `dark:` utility PREFIX targets; it does not
-   touch the plain CSS custom properties below, which still respond to the
-   media query directly regardless of any class. */
-@custom-variant dark (&:where(.dark, .dark *));
+/* Named admin-dark (NOT dark) deliberately: the public site's `dark:`
+   utilities must keep Tailwind's built-in behavior (@media
+   prefers-color-scheme, matching the plain CSS custom properties below,
+   which always respond to that same media query regardless of any class).
+   Only the admin panel has a manual .dark/.light override (a cookie read
+   server-side in app/layout.tsx, toggled client-side in
+   components/admin/theme-toggle.tsx) — admin-scoped components use
+   `admin-dark:` instead of `dark:` so that override never leaks into the
+   public site. (History: this was briefly named `dark`, which silently
+   broke every public-site `dark:` utility class since they no longer
+   matched the media query — fixed by this rename. See HANDOFF.md.) */
+@custom-variant admin-dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;

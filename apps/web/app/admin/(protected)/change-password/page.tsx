@@ -10,7 +10,7 @@ export default async function ChangePasswordPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">Change Password</h1>
+      <h1 className="text-2xl font-semibold text-neutral-900 admin-dark:text-neutral-100">Change Password</h1>
       <div className="mt-6">
         <ChangePasswordForm forced={user.mustChangePassword} />
       </div>

@@ -58,29 +58,49 @@ async function getStats() {
   };
 }
 
-async function getVisitsOverTime(): Promise<VisitsChartPoint[]> {
+async function getVisitsOverTime(): Promise<{
+  points: VisitsChartPoint[];
+  totalViews: number;
+  totalVisitors: number;
+}> {
   // The interval can't be interpolated directly into the raw SQL string —
   // $queryRaw treats every `${}` as a bind parameter, and a parameter can't
   // sit inside a quoted `INTERVAL '...'` literal. Computing the cutoff date
   // in JS and comparing timestamps directly sidesteps that entirely.
   const since = new Date(Date.now() - VISIT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
-  const rows = await prisma.$queryRaw<{ day: Date; count: bigint }[]>`
-    SELECT DATE_TRUNC('day', "createdAt") AS day, COUNT(*)::bigint AS count
-    FROM "PageView"
-    WHERE "createdAt" >= ${since}
-    GROUP BY day
-    ORDER BY day ASC
-  `;
-  const countByDay = new Map(rows.map((r) => [r.day.toISOString().slice(0, 10), Number(r.count)]));
+  const [rows, [totals]] = await Promise.all([
+    prisma.$queryRaw<{ day: Date; views: bigint; visitors: bigint }[]>`
+      SELECT
+        DATE_TRUNC('day', "createdAt") AS day,
+        COUNT(*)::bigint AS views,
+        COUNT(DISTINCT "visitorId")::bigint AS visitors
+      FROM "PageView"
+      WHERE "createdAt" >= ${since}
+      GROUP BY day
+      ORDER BY day ASC
+    `,
+    // A separate whole-window DISTINCT count, not a sum of the daily
+    // per-day counts above — summing per-day would double-count a visitor
+    // who returned on more than one day within the window.
+    prisma.$queryRaw<{ views: bigint; visitors: bigint }[]>`
+      SELECT COUNT(*)::bigint AS views, COUNT(DISTINCT "visitorId")::bigint AS visitors
+      FROM "PageView"
+      WHERE "createdAt" >= ${since}
+    `,
+  ]);
+  const byDay = new Map(
+    rows.map((r) => [r.day.toISOString().slice(0, 10), { views: Number(r.views), visitors: Number(r.visitors) }])
+  );
 
   const points: VisitsChartPoint[] = [];
   for (let i = VISIT_WINDOW_DAYS - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const key = d.toISOString().slice(0, 10);
-    points.push({ date: key, count: countByDay.get(key) ?? 0 });
+    const day = byDay.get(key);
+    points.push({ date: key, views: day?.views ?? 0, visitors: day?.visitors ?? 0 });
   }
-  return points;
+  return { points, totalViews: Number(totals.views), totalVisitors: Number(totals.visitors) };
 }
 
 async function getMostViewed() {
@@ -175,14 +195,12 @@ export default async function AdminDashboardPage() {
     redirect("/admin/change-password");
   }
 
-  const [stats, visits, mostViewed, recentActivity] = await Promise.all([
+  const [stats, { points: visits, totalViews, totalVisitors }, mostViewed, recentActivity] = await Promise.all([
     getStats(),
     getVisitsOverTime(),
     getMostViewed(),
     getRecentActivity(),
   ]);
-
-  const totalVisits = visits.reduce((sum, v) => sum + v.count, 0);
 
   const statTiles = [
     { href: "/admin/announcements", label: "Published announcements", value: stats.publishedAnnouncements, icon: Megaphone },
@@ -195,63 +213,61 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+      <h1 className="text-2xl font-bold text-neutral-900 admin-dark:text-neutral-100">
         Welcome back, {user.name ?? "Admin"}.
       </h1>
-      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-        Signed in as <strong className="text-neutral-700 dark:text-neutral-300">{user.email}</strong>.
-      </p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {statTiles.map((tile) => (
           <Link
             key={tile.href}
             href={tile.href}
-            className="group flex items-start gap-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+            className="group flex items-start gap-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md admin-dark:border-neutral-800 admin-dark:bg-neutral-900"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-700 admin-dark:bg-brand-500/15 admin-dark:text-brand-300">
               <tile.icon size={18} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{tile.value}</p>
-              <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">{tile.label}</p>
+              <p className="text-2xl font-bold text-neutral-900 admin-dark:text-neutral-100">{tile.value}</p>
+              <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">{tile.label}</p>
             </div>
           </Link>
         ))}
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 lg:col-span-2">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm admin-dark:border-neutral-800 admin-dark:bg-neutral-900 lg:col-span-2">
           <div className="flex items-center gap-2">
-            <TrendingUp size={18} className="text-brand-700 dark:text-brand-300" />
-            <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">
+            <TrendingUp size={18} className="text-brand-700 admin-dark:text-brand-300" />
+            <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">
               Site visits — last {VISIT_WINDOW_DAYS} days
             </h2>
           </div>
-          <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
-            {totalVisits.toLocaleString()} page view{totalVisits === 1 ? "" : "s"} on the public site.
-            Anonymous counts only — no visitor tracking.
+          <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">
+            {totalViews.toLocaleString()} page view{totalViews === 1 ? "" : "s"} from{" "}
+            {totalVisitors.toLocaleString()} unique visitor{totalVisitors === 1 ? "" : "s"} who accepted
+            analytics cookies. Anonymous — no cross-site tracking.
           </p>
           <div className="mt-4">
             <VisitsChart data={visits} />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
           <div className="flex items-center gap-2">
-            <Eye size={18} className="text-brand-700 dark:text-brand-300" />
-            <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Most viewed</h2>
+            <Eye size={18} className="text-brand-700 admin-dark:text-brand-300" />
+            <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">Most viewed</h2>
           </div>
-          <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">Last {VISIT_WINDOW_DAYS} days</p>
+          <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">Last {VISIT_WINDOW_DAYS} days</p>
           {mostViewed.length === 0 ? (
-            <p className="mt-4 text-sm text-neutral-400 dark:text-neutral-500">No page views recorded yet.</p>
+            <p className="mt-4 text-sm text-neutral-400 admin-dark:text-neutral-500">No page views recorded yet.</p>
           ) : (
             <ol className="mt-4 space-y-2.5">
               {mostViewed.map((item, i) => (
                 <li key={item.path} className="flex items-center gap-3 text-sm">
-                  <span className="w-4 shrink-0 text-neutral-400 dark:text-neutral-600">{i + 1}</span>
-                  <span className="min-w-0 flex-1 truncate text-neutral-700 dark:text-neutral-300">{item.label}</span>
-                  <span className="shrink-0 font-medium text-neutral-900 dark:text-neutral-100">{item.count}</span>
+                  <span className="w-4 shrink-0 text-neutral-400 admin-dark:text-neutral-600">{i + 1}</span>
+                  <span className="min-w-0 flex-1 truncate text-neutral-700 admin-dark:text-neutral-300">{item.label}</span>
+                  <span className="shrink-0 font-medium text-neutral-900 admin-dark:text-neutral-100">{item.count}</span>
                 </li>
               ))}
             </ol>
@@ -259,40 +275,40 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-        <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Recent activity</h2>
-        <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+      <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
+        <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">Recent activity</h2>
+        <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">
           Latest contact messages and new-convert inquiries.
         </p>
         {recentActivity.length === 0 ? (
-          <p className="mt-4 text-sm text-neutral-400 dark:text-neutral-500">Nothing yet.</p>
+          <p className="mt-4 text-sm text-neutral-400 admin-dark:text-neutral-500">Nothing yet.</p>
         ) : (
-          <ul className="mt-4 divide-y divide-neutral-100 dark:divide-neutral-800">
+          <ul className="mt-4 divide-y divide-neutral-100 admin-dark:divide-neutral-800">
             {recentActivity.map((item) => (
               <li key={item.id}>
                 <Link
                   href={item.href}
-                  className="flex items-center gap-3 py-2.5 transition-colors hover:text-brand-700 dark:hover:text-brand-300"
+                  className="flex items-center gap-3 py-2.5 transition-colors hover:text-brand-700 admin-dark:hover:text-brand-300"
                 >
                   <span
                     className={
                       "flex h-8 w-8 shrink-0 items-center justify-center rounded-full " +
                       (item.type === "contact"
-                        ? "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300"
-                        : "bg-rose-50 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300")
+                        ? "bg-brand-50 text-brand-700 admin-dark:bg-brand-500/15 admin-dark:text-brand-300"
+                        : "bg-rose-50 text-rose-700 admin-dark:bg-rose-500/15 admin-dark:text-rose-300")
                     }
                   >
                     {item.type === "contact" ? <Inbox size={14} /> : <HeartHandshake size={14} />}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    <span className="block truncate text-sm font-medium text-neutral-900 admin-dark:text-neutral-100">
                       {item.title}
                     </span>
-                    <span className="block truncate text-xs text-neutral-500 dark:text-neutral-400">
+                    <span className="block truncate text-xs text-neutral-500 admin-dark:text-neutral-400">
                       {item.subtitle}
                     </span>
                   </span>
-                  <span className="shrink-0 text-xs text-neutral-400 dark:text-neutral-500">
+                  <span className="shrink-0 text-xs text-neutral-400 admin-dark:text-neutral-500">
                     {formatDistanceToNow(item.createdAt, { addSuffix: true })}
                   </span>
                 </Link>

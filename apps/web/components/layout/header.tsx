@@ -27,7 +27,7 @@ export function Header() {
             alt="The New Breed Church"
             width={467}
             height={160}
-            className="h-6 w-auto dark:invert sm:h-7"
+            className="h-10 w-auto dark:invert sm:h-12"
             priority
           />
         </Link>

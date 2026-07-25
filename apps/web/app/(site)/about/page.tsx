@@ -177,12 +177,13 @@ export default async function AboutPage() {
         </RevealSection>
       </section>
 
-      <section className="relative overflow-hidden py-20 sm:py-24">
+      <section className="relative grid min-h-[55vh] place-items-center overflow-hidden py-20 sm:py-24">
         <Image
           src="/images/about/about-livestream-audience.jpg"
           alt="Congregation watching a livestreamed service"
           fill
           className="object-cover"
+          style={{ objectPosition: "50% 30%" }}
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-900/75 via-brand-900/35 to-brand-900/10" />

@@ -19,7 +19,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
   return (
     <form action={formAction} className="max-w-2xl space-y-8">
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 admin-dark:text-neutral-400">
           Organization
         </h2>
         <Field label="Organization name" htmlFor="orgName" error={err("orgName")}>
@@ -45,61 +45,62 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 admin-dark:text-neutral-400">
           Contact
         </h2>
         <Field label="Street address" htmlFor="streetAddress" error={err("streetAddress")}>
-          <Input id="streetAddress" name="streetAddress" defaultValue={settings.streetAddress} required />
+          <Input id="streetAddress" name="streetAddress" defaultValue={settings.streetAddress} required placeholder="12 Church Street" />
         </Field>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Locality" htmlFor="addressLocality" error={err("addressLocality")}>
-            <Input id="addressLocality" name="addressLocality" defaultValue={settings.addressLocality} required />
+            <Input id="addressLocality" name="addressLocality" defaultValue={settings.addressLocality} required placeholder="Lagos" />
           </Field>
           <Field label="Region" htmlFor="addressRegion" error={err("addressRegion")}>
-            <Input id="addressRegion" name="addressRegion" defaultValue={settings.addressRegion} required />
+            <Input id="addressRegion" name="addressRegion" defaultValue={settings.addressRegion} required placeholder="Lagos State" />
           </Field>
           <Field label="Country" htmlFor="addressCountry" error={err("addressCountry")}>
-            <Input id="addressCountry" name="addressCountry" defaultValue={settings.addressCountry} required />
+            <Input id="addressCountry" name="addressCountry" defaultValue={settings.addressCountry} required placeholder="Nigeria" />
           </Field>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Phone" htmlFor="phone" error={err("phone")}>
-            <Input id="phone" name="phone" defaultValue={settings.phone} required />
+            <Input id="phone" name="phone" defaultValue={settings.phone} required placeholder="+234 801 234 5678" />
           </Field>
           <Field label="Email" htmlFor="email" error={err("email")}>
-            <Input id="email" name="email" type="email" defaultValue={settings.email} required />
+            <Input id="email" name="email" type="email" defaultValue={settings.email} required placeholder="info@yourchurch.org" />
           </Field>
         </div>
         <Field label="Map embed URL" htmlFor="mapEmbedUrl" error={err("mapEmbedUrl")} hint="Optional — falls back to a Google Maps search link if left blank.">
-          <Input id="mapEmbedUrl" name="mapEmbedUrl" defaultValue={settings.mapEmbedUrl ?? ""} />
+          <Input id="mapEmbedUrl" name="mapEmbedUrl" defaultValue={settings.mapEmbedUrl ?? ""} placeholder="https://www.google.com/maps/embed?..." />
         </Field>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 admin-dark:text-neutral-400">
           Links
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Instagram URL" htmlFor="instagramUrl" error={err("instagramUrl")}>
-            <Input id="instagramUrl" name="instagramUrl" defaultValue={settings.instagramUrl ?? ""} />
+            <Input id="instagramUrl" name="instagramUrl" defaultValue={settings.instagramUrl ?? ""} placeholder="https://instagram.com/yourchurch" />
           </Field>
           <Field label="YouTube URL" htmlFor="youtubeUrl" error={err("youtubeUrl")}>
-            <Input id="youtubeUrl" name="youtubeUrl" defaultValue={settings.youtubeUrl ?? ""} />
+            <Input id="youtubeUrl" name="youtubeUrl" defaultValue={settings.youtubeUrl ?? ""} placeholder="https://youtube.com/@yourchurch" />
           </Field>
           <Field label="Facebook URL" htmlFor="facebookUrl" error={err("facebookUrl")}>
-            <Input id="facebookUrl" name="facebookUrl" defaultValue={settings.facebookUrl ?? ""} />
+            <Input id="facebookUrl" name="facebookUrl" defaultValue={settings.facebookUrl ?? ""} placeholder="https://facebook.com/yourchurch" />
           </Field>
           <Field label="TikTok URL" htmlFor="tiktokUrl" error={err("tiktokUrl")}>
-            <Input id="tiktokUrl" name="tiktokUrl" defaultValue={settings.tiktokUrl ?? ""} />
+            <Input id="tiktokUrl" name="tiktokUrl" defaultValue={settings.tiktokUrl ?? ""} placeholder="https://tiktok.com/@yourchurch" />
           </Field>
           <Field label="Livestream URL" htmlFor="livestreamUrl" error={err("livestreamUrl")}>
-            <Input id="livestreamUrl" name="livestreamUrl" defaultValue={settings.livestreamUrl ?? ""} />
+            <Input id="livestreamUrl" name="livestreamUrl" defaultValue={settings.livestreamUrl ?? ""} placeholder="https://youtube.com/@yourchurch/live" />
           </Field>
           <Field label="Member registration URL" htmlFor="memberRegistrationUrl" error={err("memberRegistrationUrl")}>
             <Input
               id="memberRegistrationUrl"
               name="memberRegistrationUrl"
               defaultValue={settings.memberRegistrationUrl ?? ""}
+              placeholder="https://forms.google.com/..."
             />
           </Field>
           <Field label="Online meeting URL" htmlFor="onlineMeetingUrl" error={err("onlineMeetingUrl")}>
@@ -107,6 +108,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
               id="onlineMeetingUrl"
               name="onlineMeetingUrl"
               defaultValue={settings.onlineMeetingUrl ?? ""}
+              placeholder="https://meet.google.com/abc-defg-hij"
             />
           </Field>
         </div>
@@ -116,7 +118,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
+          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save Settings"}
         </button>

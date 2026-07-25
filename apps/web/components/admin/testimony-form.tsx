@@ -29,7 +29,7 @@ export function TestimonyForm({
       </Field>
 
       <Field label="Author photo path (optional)" htmlFor="authorPhotoUrl" error={err("authorPhotoUrl")}>
-        <Input id="authorPhotoUrl" name="authorPhotoUrl" defaultValue={testimony?.authorPhotoUrl ?? ""} />
+        <Input id="authorPhotoUrl" name="authorPhotoUrl" defaultValue={testimony?.authorPhotoUrl ?? ""} placeholder="/images/testimonies/john-doe.jpg" />
       </Field>
 
       <Field label="Testimony" htmlFor="body" error={err("body")}>
@@ -50,7 +50,7 @@ export function TestimonyForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
+          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save"}
         </button>

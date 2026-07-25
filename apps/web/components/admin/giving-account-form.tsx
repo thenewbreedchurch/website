@@ -28,28 +28,28 @@ export function GivingAccountForm({
           <Input id="fundName" name="fundName" defaultValue={account?.fundName} required />
         </Field>
         <Field label="Currency" htmlFor="currency" error={err("currency")}>
-          <Input id="currency" name="currency" defaultValue={account?.currency ?? "NGN"} required />
+          <Input id="currency" name="currency" defaultValue={account?.currency ?? "NGN"} required placeholder="NGN" />
         </Field>
       </div>
 
       <Field label="Bank name" htmlFor="bankName" error={err("bankName")}>
-        <Input id="bankName" name="bankName" defaultValue={account?.bankName} required />
+        <Input id="bankName" name="bankName" defaultValue={account?.bankName} required placeholder="Guaranty Trust Bank" />
       </Field>
 
       <Field label="Account number" htmlFor="accountNumber" error={err("accountNumber")}>
-        <Input id="accountNumber" name="accountNumber" defaultValue={account?.accountNumber} required />
+        <Input id="accountNumber" name="accountNumber" defaultValue={account?.accountNumber} required placeholder="0123456789" />
       </Field>
 
       <Field label="Account name" htmlFor="accountName" error={err("accountName")}>
-        <Input id="accountName" name="accountName" defaultValue={account?.accountName} required />
+        <Input id="accountName" name="accountName" defaultValue={account?.accountName} required placeholder="The New Breed Church" />
       </Field>
 
       <Field label="Swift code (optional)" htmlFor="swiftCode" error={err("swiftCode")}>
-        <Input id="swiftCode" name="swiftCode" defaultValue={account?.swiftCode ?? ""} />
+        <Input id="swiftCode" name="swiftCode" defaultValue={account?.swiftCode ?? ""} placeholder="GTBINGLA" />
       </Field>
 
       <Field label="Sort order" htmlFor="sortOrder" error={err("sortOrder")}>
-        <Input id="sortOrder" name="sortOrder" type="number" defaultValue={account?.sortOrder ?? 0} />
+        <Input id="sortOrder" name="sortOrder" type="number" defaultValue={account?.sortOrder ?? 0} placeholder="0" />
       </Field>
 
       <label className="flex items-center gap-2 text-sm">
@@ -61,7 +61,7 @@ export function GivingAccountForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
+          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save"}
         </button>

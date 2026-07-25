@@ -45,7 +45,7 @@ export default async function AdminSermonsPage({
               <Td>{s.publishedAt.toLocaleDateString()}</Td>
               <Td className="text-right">
                 <div className="flex justify-end gap-3">
-                  <Link href={`/admin/sermons/${s.id}`} className="text-xs font-medium text-brand-700 hover:underline dark:text-brand-300">
+                  <Link href={`/admin/sermons/${s.id}`} className="text-xs font-medium text-brand-700 hover:underline admin-dark:text-brand-300">
                     Edit
                   </Link>
                   <DeleteRowButton id={s.id} action={deleteSermonAction} />

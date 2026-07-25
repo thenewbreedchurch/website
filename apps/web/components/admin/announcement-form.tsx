@@ -37,15 +37,15 @@ export function AnnouncementForm({
     <form action={formAction} className="max-w-2xl space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Title" htmlFor="title" error={err("title")}>
-          <Input id="title" name="title" defaultValue={announcement?.title} required />
+          <Input id="title" name="title" defaultValue={announcement?.title} required placeholder="Sunday Worship Service" />
         </Field>
         <Field label="Slug" htmlFor="slug" error={err("slug")} hint="lowercase-with-hyphens, used in the URL">
-          <Input id="slug" name="slug" defaultValue={announcement?.slug} required />
+          <Input id="slug" name="slug" defaultValue={announcement?.slug} required placeholder="summer-picnic-2026" />
         </Field>
       </div>
 
       <Field label="Description" htmlFor="description" error={err("description")}>
-        <Textarea id="description" name="description" rows={5} defaultValue={announcement?.description} required />
+        <Textarea id="description" name="description" rows={5} defaultValue={announcement?.description} required placeholder="Join us for an evening of worship and fellowship..." />
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -105,7 +105,7 @@ export function AnnouncementForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Location" htmlFor="location" error={err("location")}>
-          <Input id="location" name="location" defaultValue={announcement?.location ?? ""} />
+          <Input id="location" name="location" defaultValue={announcement?.location ?? ""} placeholder="Main Sanctuary, or 123 Church Rd" />
         </Field>
         <Field
           label="Online URL"
@@ -149,7 +149,7 @@ export function AnnouncementForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
+          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save"}
         </button>

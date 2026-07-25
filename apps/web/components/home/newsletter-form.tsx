@@ -34,7 +34,7 @@ export function NewsletterForm() {
             required
             aria-invalid={emailErrors ? true : undefined}
             aria-describedby={emailErrors ? "newsletter-email-error" : undefined}
-            className="h-12 w-full rounded-full border border-white/30 bg-white/10 px-5 text-sm text-white placeholder:text-white/60 outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="h-12 w-full rounded-full border border-white/40 bg-white/25 px-5 text-sm text-white placeholder:text-white/70 shadow-sm backdrop-blur-sm outline-none focus-visible:ring-2 focus-visible:ring-white"
           />
         </div>
         <button

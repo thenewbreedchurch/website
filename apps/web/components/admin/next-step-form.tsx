@@ -41,20 +41,20 @@ export function NextStepForm({
       </Field>
 
       <Field label="Image path (optional)" htmlFor="imageUrl" error={err("imageUrl")}>
-        <Input id="imageUrl" name="imageUrl" defaultValue={nextStep?.imageUrl ?? ""} />
+        <Input id="imageUrl" name="imageUrl" defaultValue={nextStep?.imageUrl ?? ""} placeholder="/images/next-steps/baptism.jpg" />
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="CTA label (optional)" htmlFor="ctaLabel" error={err("ctaLabel")}>
-          <Input id="ctaLabel" name="ctaLabel" defaultValue={nextStep?.ctaLabel ?? ""} />
+          <Input id="ctaLabel" name="ctaLabel" defaultValue={nextStep?.ctaLabel ?? ""} placeholder="Get Started" />
         </Field>
         <Field label="CTA URL (optional)" htmlFor="ctaUrl" error={err("ctaUrl")}>
-          <Input id="ctaUrl" name="ctaUrl" defaultValue={nextStep?.ctaUrl ?? ""} />
+          <Input id="ctaUrl" name="ctaUrl" defaultValue={nextStep?.ctaUrl ?? ""} placeholder="https://yourchurch.org/register" />
         </Field>
       </div>
 
       <Field label="Sort order" htmlFor="sortOrder" error={err("sortOrder")}>
-        <Input id="sortOrder" name="sortOrder" type="number" defaultValue={nextStep?.sortOrder ?? 0} />
+        <Input id="sortOrder" name="sortOrder" type="number" defaultValue={nextStep?.sortOrder ?? 0} placeholder="0" />
       </Field>
 
       <label className="flex items-center gap-2 text-sm">
@@ -66,7 +66,7 @@ export function NextStepForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
+          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save"}
         </button>

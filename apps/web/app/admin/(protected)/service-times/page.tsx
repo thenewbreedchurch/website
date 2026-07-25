@@ -49,7 +49,7 @@ export default async function ServiceTimesPage() {
                 <div className="flex justify-end gap-3">
                   <Link
                     href={`/admin/service-times/${st.id}`}
-                    className="text-xs font-medium text-brand-700 hover:underline dark:text-brand-300"
+                    className="text-xs font-medium text-brand-700 hover:underline admin-dark:text-brand-300"
                   >
                     Edit
                   </Link>

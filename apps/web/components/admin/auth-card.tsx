@@ -8,7 +8,7 @@ import Link from "next/link";
 // screens (lg:hidden here avoids showing it twice); on narrower screens,
 // where that panel is hidden, it's shown inline above the heading instead.
 //
-// Deliberately stays on neutral-*/brand-* (with explicit dark: companions)
+// Deliberately stays on neutral-*/brand-* (with explicit admin-dark: companions)
 // rather than the public site's surface/border/current tokens, which flip
 // on the raw OS media query regardless of the admin theme toggle's explicit
 // .dark class — see components/admin/theme-toggle.tsx and app/admin/layout.tsx.
@@ -40,12 +40,12 @@ export function AuthCard({
         />
       </Link>
       <h1
-        className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100"
+        className="text-3xl font-bold tracking-tight text-neutral-900 admin-dark:text-neutral-100"
         style={{ fontFamily: "var(--font-body), ui-sans-serif, system-ui, sans-serif" }}
       >
         {title}
       </h1>
-      {subtitle && <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{subtitle}</p>}
+      {subtitle && <p className="mt-2 text-sm text-neutral-500 admin-dark:text-neutral-400">{subtitle}</p>}
       <div className="mt-8">{children}</div>
     </div>
   );

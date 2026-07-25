@@ -23,7 +23,7 @@ export function DeleteButton({
           });
         }
       }}
-      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-950/30"
+      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50 admin-dark:text-red-400 admin-dark:hover:bg-red-950/30"
     >
       <Trash2 size={13} /> Delete
     </button>

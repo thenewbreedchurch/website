@@ -31,13 +31,13 @@ export default function ForgotPasswordPage() {
       subtitle="Enter your admin email and we'll send you a reset link if an account exists."
     >
       {message ? (
-        <p className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-500/10 dark:text-green-400">
+        <p className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 admin-dark:bg-green-500/10 admin-dark:text-green-400">
           {message}
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            <label htmlFor="email" className="block text-sm font-medium text-neutral-700 admin-dark:text-neutral-300">
               Email
             </label>
             <input
@@ -48,12 +48,12 @@ export default function ForgotPasswordPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 focus:border-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-700/25 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
+              className="mt-2 w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 focus:border-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-700/25 admin-dark:border-neutral-700 admin-dark:bg-neutral-900 admin-dark:text-neutral-100"
             />
           </div>
 
           {error ? (
-            <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+            <p role="alert" className="text-sm text-red-600 admin-dark:text-red-400">
               {error}
             </p>
           ) : null}
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-brand-800 disabled:opacity-60 dark:bg-brand-600 dark:hover:bg-brand-500"
+            className="w-full rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
           >
             {isPending ? "Sending…" : "Send reset link"}
           </button>
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
       )}
 
       <div className="mt-6 text-center text-sm">
-        <Link href="/admin/login" className="text-brand-700 hover:underline dark:text-brand-300">
+        <Link href="/admin/login" className="text-brand-700 hover:underline admin-dark:text-brand-300">
           Back to sign in
         </Link>
       </div>

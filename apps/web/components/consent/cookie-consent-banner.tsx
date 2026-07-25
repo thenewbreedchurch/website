@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 
-const CONSENT_COOKIE_NAME = "nbc_cookie_consent";
+export const CONSENT_COOKIE_NAME = "nbc_cookie_consent";
 const CONSENT_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // ~1 year, in seconds
 
 type ConsentChoice = "accepted" | "declined";
@@ -38,11 +38,15 @@ function getServerSnapshot(): ConsentSnapshot {
 }
 
 // First-party replacement for the legacy site's consentmanager.net script.
-// The site only sets one cookie today (the admin session) and loads no
-// analytics/tracking, but the choice is recorded now via a first-party
-// cookie (never localStorage, per house rule) so it's ready the moment
-// analytics is added later. Mounted once in the root layout so it covers
-// every route, including /admin and /linktree.
+// Only accepting here (see components/analytics/page-view-tracker.tsx) sets
+// a second, anonymous cookie used purely to de-duplicate page views into a
+// "unique visitors" count on the admin dashboard — never cross-site, never
+// shared with a third party, and it never leaves this server. Declining
+// still leaves aggregate (non-deduplicated) page-view counts intact, since
+// those don't require identifying a visitor at all. The consent choice
+// itself is recorded via a first-party cookie (never localStorage, per
+// house rule). Mounted once in the root layout so it covers every route,
+// including /admin and /linktree.
 export function CookieConsentBanner() {
   const consent = useSyncExternalStore(subscribe, readConsentCookie, getServerSnapshot);
   const [dismissed, setDismissed] = useState(false);
@@ -65,9 +69,10 @@ export function CookieConsentBanner() {
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <p className="text-sm text-current/80">
-          We use only essential cookies to run this site, like keeping admins signed
-          in. If we ever add optional analytics cookies, we&apos;ll only use them with
-          your consent.
+          We use essential cookies to run this site, like keeping admins signed in.
+          With your consent, we&apos;d also like to set an anonymous cookie that helps
+          us count unique visitors — it&apos;s never shared with third parties or used
+          to track you elsewhere.
         </p>
         <div className="flex shrink-0 items-center gap-3">
           <button

@@ -3,6 +3,7 @@ import { prisma } from "@nb-church/db";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const MAX_PATH_LENGTH = 300;
+const MAX_VISITOR_ID_LENGTH = 100;
 
 // Public, unauthenticated write endpoint (fired by
 // components/analytics/page-view-tracker.tsx on every public-page view), so
@@ -16,8 +17,9 @@ export async function POST(request: Request) {
   }
 
   let path: unknown;
+  let visitorId: unknown;
   try {
-    ({ path } = await request.json());
+    ({ path, visitorId } = await request.json());
   } catch {
     return new NextResponse(null, { status: 400 });
   }
@@ -26,7 +28,16 @@ export async function POST(request: Request) {
     return new NextResponse(null, { status: 400 });
   }
 
-  await prisma.pageView.create({ data: { path } });
+  // Only ever present when the visitor accepted the cookie-consent banner's
+  // optional analytics cookie (see page-view-tracker.tsx) — trusted as-is,
+  // since worst case a fabricated id just skews the "unique visitors"
+  // count, not a security boundary.
+  const validVisitorId =
+    typeof visitorId === "string" && visitorId.length > 0 && visitorId.length <= MAX_VISITOR_ID_LENGTH
+      ? visitorId
+      : undefined;
+
+  await prisma.pageView.create({ data: { path, visitorId: validVisitorId } });
 
   return new NextResponse(null, { status: 204 });
 }

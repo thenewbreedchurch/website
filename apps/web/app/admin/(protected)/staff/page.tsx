@@ -34,15 +34,15 @@ export default async function AdminStaffPage() {
             <tr key={s.id}>
               <Td className="font-medium">{s.name}</Td>
               <Td>{s.role}</Td>
-              <Td>{s.department ?? <span className="text-neutral-400 dark:text-neutral-500">—</span>}</Td>
+              <Td>{s.department ?? <span className="text-neutral-400 admin-dark:text-neutral-500">—</span>}</Td>
               <Td>
                 {s.email || s.phone ? (
-                  <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                  <div className="text-xs text-neutral-500 admin-dark:text-neutral-400">
                     {s.email && <div>{s.email}</div>}
                     {s.phone && <div>{s.phone}</div>}
                   </div>
                 ) : (
-                  <span className="text-neutral-400 dark:text-neutral-500">—</span>
+                  <span className="text-neutral-400 admin-dark:text-neutral-500">—</span>
                 )}
               </Td>
               <Td>
@@ -50,7 +50,7 @@ export default async function AdminStaffPage() {
               </Td>
               <Td className="text-right">
                 <div className="flex justify-end gap-3">
-                  <Link href={`/admin/staff/${s.id}`} className="text-xs font-medium text-brand-700 hover:underline dark:text-brand-300">
+                  <Link href={`/admin/staff/${s.id}`} className="text-xs font-medium text-brand-700 hover:underline admin-dark:text-brand-300">
                     Edit
                   </Link>
                   <DeleteRowButton id={s.id} action={deleteStaffMemberAction} />

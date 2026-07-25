@@ -361,8 +361,16 @@ model AdminPasswordResetToken {
 model PageView {
   id        String   @id @default(cuid())
   path      String
+  // Only ever set when the visitor has actively accepted non-essential
+  // cookies via the site's cookie-consent banner (see
+  // components/consent/cookie-consent-banner.tsx and
+  // components/analytics/page-view-tracker.tsx) — a random, anonymous,
+  // first-party id used solely to de-duplicate views into a "unique
+  // visitors" count. Never cross-site, never third-party.
+  visitorId String?
   createdAt DateTime @default(now())
 
   @@index([path, createdAt])
   @@index([createdAt])
+  @@index([visitorId, createdAt])
 }

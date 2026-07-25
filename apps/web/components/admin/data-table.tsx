@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 // breakage point.
 export function DataTable({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800">
+    <div className="overflow-x-auto rounded-xl border border-neutral-200 admin-dark:border-neutral-800">
       <table className="w-full min-w-[640px] text-left text-sm">{children}</table>
     </div>
   );
@@ -13,7 +13,7 @@ export function DataTable({ children }: { children: React.ReactNode }) {
 
 export function DataTableHead({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="border-b border-neutral-200 bg-brand-50/40 text-xs uppercase tracking-wide text-neutral-500 dark:border-neutral-800 dark:bg-brand-500/10 dark:text-neutral-400">
+    <thead className="border-b border-neutral-200 bg-brand-50/40 text-xs uppercase tracking-wide text-neutral-500 admin-dark:border-neutral-800 admin-dark:bg-brand-500/10 admin-dark:text-neutral-400">
       <tr>{children}</tr>
     </thead>
   );
@@ -28,13 +28,13 @@ export function Td({ children, className }: { children: React.ReactNode; classNa
 }
 
 export function DataTableBody({ children }: { children: React.ReactNode }) {
-  return <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">{children}</tbody>;
+  return <tbody className="divide-y divide-neutral-200 admin-dark:divide-neutral-800">{children}</tbody>;
 }
 
 export function EmptyRow({ colSpan, children }: { colSpan: number; children: React.ReactNode }) {
   return (
     <tr>
-      <td colSpan={colSpan} className="px-4 py-10 text-center text-neutral-500 dark:text-neutral-400">
+      <td colSpan={colSpan} className="px-4 py-10 text-center text-neutral-500 admin-dark:text-neutral-400">
         {children}
       </td>
     </tr>
@@ -54,15 +54,15 @@ export function Pagination({
   return (
     <div className="mt-4 flex items-center justify-center gap-3 text-sm">
       {page > 1 && (
-        <a href={`${basePath}?page=${page - 1}`} className="text-brand-700 hover:underline dark:text-brand-300">
+        <a href={`${basePath}?page=${page - 1}`} className="text-brand-700 hover:underline admin-dark:text-brand-300">
           Previous
         </a>
       )}
-      <span className="text-neutral-500 dark:text-neutral-400">
+      <span className="text-neutral-500 admin-dark:text-neutral-400">
         Page {page} of {totalPages}
       </span>
       {page < totalPages && (
-        <a href={`${basePath}?page=${page + 1}`} className="text-brand-700 hover:underline dark:text-brand-300">
+        <a href={`${basePath}?page=${page + 1}`} className="text-brand-700 hover:underline admin-dark:text-brand-300">
           Next
         </a>
       )}
