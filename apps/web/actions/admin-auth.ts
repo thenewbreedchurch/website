@@ -20,7 +20,7 @@ import {
   consumeVerificationToken,
 } from "@/lib/admin-tokens";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
-import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/admin-email";
+import { sendPasswordResetEmail, sendVerificationEmail, sendAccountLockedEmail } from "@/lib/admin-email";
 
 type ActionResult<T extends object = object> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -68,7 +68,11 @@ export async function loginAction(
   password: string
 ): Promise<ActionResult<{ mustChangePassword: boolean }>> {
   const ip = await getClientIp();
-  const rl = await checkRateLimit(`admin-login:${ip}`, { limit: 8, windowSeconds: 300 });
+  // Deliberately kept below LOCKOUT_THRESHOLD (5): an attacker confined to
+  // one IP can never accumulate 5 failures inside a single window, so this
+  // rate limit is what actually gates the ability to trip account lockout
+  // at all, not just a generic anti-spam throttle.
+  const rl = await checkRateLimit(`admin-login:${ip}`, { limit: 4, windowSeconds: 300 });
   if (!rl.allowed) {
     return { ok: false, error: "Too many login attempts. Please wait a few minutes and try again." };
   }
@@ -101,13 +105,18 @@ export async function loginAction(
     });
 
     if (updated.failedLoginAttempts >= LOCKOUT_THRESHOLD) {
+      const lockedUntil = new Date(Date.now() + LOCKOUT_DURATION_MS);
       await prisma.adminUser.update({
         where: { id: user.id },
         data: {
-          lockedUntil: new Date(Date.now() + LOCKOUT_DURATION_MS),
+          lockedUntil,
           failedLoginAttempts: 0,
         },
       });
+      // Visibility for the real admin that an attack (or a lot of their own
+      // mistyped passwords) just happened — points at the one recovery path
+      // that still works while locked (password reset).
+      await sendAccountLockedEmail(user.email, lockedUntil);
     }
 
     return { ok: false, error: GENERIC_LOGIN_ERROR };
@@ -175,6 +184,12 @@ export async function resetPasswordAction(
   token: string,
   newPassword: string
 ): Promise<ActionResult> {
+  const ip = await getClientIp();
+  const rl = await checkRateLimit(`admin-reset-password:${ip}`, { limit: 10, windowSeconds: 300 });
+  if (!rl.allowed) {
+    return { ok: false, error: "Too many attempts. Please wait a few minutes and try again." };
+  }
+
   const parsed = resetPasswordSchema.safeParse({ token, newPassword });
   if (!parsed.success) {
     return { ok: false, error: "Invalid request." };
@@ -249,6 +264,12 @@ export async function changePasswordAction(
 }
 
 export async function verifyEmailAction(token: string): Promise<ActionResult> {
+  const ip = await getClientIp();
+  const rl = await checkRateLimit(`admin-verify-email:${ip}`, { limit: 10, windowSeconds: 300 });
+  if (!rl.allowed) {
+    return { ok: false, error: "Too many attempts. Please wait a few minutes and try again." };
+  }
+
   const parsed = verifyEmailSchema.safeParse({ token });
   if (!parsed.success) {
     return { ok: false, error: "Invalid verification link." };

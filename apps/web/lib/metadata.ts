@@ -102,4 +102,20 @@ export function eventJsonLd(input: EventJsonLdInput) {
   };
 }
 
+/**
+ * Serializes structured data for a `<script type="application/ld+json"
+ * dangerouslySetInnerHTML>` tag. Plain `JSON.stringify()` does not escape
+ * `<`, so admin-entered text containing the literal substring `</script>`
+ * (e.g. in ChurchSettings.orgName or an announcement title/description)
+ * would close the script tag early and let anything after it in that
+ * string execute as HTML/JS — a real stored-XSS primitive, not a
+ * theoretical one, since this JSON-LD block is unauthenticated-visitor-
+ * facing on every page. `<` is a valid JSON string escape for `<`
+ * that the browser's JSON-LD parser reads identically to a literal `<`,
+ * so this changes nothing about the structured data itself.
+ */
+export function safeJsonLdString(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 export { SITE_URL };

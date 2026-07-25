@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import { getChurchSettings } from "@/lib/settings";
-import { organizationJsonLd, SITE_URL } from "@/lib/metadata";
+import { organizationJsonLd, safeJsonLdString, SITE_URL } from "@/lib/metadata";
 import { CookieConsentBanner } from "@/components/consent/cookie-consent-banner";
 import "./globals.css";
 
@@ -50,6 +50,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getChurchSettings();
+  // Set by middleware.ts in production only (dev keeps CSP's script-src on
+  // 'unsafe-inline', so no nonce is needed there — undefined is fine, React
+  // just omits the attribute).
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   const themeCookie = (await cookies()).get(THEME_COOKIE)?.value;
   const resolvedThemeClass =
     themeCookie === "dark" ? "dark" : themeCookie === "light" ? "light" : "";
@@ -75,7 +79,8 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          nonce={nonce}
+          dangerouslySetInnerHTML={{ __html: safeJsonLdString(jsonLd) }}
         />
         {children}
         {/* Site-wide since consent is a site-wide concern — covers /admin

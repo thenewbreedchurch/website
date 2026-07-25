@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { CalendarDays, MapPin, Video, Users } from "lucide-react";
 import { prisma } from "@nb-church/db";
-import { pageMetadata, eventJsonLd } from "@/lib/metadata";
+import { pageMetadata, eventJsonLd, safeJsonLdString } from "@/lib/metadata";
 import { getNextOccurrence, CHURCH_TZ } from "@/lib/announcements";
 import { Container } from "@/components/ui/container";
 import { RegistrationForm } from "@/components/announcements/registration-form";
@@ -50,6 +51,7 @@ export default async function AnnouncementDetailPage({
   const announcement = await getAnnouncement(slug);
   if (!announcement) notFound();
 
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   const occurrence = getNextOccurrence(announcement, new Date()) ?? announcement.startDateTime;
   const capacityReached =
     announcement.capacity != null && announcement._count.registrations >= announcement.capacity;
@@ -72,7 +74,8 @@ export default async function AnnouncementDetailPage({
     <article className="py-16">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        nonce={nonce}
+        dangerouslySetInnerHTML={{ __html: safeJsonLdString(jsonLd) }}
       />
       <Container className="max-w-3xl">
         {announcement.heroImageUrl && (
