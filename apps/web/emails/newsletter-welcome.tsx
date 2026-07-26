@@ -19,7 +19,7 @@ export default function NewsletterWelcomeEmail({
 }: NewsletterWelcomeEmailProps) {
   return (
     <EmailLayout
-      preview={`Welcome to the ${orgName} family`}
+      preview={`Welcome to ${orgName}`}
       eyebrow="Welcome"
       orgName={orgName}
       footerNote={
@@ -36,15 +36,15 @@ export default function NewsletterWelcomeEmail({
         Welcome{name ? `, ${name}` : ""} — we&apos;re so glad you&apos;re here! 🎉
       </Text>
       <Text style={textStyle}>
-        Thank you for subscribing to the {orgName} newsletter. Whether you&apos;ve been part of
-        our family for years or just found us, we&apos;re genuinely happy to have you along.
+        Thank you for subscribing to {orgName}&apos;s newsletter. Whether you&apos;ve been part
+        of our family for years or just found us, we&apos;re genuinely happy to have you along.
       </Text>
       <Text style={textStyle}>
         You&apos;ll hear from us with service updates, upcoming announcements, and news from
         around the church — nothing more, nothing spammy.
       </Text>
       <Text style={textStyle}>See you soon,</Text>
-      <Text style={{ ...textStyle, fontWeight: 700, margin: 0 }}>The {orgName} Team</Text>
+      <Text style={{ ...textStyle, fontWeight: 700, margin: 0 }}>{orgName} Team</Text>
     </EmailLayout>
   );
 }

@@ -61,6 +61,14 @@ export function expandServiceTimesForWeek(
   for (const st of serviceTimes) {
     const dayIndex = DAY_INDEX[st.dayOfWeek];
     const zonedDate = addDays(zonedMonday, dayIndex);
+    // Bug fix: this used to stay at midnight (addDays alone doesn't touch
+    // the time-of-day), so every service time sorted as if it happened at
+    // 00:00 — meaning a same-day announcement with a real startDateTime
+    // (e.g. 10am) would sort AFTER a 6pm service. Baking the actual
+    // startTime in here is what makes the final sort in
+    // buildThisWeekAgenda() below produce real chronological order.
+    const [hours, minutes] = st.startTime.split(":").map(Number);
+    zonedDate.setHours(hours, minutes, 0, 0);
     items.push({
       date: fromZonedTime(zonedDate, CHURCH_TZ),
       dayIndex,

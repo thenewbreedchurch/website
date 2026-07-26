@@ -100,9 +100,13 @@ export async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-red-600 text-white transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-red-700"
+                  className="inline-flex h-9 items-center justify-center transition-[transform,opacity] duration-300 hover:-translate-y-0.5 hover:opacity-80"
                 >
-                  <YoutubeIcon width={16} height={16} />
+                  {/* No circular wrapper (unlike Instagram) — the real
+                      YouTube mark already carries its own red and its own
+                      wider-than-tall proportions, so forcing it into a
+                      square badge would distort it. */}
+                  <YoutubeIcon width={34} height={24} />
                 </a>
               )}
               {settings.livestreamUrl && (

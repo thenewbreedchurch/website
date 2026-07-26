@@ -13,7 +13,6 @@ import { Container } from "@/components/ui/container";
 import { WeekAgenda } from "@/components/announcements/week-agenda";
 import { CategoryFilter } from "@/components/announcements/category-filter";
 import { AnnouncementCard } from "@/components/announcements/announcement-card";
-import { RevealSection } from "@/components/journey/reveal-section";
 import { TiltCard } from "@/components/journey/tilt-card";
 
 const UPCOMING_CANDIDATE_LIMIT = 50;
@@ -96,31 +95,36 @@ export default async function AnnouncementsPage({
 
       <section className="py-16 sm:py-20">
         <Container>
-          <RevealSection>
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">This Week</h2>
-            <div className="mt-6">
-              {agenda.length > 0 ? (
-                <WeekAgenda items={agenda} />
-              ) : (
-                <p className="text-current/70">Nothing scheduled this week yet.</p>
-              )}
-            </div>
-          </RevealSection>
+          {/* Not wrapped in RevealSection: this whole page re-renders on
+              every category-filter click (it's a real searchParams
+              navigation), which would remount the reveal-on-scroll
+              motion.div and re-hide already-visible content on every click —
+              a jarring flicker that's easy to mistake for a slow/stuck
+              navigation. */}
+          <h2 className="font-display text-2xl font-bold sm:text-3xl">This Week</h2>
+          <div className="mt-6">
+            {agenda.length > 0 ? (
+              <WeekAgenda items={agenda} />
+            ) : (
+              <p className="text-current/70">Nothing scheduled this week yet.</p>
+            )}
+          </div>
         </Container>
       </section>
 
       <section className="bg-surface-muted py-16 sm:py-20">
         <Container>
-          <RevealSection>
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="font-display text-2xl font-bold sm:text-3xl">
-                Upcoming Announcements
-              </h2>
-            </div>
-            <div className="mt-5">
-              <CategoryFilter active={category} />
-            </div>
-          </RevealSection>
+          {/* Same reasoning as the "This Week" heading above — this row
+              (and the filter chips within it) must stay visible across a
+              category-filter click, not replay a scroll-reveal fade. */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">
+              Upcoming Announcements
+            </h2>
+          </div>
+          <div className="mt-5">
+            <CategoryFilter active={category} />
+          </div>
 
           {upcoming.length === 0 ? (
             <p className="mt-10 text-current/70">
@@ -128,13 +132,9 @@ export default async function AnnouncementsPage({
             </p>
           ) : (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {upcoming.map(({ announcement, occurrence }, i) => (
+              {upcoming.map(({ announcement, occurrence }) => (
                 <TiltCard key={announcement.id}>
-                  <AnnouncementCard
-                    announcement={announcement}
-                    occurrence={occurrence}
-                    index={i}
-                  />
+                  <AnnouncementCard announcement={announcement} occurrence={occurrence} />
                 </TiltCard>
               ))}
             </div>

@@ -121,7 +121,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               className="col-start-1 row-start-1 max-w-xl text-white"
             >
               <h1 className="font-display text-4xl font-bold sm:text-5xl lg:text-6xl">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CalendarDays, MapPin, Video } from "lucide-react";
 import type { Announcement } from "@nb-church/db";
 import { CHURCH_TZ } from "@/lib/announcements";
+import { AnnouncementDescription } from "./announcement-description";
 
 const FALLBACK_IMAGES = [
   "/images/announcements/announcements-community-sports-1.jpg",
@@ -20,16 +21,27 @@ const dateFormatter = new Intl.DateTimeFormat("en-NG", {
   minute: "2-digit",
 });
 
+// Deterministic per-announcement hash, not the list position — the
+// Upcoming Announcements grid re-renders with a different, filtered list
+// (and thus a different index for the same card) every time the category
+// filter changes, which previously made a no-heroImage announcement's
+// fallback image change depending on which filter was active.
+function fallbackImageFor(id: string): string {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) | 0;
+  }
+  return FALLBACK_IMAGES[Math.abs(hash) % FALLBACK_IMAGES.length]!;
+}
+
 export function AnnouncementCard({
   announcement,
   occurrence,
-  index = 0,
 }: {
   announcement: Announcement;
   occurrence: Date;
-  index?: number;
 }) {
-  const image = announcement.heroImageUrl ?? FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+  const image = announcement.heroImageUrl ?? fallbackImageFor(announcement.id);
 
   return (
     <Link
@@ -50,7 +62,9 @@ export function AnnouncementCard({
       </div>
       <div className="p-5">
         <h3 className="font-display text-lg font-bold leading-snug">{announcement.title}</h3>
-        <p className="mt-2 line-clamp-2 text-sm text-current/70">{announcement.description}</p>
+        <div className="mt-2">
+          <AnnouncementDescription description={announcement.description} />
+        </div>
         <div className="mt-3 flex flex-col gap-1 text-xs text-current/60">
           <span className="flex items-center gap-1.5">
             <CalendarDays size={13} /> {dateFormatter.format(occurrence)}

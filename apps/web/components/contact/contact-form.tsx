@@ -27,6 +27,7 @@ const CATEGORY_OPTIONS = [
   { value: "PRAYER", label: "Prayer Request" },
   { value: "MEMBERSHIP", label: "Membership & Follow-up" },
   { value: "WELFARE", label: "Welfare / Member Care" },
+  { value: "TESTIMONY", label: "Testimony" },
 ] as const;
 
 const MESSAGE_MAX_LENGTH = 500;

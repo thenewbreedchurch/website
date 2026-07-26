@@ -33,7 +33,7 @@ model ChurchSettings {
   youtubeUrl            String?  @default("https://www.youtube.com/@the_newbreedchurch")
   tiktokUrl             String?
   livestreamUrl         String?  @default("https://www.youtube.com/@the_newbreedchurch/live")
-  memberRegistrationUrl String?  @default("https://apps.thenewbreedchurch.org/mebership-form")
+  memberRegistrationUrl String?  @default("https://apps.thenewbreedchurch.org/membership-form")
   onlineMeetingUrl      String?  @default("https://meet.google.com/zkb-qrmi-ooy")
   updatedAt             DateTime @updatedAt
 }
@@ -152,7 +152,7 @@ enum ContactStatus {
   RESPONDED
 }
 
-// Drives notification routing in lib/email.ts: GENERAL always goes to
+// Drives notification routing in lib/email.ts: GENERAL and TESTIMONY go to
 // admin@ alone; PRAYER/MEMBERSHIP/WELFARE each add their own dedicated
 // address (prayer@/followup@/welfare@) in addition to admin@, which is
 // always included regardless of category.
@@ -161,6 +161,7 @@ enum ContactCategory {
   PRAYER
   MEMBERSHIP
   WELFARE
+  TESTIMONY
 }
 
 model ContactMessage {

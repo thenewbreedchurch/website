@@ -109,14 +109,15 @@ export default async function AboutPage() {
                 they&apos;re called to do.
               </p>
             </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl">
               <Image
                 src="/images/about/about-congregation-attentive.jpg"
                 alt="Congregation attentive during service"
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-[600ms] group-hover:scale-105"
                 sizes="(min-width: 1024px) 40vw, 100vw"
               />
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-600/15 to-brand-400/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
           </Container>
         </RevealSection>
@@ -125,16 +126,17 @@ export default async function AboutPage() {
       <section className="bg-surface-muted py-16 sm:py-20">
         <RevealSection>
           <Container className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl lg:order-2">
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl lg:order-1">
               <Image
-                src="/images/about/about-mission-worship.jpg"
-                alt="Worship service at The New Breed Church"
+                src="/images/hero/hero-worship-vocals.jpg"
+                alt="Worship vocalist leading praise at The New Breed Church"
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-[600ms] group-hover:scale-105"
                 sizes="(min-width: 1024px) 40vw, 100vw"
               />
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-600/15 to-brand-400/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
-            <div className="lg:order-1">
+            <div className="lg:order-2">
               <h2 className="font-display text-2xl font-bold sm:text-3xl">
                 Worship is Our Lifestyle
               </h2>
@@ -164,14 +166,15 @@ export default async function AboutPage() {
                 {settings.visionStatement}
               </p>
             </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl">
               <Image
                 src="/images/about/about-vision-hall.jpg"
                 alt="The New Breed Church gathering hall"
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-[600ms] group-hover:scale-105"
                 sizes="(min-width: 1024px) 40vw, 100vw"
               />
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-600/15 to-brand-400/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
           </Container>
         </RevealSection>
@@ -291,28 +294,40 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      <section className="py-16 sm:py-20">
-        <RevealSection>
-          <Container className="flex flex-col items-center gap-6 text-center">
-            <div className="relative h-48 w-full max-w-2xl overflow-hidden rounded-2xl">
-              <Image
-                src="/images/about/about-scripture-hands.jpg"
-                alt="Hands over an open Bible"
-                fill
-                className="object-cover"
-                sizes="(min-width: 768px) 640px, 100vw"
-              />
-            </div>
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">Visit Us</h2>
-            <p className="max-w-lg text-current/80">
-              We&apos;d love to have you join us in person or online. New here? Start with our
-              First Timers guide to know exactly what to expect.
-            </p>
-            <LinkButton href="/first-timers" variant="primary" size="lg" className="w-full sm:w-auto">
-              Plan Your Visit
-            </LinkButton>
-          </Container>
-        </RevealSection>
+      <section className="relative overflow-hidden">
+        {/* aspect-[2/1] is wider/shorter than the source's native 16:9
+            (1600x900), so object-cover crops vertically (never
+            horizontally — the full width, including both faces, always
+            stays in frame). Combined with objectPosition anchored to the
+            bottom, that ~11% vertical crop comes entirely off the top,
+            removing the small circular NBC badge (redundant with the real
+            site header directly above it) on every screen size — it ends
+            around 10.6% down the source frame, and the "Welcome Home" text
+            doesn't start until ~20%, so there's clear margin either side of
+            the cut. */}
+        <div className="relative aspect-[2/1] w-full">
+          <Image
+            src="/images/about/about-visit-us-welcome-home.jpg"
+            alt="Welcome Home — join us at The New Breed Church"
+            fill
+            className="object-cover"
+            style={{ objectPosition: "50% 100%" }}
+            sizes="100vw"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent" />
+          <RevealSection className="absolute inset-x-0 bottom-0">
+            <Container className="flex justify-center pb-4 sm:pb-8">
+              <LinkButton
+                href="/first-timers"
+                variant="secondary"
+                size="lg"
+                className="border border-white/30 bg-black/40 text-white backdrop-blur-md hover:bg-black/55"
+              >
+                Plan Your Visit
+              </LinkButton>
+            </Container>
+          </RevealSection>
+        </div>
       </section>
     </>
   );

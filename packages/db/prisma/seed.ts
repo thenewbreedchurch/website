@@ -29,7 +29,7 @@ async function main() {
       youtubeUrl: "https://www.youtube.com/@the_newbreedchurch",
       livestreamUrl: "https://www.youtube.com/@the_newbreedchurch/live",
       memberRegistrationUrl:
-        "https://apps.thenewbreedchurch.org/mebership-form",
+        "https://apps.thenewbreedchurch.org/membership-form",
       onlineMeetingUrl: "https://meet.google.com/zkb-qrmi-ooy",
     },
   });
@@ -293,7 +293,7 @@ async function main() {
       title: "Register as a First Timer",
       body: "Fill out a short form so we can follow up, answer any questions, and keep you in the loop on what's happening at New Breed.",
       ctaLabel: "Register now",
-      ctaUrl: "https://apps.thenewbreedchurch.org/mebership-form",
+      ctaUrl: "https://apps.thenewbreedchurch.org/membership-form",
       sortOrder: 1,
     },
     {

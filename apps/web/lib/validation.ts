@@ -10,7 +10,13 @@ export const subscribeSchema = z.object({
 });
 export type SubscribeInput = z.infer<typeof subscribeSchema>;
 
-export const contactCategorySchema = z.enum(["GENERAL", "PRAYER", "MEMBERSHIP", "WELFARE"]);
+export const contactCategorySchema = z.enum([
+  "GENERAL",
+  "PRAYER",
+  "MEMBERSHIP",
+  "WELFARE",
+  "TESTIMONY",
+]);
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Name is too short").max(120),

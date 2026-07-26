@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Loader2 } from "lucide-react";
 import { subscribeAction } from "@/actions/subscribe";
 import type { ActionResult } from "@/lib/action-result";
 
@@ -40,8 +41,9 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="h-12 shrink-0 rounded-full bg-white px-6 text-sm font-semibold text-brand-800 transition-colors hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-brand-800 transition-colors hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
         >
+          {isPending && <Loader2 size={16} className="animate-spin" />}
           {isPending ? "Subscribing…" : "Subscribe"}
         </button>
       </form>

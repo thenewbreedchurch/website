@@ -13,12 +13,14 @@ const CATEGORY_LABELS: Record<ContactCategory, string> = {
   PRAYER: "Prayer",
   MEMBERSHIP: "Membership",
   WELFARE: "Welfare",
+  TESTIMONY: "Testimony",
 };
-const CATEGORY_TONE: Record<ContactCategory, "neutral" | "brand" | "green" | "amber"> = {
+const CATEGORY_TONE: Record<ContactCategory, "neutral" | "brand" | "green" | "amber" | "red"> = {
   GENERAL: "neutral",
   PRAYER: "brand",
   MEMBERSHIP: "green",
   WELFARE: "amber",
+  TESTIMONY: "red",
 };
 
 export default async function AdminContactMessagesPage({

@@ -44,16 +44,21 @@ export const CONTACT_CATEGORY_LABELS: Record<ContactCategory, string> = {
   PRAYER: "Prayer Request",
   MEMBERSHIP: "Membership & Follow-up",
   WELFARE: "Welfare / Member Care",
+  TESTIMONY: "Testimony",
 };
 
-// admin@ is always included; each non-GENERAL category adds its own
-// dedicated address on top (confirmed routing model — see HANDOFF.md).
+// admin@ is always included; each non-GENERAL/TESTIMONY category adds its
+// own dedicated address on top (confirmed routing model — see HANDOFF.md).
+// TESTIMONY has no dedicated inbox of its own yet — same as GENERAL, it
+// just goes to admin@ — since none was requested; add one here the same
+// way PRAYER/MEMBERSHIP/WELFARE do if that changes.
 function resolveContactRecipients(category: ContactCategory): string[] {
   const categoryEnvVar: Record<ContactCategory, string | undefined> = {
     GENERAL: undefined,
     PRAYER: process.env.PRAYER_NOTIFICATION_EMAIL,
     MEMBERSHIP: process.env.MEMBERSHIP_NOTIFICATION_EMAIL,
     WELFARE: process.env.WELFARE_NOTIFICATION_EMAIL,
+    TESTIMONY: undefined,
   };
 
   const admin = process.env.CONTACT_NOTIFICATION_EMAIL;

@@ -16,6 +16,7 @@ const CATEGORY_LABELS: Record<ContactCategory, string> = {
   PRAYER: "Prayer Request",
   MEMBERSHIP: "Membership & Follow-up",
   WELFARE: "Welfare / Member Care",
+  TESTIMONY: "Testimony",
 };
 
 const CATEGORY_TONE: Record<ContactCategory, { bg: string; fg: string }> = {
@@ -23,6 +24,7 @@ const CATEGORY_TONE: Record<ContactCategory, { bg: string; fg: string }> = {
   PRAYER: { bg: "#eef4fc", fg: "#1d4ed8" },
   MEMBERSHIP: { bg: "#eafbf1", fg: "#15803d" },
   WELFARE: { bg: "#fff3e6", fg: "#c2410c" },
+  TESTIMONY: { bg: "#fdeaea", fg: "#b91c1c" },
 };
 
 // Internal notification sent to church staff when a public contact form is
