@@ -4,7 +4,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCxSIkVzOfHFsvEArp_OIAWm5f3DRAFDgg",
+  apiKey: "Axxxxxxxxxxxxxxxxxxxxx",
   authDomain: "tnbc-3a241.firebaseapp.com",
   projectId: "tnbc-3a241",
   storageBucket: "tnbc-3a241.firebasestorage.app",
