@@ -85,7 +85,16 @@ export function middleware(request: NextRequest) {
   // applies the same nonce to its own internal inline scripts once it sees
   // one in the CSP header, so this is the only wiring needed beyond passing
   // it to the two app-authored inline scripts via the `x-nonce` header.
-  const nonce = isProd ? Buffer.from(crypto.randomUUID()).toString("base64") : undefined;
+  // btoa(), not Buffer.from(...).toString("base64") — Buffer is a Node.js
+  // global that middleware can't rely on: it runs on Vercel's Edge Runtime
+  // in production, which doesn't reliably provide it (this shipped once
+  // already and 500'd every request in prod as MIDDLEWARE_INVOCATION_FAILED,
+  // despite working fine in local `next dev`, which runs middleware in a
+  // real Node process where Buffer always exists — the local/prod gap that
+  // makes this bug easy to ship unnoticed). btoa() is a Web Standard global,
+  // genuinely available in Edge Runtime, and crypto.randomUUID()'s output is
+  // plain ASCII hex+dashes, so no UTF-8/binary-safety concerns here.
+  const nonce = isProd ? btoa(crypto.randomUUID()) : undefined;
 
   const requestHeaders = new Headers(request.headers);
   if (nonce) requestHeaders.set("x-nonce", nonce);
