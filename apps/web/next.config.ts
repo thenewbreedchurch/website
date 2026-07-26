@@ -1,16 +1,26 @@
-import path from "node:path";
 import type { NextConfig } from "next";
 
+// No `turbopack.root` override here on purpose — it used to pin the
+// workspace root via `path.join(__dirname, ...)` to work around an
+// unrelated project's lockfile a few directories up on one contributor's
+// machine. That's a one-machine cosmetic convenience (Next just guesses a
+// workspace root and warns if it's unsure — harmless either way), but
+// `__dirname` is a Node.js global and this config file is also traced for
+// the Edge Runtime middleware bundle, which doesn't provide it. A version
+// of this gated to `NODE_ENV !== "production"` still shipped and 500'd
+// every request in prod as MIDDLEWARE_INVOCATION_FAILED
+// ("ReferenceError: __dirname is not defined") — Turbopack's file tracer
+// flags this config on *static* presence of `path.join`/`__dirname` in the
+// source, not on whether a runtime branch would actually reach it, so a
+// runtime-only guard isn't a reliable enough fix. Removing the property
+// (and the `node:path` import) entirely is the only way to be sure a
+// Node-only global never has a path into any Edge-traced bundle. If the
+// local workspace-root warning bothers you, silence it in your own
+// untracked shell config instead of reintroducing this here.
 const nextConfig: NextConfig = {
   output: "standalone",
   images: {
     formats: ["image/avif", "image/webp"],
-  },
-  turbopack: {
-    // Pins the workspace root to this app instead of Next inferring it from
-    // whichever lockfile is nearest up the tree — this machine has an
-    // unrelated project with its own package-lock.json a few directories up.
-    root: path.join(__dirname, "..", ".."),
   },
   // Preserves SEO/link equity from the legacy flat-file static site (see
   // _legacy-static-site/client/*.html) on domain cutover — without these,
