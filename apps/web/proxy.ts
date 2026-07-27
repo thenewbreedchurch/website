@@ -4,15 +4,28 @@ import { NextResponse, type NextRequest } from "next/server";
 // every request:
 //
 // 1. Lightweight route protection for /admin/*: this only checks whether the
-//    session cookie is present, since middleware runs on the Edge runtime
-//    and can't safely hold a Postgres connection. The real validation
-//    (hash lookup, expiry, idle timeout, sliding window) happens in
-//    lib/session.ts's getSessionFromCookie(), called from the Node-runtime
-//    (protected) layout. A present-but-invalid/expired cookie still reaches
-//    the layout, which redirects to /admin/login — this is a fast-path
-//    optimization, not the source of truth.
+//    session cookie is present — the real validation (hash lookup, expiry,
+//    idle timeout, sliding window) happens in lib/session.ts's
+//    getSessionFromCookie(), called from the (protected) layout. A
+//    present-but-invalid/expired cookie still reaches the layout, which
+//    redirects to /admin/login — this is a fast-path optimization, not the
+//    source of truth.
 // 2. Security headers (CSP + friends) on every response, site-wide.
-
+//
+// Renamed from middleware.ts (Next.js 16 deprecated that file convention in
+// favor of proxy.ts — see https://nextjs.org/docs/messages/middleware-to-proxy).
+// This isn't just a rename for its own sake: repeated production deploys of
+// a middleware.ts that was independently verified byte-for-byte correct
+// (direct inspection of the compiled Edge bundle, confirmed clean both
+// locally and via GitHub's raw source) still crashed identically in
+// production as MIDDLEWARE_INVOCATION_FAILED / "ReferenceError: __dirname
+// is not defined" — a try/catch wrapping the entire function body never
+// even caught it, meaning the crash happened before the function was ever
+// invoked, from something the deprecated middleware.ts compatibility shim
+// pulls in that's outside this file's own control. Proxy is the actively
+// maintained code path (and per Next's own docs, defaults to the Node.js
+// runtime rather than Edge as of v16), not a backward-compatibility shim
+// for a deprecated convention.
 const SESSION_COOKIE_NAME = "nbc_admin_session";
 
 const PUBLIC_ADMIN_PATHS = [
@@ -66,25 +79,7 @@ function buildCsp(nonce: string | undefined): string {
   ].join("; ");
 }
 
-export function middleware(request: NextRequest) {
-  try {
-    return realMiddleware(request);
-  } catch (err) {
-    // TEMPORARY diagnostic — Vercel's MIDDLEWARE_INVOCATION_FAILED page
-    // hides the real thrown error entirely, and repeated deploys of a
-    // locally-verified-clean bundle have still crashed identically, which
-    // means something differs between local and Vercel builds that plain
-    // source review hasn't caught. Surface the real error/stack directly
-    // in the response instead of guessing again. Revert once diagnosed.
-    const e = err as Error;
-    return new NextResponse(
-      JSON.stringify({ name: e?.name, message: e?.message, stack: e?.stack }, null, 2),
-      { status: 200, headers: { "content-type": "application/json" } }
-    );
-  }
-}
-
-function realMiddleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/admin") && !isPublicAdminPath(pathname)) {
@@ -103,15 +98,9 @@ function realMiddleware(request: NextRequest) {
   // applies the same nonce to its own internal inline scripts once it sees
   // one in the CSP header, so this is the only wiring needed beyond passing
   // it to the two app-authored inline scripts via the `x-nonce` header.
-  // btoa(), not Buffer.from(...).toString("base64") — Buffer is a Node.js
-  // global that middleware can't rely on: it runs on Vercel's Edge Runtime
-  // in production, which doesn't reliably provide it (this shipped once
-  // already and 500'd every request in prod as MIDDLEWARE_INVOCATION_FAILED,
-  // despite working fine in local `next dev`, which runs middleware in a
-  // real Node process where Buffer always exists — the local/prod gap that
-  // makes this bug easy to ship unnoticed). btoa() is a Web Standard global,
-  // genuinely available in Edge Runtime, and crypto.randomUUID()'s output is
-  // plain ASCII hex+dashes, so no UTF-8/binary-safety concerns here.
+  // btoa() rather than Buffer.from(...).toString("base64") — a Web Standard
+  // global works in both the Node.js and Edge runtimes, so this is safe
+  // regardless of which one Proxy actually executes under.
   const nonce = isProd ? btoa(crypto.randomUUID()) : undefined;
 
   const requestHeaders = new Headers(request.headers);

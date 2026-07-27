@@ -5,7 +5,7 @@ import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminFooter } from "@/components/admin/admin-footer";
 
 // Route group for every admin page that requires an authenticated session.
-// middleware.ts already bounces requests with no session cookie at all, but
+// proxy.ts already bounces requests with no session cookie at all, but
 // the real check — hash lookup, absolute + idle expiry — happens here via
 // getSessionFromCookie(), which is the only place allowed to touch Postgres
 // for this (Node runtime, not Edge).

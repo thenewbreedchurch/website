@@ -50,7 +50,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getChurchSettings();
-  // Set by middleware.ts in production only (dev keeps CSP's script-src on
+  // Set by proxy.ts in production only (dev keeps CSP's script-src on
   // 'unsafe-inline', so no nonce is needed there — undefined is fine, React
   // just omits the attribute).
   const nonce = (await headers()).get("x-nonce") ?? undefined;
