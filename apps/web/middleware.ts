@@ -79,8 +79,21 @@ function buildCsp(nonce: string | undefined): string {
   ].join("; ");
 }
 
+// www.thenewbreedchurch.org is canonical (matches SITE_URL in lib/metadata.ts) —
+// the apex domain must redirect there rather than serve identical content on
+// both hosts, or Google splits ranking/link-equity between two copies of the
+// same site. 308 (permanent) so search engines transfer ranking, not 307.
+const APEX_HOST = "thenewbreedchurch.org";
+const CANONICAL_HOST = "www.thenewbreedchurch.org";
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (request.headers.get("host") === APEX_HOST) {
+    const url = new URL(request.url);
+    url.host = CANONICAL_HOST;
+    return NextResponse.redirect(url, 308);
+  }
 
   if (pathname.startsWith("/admin") && !isPublicAdminPath(pathname)) {
     const hasSessionCookie = request.cookies.has(SESSION_COOKIE_NAME);
