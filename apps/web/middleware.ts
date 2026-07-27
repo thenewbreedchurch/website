@@ -67,6 +67,24 @@ function buildCsp(nonce: string | undefined): string {
 }
 
 export function middleware(request: NextRequest) {
+  try {
+    return realMiddleware(request);
+  } catch (err) {
+    // TEMPORARY diagnostic — Vercel's MIDDLEWARE_INVOCATION_FAILED page
+    // hides the real thrown error entirely, and repeated deploys of a
+    // locally-verified-clean bundle have still crashed identically, which
+    // means something differs between local and Vercel builds that plain
+    // source review hasn't caught. Surface the real error/stack directly
+    // in the response instead of guessing again. Revert once diagnosed.
+    const e = err as Error;
+    return new NextResponse(
+      JSON.stringify({ name: e?.name, message: e?.message, stack: e?.stack }, null, 2),
+      { status: 200, headers: { "content-type": "application/json" } }
+    );
+  }
+}
+
+function realMiddleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/admin") && !isPublicAdminPath(pathname)) {
