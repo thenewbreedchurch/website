@@ -79,7 +79,7 @@ function buildCsp(nonce: string | undefined): string {
   ].join("; ");
 }
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/admin") && !isPublicAdminPath(pathname)) {
@@ -127,6 +127,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
+  runtime: "experimental-edge",
   matcher: [
     // Run on everything except static assets and Next.js internals.
     "/((?!_next/static|_next/image|favicon.ico).*)",
