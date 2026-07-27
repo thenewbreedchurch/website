@@ -40,6 +40,7 @@ RUN pnpm install --frozen-lockfile=false
 COPY . .
 RUN pnpm --filter @nb-church/db generate
 RUN pnpm --filter @nb-church/web build
+RUN node -p "require('./packages/db/node_modules/prisma/package.json').version" > /prisma-version
 
 # ---------------------------------------------------------------------------
 # runner: minimal production image (Next.js standalone output)
@@ -51,15 +52,16 @@ COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/apps/web/public ./apps/web/public
 COPY --from=builder /app/packages/db/generated ./packages/db/generated
 COPY --from=builder /app/packages/db/prisma ./packages/db/prisma
-# prisma/@prisma are devDependencies/dependencies of packages/db, not the
-# workspace root, so pnpm only symlinks them under packages/db/node_modules
-# — never at /app/node_modules directly. The prisma CLI's own .bin shim
-# script hardcodes a relative path to a sibling ../prisma directory
-# (see packages/db/node_modules/.bin/prisma), so both must land together
-# at the runner's root node_modules for `prisma migrate deploy` to resolve.
-COPY --from=builder /app/packages/db/node_modules/.bin/prisma ./node_modules/.bin/prisma
-COPY --from=builder /app/packages/db/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/packages/db/node_modules/@prisma ./node_modules/@prisma
+# The prisma CLI (needed only for `prisma migrate deploy` at container
+# start, see entrypoint.sh) isn't hoisted to the workspace root by pnpm —
+# it's a devDependency of packages/db, isolated in pnpm's content-addressed
+# store along with its own transitive deps (@prisma/engines, @prisma/config
+# etc). Cherry-picking exact store paths for those proved fragile (they
+# shift with any lockfile change). A plain global install of the exact
+# same version that generated the client sidesteps pnpm's isolated
+# node_modules entirely and is what the CLI is designed to support anyway.
+COPY --from=builder /prisma-version /prisma-version
+RUN npm install -g prisma@$(cat /prisma-version) && rm /prisma-version
 COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 EXPOSE 3000
