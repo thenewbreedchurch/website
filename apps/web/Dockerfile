@@ -51,9 +51,15 @@ COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/apps/web/public ./apps/web/public
 COPY --from=builder /app/packages/db/generated ./packages/db/generated
 COPY --from=builder /app/packages/db/prisma ./packages/db/prisma
-COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# prisma/@prisma are devDependencies/dependencies of packages/db, not the
+# workspace root, so pnpm only symlinks them under packages/db/node_modules
+# — never at /app/node_modules directly. The prisma CLI's own .bin shim
+# script hardcodes a relative path to a sibling ../prisma directory
+# (see packages/db/node_modules/.bin/prisma), so both must land together
+# at the runner's root node_modules for `prisma migrate deploy` to resolve.
+COPY --from=builder /app/packages/db/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=builder /app/packages/db/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/packages/db/node_modules/@prisma ./node_modules/@prisma
 COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 EXPOSE 3000
