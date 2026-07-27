@@ -25,6 +25,13 @@ CMD ["pnpm", "--filter", "@nb-church/web", "dev"]
 # builder: production build
 # ---------------------------------------------------------------------------
 FROM base AS builder
+# Several public pages (e.g. /about) are statically prerendered at build
+# time and query Postgres directly (staff, service times, church settings)
+# — next build fails without a reachable DATABASE_URL. Vercel injects this
+# automatically for every build; Docker builds don't get runtime env vars
+# unless passed explicitly, so it must come in as a build arg here.
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 COPY pnpm-workspace.yaml package.json ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages/db/package.json packages/db/package.json
