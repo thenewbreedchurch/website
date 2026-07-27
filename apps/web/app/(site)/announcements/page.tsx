@@ -34,6 +34,7 @@ export default async function AnnouncementsPage({
 }) {
   const { category } = await searchParams;
   const window = getWeekWindow();
+  const now = new Date();
 
   const [serviceTimes, thisWeekAnnouncements, upcomingCandidates] = await Promise.all([
     getServiceTimes(),
@@ -61,8 +62,17 @@ export default async function AnnouncementsPage({
   // by next occurrence in memory, then takes just the page size to display —
   // still a bounded read overall, per the project's no-unbounded-list
   // standard, just with the final sort/limit done after the DB round trip.
+  //
+  // Cutoff is `now`, not `window.end` — an announcement dated anywhere in
+  // the current week is always < window.end (start of next week), so using
+  // window.end as the cutoff silently dropped every current-week
+  // announcement from this grid even though it's still upcoming (it would
+  // only ever show as a link in the "This Week" agenda above). `now` is a
+  // plain absolute-instant comparison against startDateTime (a UTC
+  // timestamp), so no Africa/Lagos conversion is needed here — only
+  // calendar-day/week boundary math (getWeekWindow) needs that.
   const upcoming = upcomingCandidates
-    .map((a) => ({ announcement: a, occurrence: getNextOccurrence(a, window.end) }))
+    .map((a) => ({ announcement: a, occurrence: getNextOccurrence(a, now) }))
     .filter((x): x is { announcement: typeof x.announcement; occurrence: Date } =>
       Boolean(x.occurrence)
     )
