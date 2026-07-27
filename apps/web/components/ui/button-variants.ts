@@ -9,8 +9,8 @@ export const buttonVariants = cva(
         secondary:
           "bg-brand-50 text-brand-800 hover:bg-brand-100 active:scale-[0.98] dark:bg-white/10 dark:text-white dark:hover:bg-white/20",
         outline:
-          "border border-current/20 bg-transparent hover:bg-black/[.03] dark:hover:bg-white/[.06]",
-        ghost: "bg-transparent hover:bg-black/[.04] dark:hover:bg-white/[.08]",
+          "border border-current/20 bg-transparent hover:bg-black/[.03] active:scale-[0.98] dark:hover:bg-white/[.06]",
+        ghost: "bg-transparent hover:bg-black/[.04] active:scale-[0.98] dark:hover:bg-white/[.08]",
       },
       size: {
         sm: "h-9 px-4 text-sm",

@@ -1,6 +1,21 @@
-import Link from "next/link";
+"use client";
+
+import Link, { useLinkStatus } from "next/link";
 import { Plus } from "lucide-react";
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
+
+// useLinkStatus only reports pending state for the <Link> it's rendered
+// inside of, so this has to be a separate child component. Doubles as the
+// pending indicator for "New" links and, since a few pages reuse this same
+// prop to render a relabeled "Export CSV" link, for CSV exports too.
+function NewLinkLabel({ label }: { label: string }) {
+  const { pending } = useLinkStatus();
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Plus size={15} className={pending ? "animate-spin" : undefined} /> {pending ? "Please wait…" : label}
+    </span>
+  );
+}
 
 export function AdminPageHeader({
   title,
@@ -26,9 +41,9 @@ export function AdminPageHeader({
         {newHref && (
           <Link
             href={newHref}
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-700 px-4 text-sm font-medium text-white transition-colors hover:bg-brand-800 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-700 px-4 text-sm font-medium text-white transition-colors active:scale-[0.98] hover:bg-brand-800 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
           >
-            <Plus size={15} /> {newLabel}
+            <NewLinkLabel label={newLabel} />
           </Link>
         )}
       </div>

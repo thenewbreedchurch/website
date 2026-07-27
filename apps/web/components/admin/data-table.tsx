@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 // Wrapped in its own horizontal-scroll container rather than letting the
@@ -54,17 +55,23 @@ export function Pagination({
   return (
     <div className="mt-4 flex items-center justify-center gap-3 text-sm">
       {page > 1 && (
-        <a href={`${basePath}?page=${page - 1}`} className="text-brand-700 hover:underline admin-dark:text-brand-300">
+        <Link
+          href={`${basePath}?page=${page - 1}`}
+          className="text-brand-700 hover:underline admin-dark:text-brand-300"
+        >
           Previous
-        </a>
+        </Link>
       )}
       <span className="text-neutral-500 admin-dark:text-neutral-400">
         Page {page} of {totalPages}
       </span>
       {page < totalPages && (
-        <a href={`${basePath}?page=${page + 1}`} className="text-brand-700 hover:underline admin-dark:text-brand-300">
+        <Link
+          href={`${basePath}?page=${page + 1}`}
+          className="text-brand-700 hover:underline admin-dark:text-brand-300"
+        >
           Next
-        </a>
+        </Link>
       )}
     </div>
   );

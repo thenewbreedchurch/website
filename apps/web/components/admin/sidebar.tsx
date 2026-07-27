@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -49,6 +50,23 @@ function NavLink({ href, label, icon: Icon, onNavigate }: {
   );
 }
 
+// useFormStatus only reads pending state for the <form> it's rendered
+// inside of, so this has to be a separate child component of the logout
+// form rather than read inline in SidebarContent.
+function LogoutButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      onClick={() => console.clear()}
+      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 disabled:opacity-50 admin-dark:text-neutral-400 admin-dark:hover:bg-neutral-800 admin-dark:hover:text-neutral-100"
+    >
+      <LogOut size={16} /> {pending ? "Logging out…" : "Log out"}
+    </button>
+  );
+}
+
 function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
@@ -82,13 +100,7 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
       <div className="border-t border-neutral-200 px-2 pt-3 admin-dark:border-neutral-800">
         <p className="truncate px-3 text-xs text-neutral-500 admin-dark:text-neutral-400">{email}</p>
         <form action={logoutAction} className="mt-1.5">
-          <button
-            type="submit"
-            onClick={() => console.clear()}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 admin-dark:text-neutral-400 admin-dark:hover:bg-neutral-800 admin-dark:hover:text-neutral-100"
-          >
-            <LogOut size={16} /> Log out
-          </button>
+          <LogoutButton />
         </form>
       </div>
     </div>

@@ -1,5 +1,6 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getSessionFromCookie } from "@/lib/session";
+import { getSessionFromCookie, SESSION_COOKIE_NAME } from "@/lib/session";
 import { InactivityWatcher } from "@/components/admin/InactivityWatcher";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminFooter } from "@/components/admin/admin-footer";
@@ -16,7 +17,15 @@ export default async function ProtectedAdminLayout({
 }) {
   const user = await getSessionFromCookie();
   if (!user) {
-    redirect("/admin/login");
+    // getSessionFromCookie() can't distinguish "never logged in" from
+    // "session expired" in its return value (both are just null), but its
+    // own cookie deletion on expiry is best-effort/no-op here (Server
+    // Components can't write cookies) — so a stale cookie physically
+    // survives in the browser past expiry. That makes cookie presence a
+    // reliable proxy: present-but-invalid means it expired, absent means
+    // the visitor was never logged in.
+    const hadSessionCookie = (await cookies()).has(SESSION_COOKIE_NAME);
+    redirect(hadSessionCookie ? "/admin/session-timeout" : "/admin/login");
   }
 
   const idleMinutes = Number(process.env.ADMIN_SESSION_IDLE_MINUTES ?? "15");

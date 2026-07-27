@@ -58,7 +58,12 @@ export function AnnouncementForm({
             ))}
           </Select>
         </Field>
-        <Field label="Status" htmlFor="status" error={err("status")}>
+        <Field
+          label="Status"
+          htmlFor="status"
+          error={err("status")}
+          hint="Draft won't appear on the public site until published."
+        >
           <Select id="status" name="status" defaultValue={announcement?.status ?? "DRAFT"}>
             {STATUSES.map((s) => (
               <option key={s} value={s}>
