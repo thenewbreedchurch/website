@@ -1,12 +1,42 @@
 import crypto from "node:crypto";
 import argon2 from "argon2";
-import { prisma } from "../index";
 
 // Real production content ported from the legacy static site
 // (_legacy-static-site/client/index.html, about.html, donate.html) — not
 // placeholder data. See HANDOFF.md for what still needs church review.
 
+type IndexModule = typeof import("../index");
+let prisma: IndexModule["prisma"];
+
+// This is a bare `tsx prisma/seed.ts` invocation, so nothing has loaded the
+// repo-root .env yet (unlike Next.js or the Prisma CLI, which both already
+// have DATABASE_URL set by the time their own code runs). Deliberately a
+// dynamic import inside an async function, not a static top-of-file one —
+// a static `import { prisma } from "../index"` is hoisted and evaluates
+// (including packages/db/index.ts's PrismaClient construction) before any
+// other code in this file runs, regardless of source order, so loading env
+// first requires genuinely delaying the import. This also can't be a
+// top-level `await import(...)`: this package isn't `"type": "module"`, so
+// tsx/esbuild compiles it as CommonJS, which doesn't support top-level
+// await — hence assigning the module-scoped `prisma` above from inside
+// main() instead. Keeping env-loading out of packages/db/index.ts entirely
+// means that shared module has no Node-only globals (__dirname) for any
+// bundler to ever have to reason about, no matter what imports it.
+async function loadPrisma(): Promise<IndexModule["prisma"]> {
+  if (!process.env.DATABASE_URL) {
+    const path = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const { config: loadEnv } = await import("dotenv");
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    loadEnv({ path: path.join(__dirname, "..", "..", "..", ".env") });
+  }
+  const mod = await import("../index");
+  return mod.prisma;
+}
+
 async function main() {
+  prisma = await loadPrisma();
+
   await prisma.churchSettings.upsert({
     where: { id: "singleton" },
     update: {},

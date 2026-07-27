@@ -1,19 +1,20 @@
-import path from "node:path";
-import { config as loadEnv } from "dotenv";
 import { PrismaClient } from "./generated/client";
 
-// Load the repo-root .env before the client below reads DATABASE_URL, so this
-// module works whether it's imported by Next.js (which loads its own env),
-// the Prisma CLI (which loads env via prisma.config.ts), or a bare `tsx`
-// invocation (e.g. `tsx prisma/seed.ts`) that has loaded nothing yet.
-if (!process.env.DATABASE_URL) {
-  // turbopackIgnore: this fallback only runs for bare `tsx` script
-  // invocations (seed.ts, migrate-legacy-data.mjs) that haven't loaded any
-  // env yet — Next.js and the Prisma CLI both already have DATABASE_URL set
-  // by the time this module loads, so Turbopack's file tracer should not
-  // follow this path into its production bundle.
-  loadEnv({ path: path.join(/* turbopackIgnore: true */ __dirname, "..", "..", ".env") });
-}
+// This module assumes DATABASE_URL is already set by the time it's
+// imported — true for Next.js (loads its own env) and the Prisma CLI
+// (loads env via prisma.config.ts). It deliberately does NOT fall back to
+// loading .env itself: that used to live here via a __dirname-based path,
+// which is a Node-only global — a previous version of this shipped and
+// caused a hard-to-diagnose production 500 (MIDDLEWARE_INVOCATION_FAILED,
+// "ReferenceError: __dirname is not defined") once __dirname ended up
+// statically traced into an Edge Runtime bundle, despite this module never
+// actually being imported by that code path at runtime. Removing every
+// Node-only global from this shared package — not just guarding it — is
+// what actually guarantees that can't happen again, regardless of what
+// ends up importing this module in the future. The one real caller that
+// needs a fallback (a bare `tsx prisma/seed.ts` invocation, which has
+// nothing pre-loaded) now loads env itself, in seed.ts, before importing
+// this module.
 
 declare global {
   // eslint-disable-next-line no-var
