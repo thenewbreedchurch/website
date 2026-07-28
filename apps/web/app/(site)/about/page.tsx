@@ -23,6 +23,7 @@ async function getLeadership(): Promise<StaffMember[]> {
   return prisma.staffMember.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
+    take: 6,
   });
 }
 

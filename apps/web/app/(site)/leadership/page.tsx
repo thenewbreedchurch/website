@@ -17,30 +17,7 @@ export function generateMetadata(): Metadata {
   });
 }
 
-// Groups leaders under their department when set, so a growing team reads as
-// distinct ministries rather than one flat grid. Falls back to a single
-// undivided grid (no section headers) when nobody has a department assigned
-// yet — matches today's reality of two seeded leaders with no department
-// data, without needing a special-cased "empty" layout.
-function groupByDepartment(leaders: StaffMember[]) {
-  const order: string[] = [];
-  const byDepartment = new Map<string, StaffMember[]>();
-
-  for (const leader of leaders) {
-    const key = leader.department ?? "";
-    if (!byDepartment.has(key)) {
-      byDepartment.set(key, []);
-      order.push(key);
-    }
-    byDepartment.get(key)!.push(leader);
-  }
-
-  const groups = order.map((key) => ({ department: key || null, leaders: byDepartment.get(key)! }));
-  const showHeaders = groups.length > 1 || groups[0]?.department !== null;
-  return { groups, showHeaders };
-}
-
-function LeaderCard({ leader }: { leader: StaffMember }) {
+function LeaderCard({ leader, priority = false }: { leader: StaffMember; priority?: boolean }) {
   return (
     <TiltCard>
       <div className="group overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
@@ -50,6 +27,7 @@ function LeaderCard({ leader }: { leader: StaffMember }) {
               src={leader.photoUrl}
               alt={leader.name}
               fill
+              priority={priority}
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             />
@@ -104,8 +82,6 @@ export default async function LeadershipPage() {
     orderBy: { sortOrder: "asc" },
   });
 
-  const { groups, showHeaders } = groupByDepartment(leaders);
-
   return (
     <>
       <section className="bg-brand-900 py-16 text-white sm:py-20">
@@ -119,7 +95,7 @@ export default async function LeadershipPage() {
       </section>
 
       <section className="py-16 sm:py-20">
-        <Container className="space-y-14">
+        <Container>
           {leaders.length === 0 ? (
             <RevealSection className="text-center text-current/70">
               We&apos;re updating this page — in the meantime,{" "}
@@ -129,22 +105,11 @@ export default async function LeadershipPage() {
               .
             </RevealSection>
           ) : (
-            groups.map((group) => (
-              <div key={group.department ?? "_all"}>
-                {showHeaders && (
-                  <RevealSection>
-                    <h2 className="mb-6 font-display text-2xl font-bold">
-                      {group.department ?? "Leadership"}
-                    </h2>
-                  </RevealSection>
-                )}
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {group.leaders.map((leader) => (
-                    <LeaderCard key={leader.id} leader={leader} />
-                  ))}
-                </div>
-              </div>
-            ))
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {leaders.map((leader, index) => (
+                <LeaderCard key={leader.id} leader={leader} priority={index === 0} />
+              ))}
+            </div>
           )}
         </Container>
       </section>
