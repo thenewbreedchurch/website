@@ -62,13 +62,14 @@ async function getVisitsOverTime(): Promise<{
   points: VisitsChartPoint[];
   totalViews: number;
   totalVisitors: number;
+  windowDays: number;
 }> {
   // The interval can't be interpolated directly into the raw SQL string —
   // $queryRaw treats every `${}` as a bind parameter, and a parameter can't
   // sit inside a quoted `INTERVAL '...'` literal. Computing the cutoff date
   // in JS and comparing timestamps directly sidesteps that entirely.
   const since = new Date(Date.now() - VISIT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
-  const [rows, [totals]] = await Promise.all([
+  const [rows, [totals], [earliest]] = await Promise.all([
     prisma.$queryRaw<{ day: Date; views: bigint; visitors: bigint }[]>`
       SELECT
         DATE_TRUNC('day', "createdAt") AS day,
@@ -87,20 +88,32 @@ async function getVisitsOverTime(): Promise<{
       FROM "PageView"
       WHERE "createdAt" >= ${since}
     `,
+    // Caps the chart's x-axis to how much history actually exists — without
+    // this, a site with only a few days of real traffic (e.g. right after
+    // launch) plots those days as a near-invisible sliver against ~30 empty
+    // days, reading as "the chart is broken" even though the totals above
+    // are already correct. Once real history exceeds VISIT_WINDOW_DAYS this
+    // is a no-op (windowDays below just clamps back to the constant).
+    prisma.$queryRaw<{ earliest: Date | null }[]>`SELECT MIN("createdAt") AS earliest FROM "PageView"`,
   ]);
   const byDay = new Map(
     rows.map((r) => [r.day.toISOString().slice(0, 10), { views: Number(r.views), visitors: Number(r.visitors) }])
   );
 
+  const daysSinceFirst = earliest?.earliest
+    ? Math.max(1, Math.ceil((Date.now() - earliest.earliest.getTime()) / (24 * 60 * 60 * 1000)))
+    : VISIT_WINDOW_DAYS;
+  const windowDays = Math.min(VISIT_WINDOW_DAYS, daysSinceFirst);
+
   const points: VisitsChartPoint[] = [];
-  for (let i = VISIT_WINDOW_DAYS - 1; i >= 0; i--) {
+  for (let i = windowDays - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const key = d.toISOString().slice(0, 10);
     const day = byDay.get(key);
     points.push({ date: key, views: day?.views ?? 0, visitors: day?.visitors ?? 0 });
   }
-  return { points, totalViews: Number(totals.views), totalVisitors: Number(totals.visitors) };
+  return { points, totalViews: Number(totals.views), totalVisitors: Number(totals.visitors), windowDays };
 }
 
 async function getMostViewed() {
@@ -195,7 +208,7 @@ export default async function AdminDashboardPage() {
     redirect("/admin/change-password");
   }
 
-  const [stats, { points: visits, totalViews, totalVisitors }, mostViewed, recentActivity] = await Promise.all([
+  const [stats, { points: visits, totalViews, totalVisitors, windowDays }, mostViewed, recentActivity] = await Promise.all([
     getStats(),
     getVisitsOverTime(),
     getMostViewed(),
@@ -240,7 +253,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center gap-2">
             <TrendingUp size={18} className="text-brand-700 admin-dark:text-brand-300" />
             <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">
-              Site visits — last {VISIT_WINDOW_DAYS} days
+              Site visits — last {windowDays} day{windowDays === 1 ? "" : "s"}
             </h2>
           </div>
           <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">
