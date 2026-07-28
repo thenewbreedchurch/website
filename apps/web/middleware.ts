@@ -86,8 +86,56 @@ function buildCsp(nonce: string | undefined): string {
 const APEX_HOST = "thenewbreedchurch.org";
 const CANONICAL_HOST = "www.thenewbreedchurch.org";
 
+// Toggle by setting MAINTENANCE_MODE=true on Render and redeploying (this is
+// Edge middleware, so process.env references get inlined at build time —
+// there's no instant runtime toggle without adding a DB/Redis dependency
+// here, which would defeat the point: this has to keep working even if
+// whatever's being worked on is the database itself). /admin stays reachable
+// throughout so staff aren't locked out of everything else while it's on.
+const MAINTENANCE_MODE = process.env.MAINTENANCE_MODE === "true";
+
+// Self-contained on purpose — no images, no fonts, no data fetch of any
+// kind. If maintenance mode is on because something deeper is broken, this
+// page still has to render correctly regardless.
+const MAINTENANCE_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>We&#8217;ll be right back — The New Breed Church</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#0b0b12; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; text-align:center; padding:2rem; }
+  .card { max-width:28rem; }
+  .badge { display:block; margin-bottom:1.5rem; font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase; color:#a78bfa; }
+  h1 { font-size:1.75rem; font-weight:700; margin:0 0 0.75rem; }
+  p { color:rgba(255,255,255,0.7); line-height:1.6; margin:0; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">The New Breed Church</span>
+    <h1>We&#8217;ll be right back</h1>
+    <p>We&#8217;re making some improvements to our site right now. Please check back shortly — thank you for your patience.</p>
+  </div>
+</body>
+</html>`;
+
+function maintenanceResponse(): NextResponse {
+  return new NextResponse(MAINTENANCE_HTML, {
+    status: 503,
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "retry-after": "3600",
+    },
+  });
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (MAINTENANCE_MODE && !pathname.startsWith("/admin")) {
+    return maintenanceResponse();
+  }
 
   if (request.headers.get("host") === APEX_HOST) {
     const url = new URL(request.url);
