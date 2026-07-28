@@ -37,6 +37,36 @@ const nextConfig: NextConfig = {
   output: process.env.VERCEL ? undefined : "standalone",
   images: {
     formats: ["image/avif", "image/webp"],
+    // Sermon thumbnails auto-derive from YouTube when an admin leaves
+    // thumbnailUrl blank (lib/youtube.ts's youtubeThumbnailUrl, used by
+    // components/sermons/sermon-card.tsx) — next/image refuses to optimize
+    // any external host that isn't explicitly allow-listed here. i.ytimg.com
+    // is the only hostname that helper ever returns (youtubeEmbedUrl's
+    // youtube-nocookie.com URL is only ever used as an <iframe> src, never
+    // passed to next/image, so it doesn't need a remotePattern).
+    remotePatterns: [
+      { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" },
+    ],
+    // These are static content images that only change via a new admin
+    // upload + deploy, not per-request — the Next.js default (60s) means
+    // the optimizer cache expires and regenerates AVIF/WebP variants
+    // constantly under normal traffic, burning CPU on Render's 0.5 CPU
+    // Starter tier for no benefit. A long TTL is safe here.
+    minimumCacheTTL: 31536000, // 1 year
+  },
+  // Belt-and-suspenders for the standalone Docker build: `sharp` (added as
+  // a real apps/web dependency, see package.json) is required by Next's
+  // built-in image optimizer in any self-hosted deployment — without it,
+  // every image request falls back to a much slower, unoptimized path,
+  // which is what was actually causing 5-8s image loads and, by starving
+  // the single small Render instance's CPU, made unrelated clicks
+  // (nav, breadcrumbs, the admin dark-mode toggle) feel laggy too. Normal
+  // Node File Trace should already pick sharp up now that it's a real
+  // dependency, but this forces it into the traced output regardless, at
+  // zero cost if already found — see the Dockerfile's build-time assertion
+  // for the check that verifies this actually worked.
+  outputFileTracingIncludes: {
+    "/_next/image": ["./node_modules/sharp/**/*"],
   },
   // Preserves SEO/link equity from the legacy flat-file static site (see
   // _legacy-static-site/client/*.html) on domain cutover — without these,

@@ -40,6 +40,14 @@ RUN pnpm install --frozen-lockfile=false
 COPY . .
 RUN pnpm --filter @nb-church/db generate
 RUN pnpm --filter @nb-church/web build
+# sharp is required by Next's built-in image optimizer for self-hosted
+# deployments (see next.config.ts) but is easy to silently lose from the
+# traced standalone output (this bit the prisma CLI in this exact Dockerfile
+# before — see git log for "Fix Dockerfile runner stage: copy prisma CLI").
+# Fail the build loudly here instead of shipping a runner image with a
+# degraded/broken image optimizer.
+RUN find /app/apps/web/.next/standalone -type d -path "*/node_modules/sharp" | grep -q . \
+  || (echo "ERROR: sharp was not traced into apps/web/.next/standalone — image optimization will be broken or badly degraded in the runner image." && exit 1)
 RUN node -p "require('./packages/db/node_modules/prisma/package.json').version" > /prisma-version
 
 # ---------------------------------------------------------------------------
