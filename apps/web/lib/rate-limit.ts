@@ -21,15 +21,25 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   const windowKey = `ratelimit:${key}:${Math.floor(Date.now() / 1000 / opts.windowSeconds)}`;
 
-  const count = await redis.incr(windowKey);
-  if (count === 1) {
-    await redis.expire(windowKey, opts.windowSeconds);
-  }
+  try {
+    const count = await redis.incr(windowKey);
+    if (count === 1) {
+      await redis.expire(windowKey, opts.windowSeconds);
+    }
 
-  return {
-    allowed: count <= opts.limit,
-    remaining: Math.max(0, opts.limit - count),
-  };
+    return {
+      allowed: count <= opts.limit,
+      remaining: Math.max(0, opts.limit - count),
+    };
+  } catch (err) {
+    // Fail open: a degraded/unreachable Redis (bounded to ~1s per command
+    // by commandTimeout, see lib/redis.ts) should never turn into a
+    // multi-second stall — or an outright failure — on a real user action.
+    // Worst case during an outage, rate limiting is briefly ineffective,
+    // which is the right tradeoff for a low-traffic site.
+    console.error(`[rate-limit] check failed for "${key}":`, (err as Error).message);
+    return { allowed: true, remaining: opts.limit };
+  }
 }
 
 // Server Actions don't receive a request object directly, so the caller's IP

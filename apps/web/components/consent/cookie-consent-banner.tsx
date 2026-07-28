@@ -69,10 +69,9 @@ export function CookieConsentBanner() {
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <p className="text-sm text-current/80">
-          We use essential cookies to run this site, like keeping admins signed in.
-          With your consent, we&apos;d also like to set an anonymous cookie that helps
-          us count unique visitors — it&apos;s never shared with third parties or used
-          to track you elsewhere.
+          We use essential cookies to run this site. With your consent, we&apos;d also
+          like to set an anonymous cookie that helps us count unique visitors — it&apos;s
+          never shared with third parties or used to track you elsewhere.
         </p>
         <div className="flex shrink-0 items-center gap-3">
           <button

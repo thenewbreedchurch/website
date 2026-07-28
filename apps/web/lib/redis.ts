@@ -19,6 +19,13 @@ export const redis =
   new Redis(REDIS_URL, {
     maxRetriesPerRequest: 3,
     lazyConnect: false,
+    // Bounds every command (cache get/set/del, rate-limit incr/expire) to
+    // ~1s instead of sitting through ioredis's full internal reconnect/
+    // retry sequence when the connection is down or degraded — callers
+    // (getCached, checkRateLimit) already fail open on a rejected command,
+    // but only this actually bounds how long a real user-facing request
+    // waits before that fail-open path kicks in.
+    commandTimeout: 1000,
   });
 
 redis.on("error", (err) => {

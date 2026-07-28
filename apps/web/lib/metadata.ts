@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.thenewbreedchurch.org";
-const DEFAULT_OG_IMAGE = "/images/hero/og-default.jpg";
+const DEFAULT_OG_IMAGE = "/images/og-default.png";
 
 export interface PageMetaInput {
   title: string;
