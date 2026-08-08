@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormStatus } from "@/components/admin/form-status";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import type { ActionResult } from "@/lib/action-result";
 
 export function TestimonyForm({
@@ -28,9 +29,14 @@ export function TestimonyForm({
         <Input id="authorName" name="authorName" defaultValue={testimony?.authorName} required />
       </Field>
 
-      <Field label="Author photo path (optional)" htmlFor="authorPhotoUrl" error={err("authorPhotoUrl")}>
-        <Input id="authorPhotoUrl" name="authorPhotoUrl" defaultValue={testimony?.authorPhotoUrl ?? ""} placeholder="/images/testimonies/john-doe.jpg" />
-      </Field>
+      <ImageUploadField
+        name="authorPhotoUrl"
+        label="Author photo (optional)"
+        category="testimonies"
+        defaultValue={testimony?.authorPhotoUrl ?? ""}
+        error={err("authorPhotoUrl")}
+        hint="Upload a photo, or paste a path/URL directly."
+      />
 
       <Field label="Testimony" htmlFor="body" error={err("body")}>
         <Textarea id="body" name="body" rows={5} defaultValue={testimony?.body} required />

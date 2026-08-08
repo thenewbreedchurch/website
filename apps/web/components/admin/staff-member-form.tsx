@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormStatus } from "@/components/admin/form-status";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import type { ActionResult } from "@/lib/action-result";
 
 export function StaffMemberForm({
@@ -51,9 +52,14 @@ export function StaffMemberForm({
         </Field>
       </div>
 
-      <Field label="Photo path (optional)" htmlFor="photoUrl" error={err("photoUrl")}>
-        <Input id="photoUrl" name="photoUrl" defaultValue={staffMember?.photoUrl ?? ""} placeholder="/images/staff/jane-doe.jpg" />
-      </Field>
+      <ImageUploadField
+        name="photoUrl"
+        label="Photo (optional)"
+        category="staff"
+        defaultValue={staffMember?.photoUrl ?? ""}
+        error={err("photoUrl")}
+        hint="Upload a photo, or paste a path/URL directly."
+      />
 
       <Field label="Bio (optional)" htmlFor="bio" error={err("bio")}>
         <Textarea id="bio" name="bio" defaultValue={staffMember?.bio ?? ""} />

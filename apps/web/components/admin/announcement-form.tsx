@@ -9,6 +9,7 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormStatus } from "@/components/admin/form-status";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import type { ActionResult } from "@/lib/action-result";
 import { CHURCH_TZ } from "@/lib/announcements";
 
@@ -122,14 +123,14 @@ export function AnnouncementForm({
         </Field>
       </div>
 
-      <Field
-        label="Hero image path"
-        htmlFor="heroImageUrl"
+      <ImageUploadField
+        name="heroImageUrl"
+        label="Hero image"
+        category="announcements"
+        defaultValue={announcement?.heroImageUrl ?? ""}
         error={err("heroImageUrl")}
-        hint="Must be a path to an image already uploaded to this website, starting with /images/... (e.g. /images/announcements/announcements-cultural-event.jpg) — not a link copied from Facebook, Google Photos, or another website, which will break the page. Leave blank to use a default image."
-      >
-        <Input id="heroImageUrl" name="heroImageUrl" defaultValue={announcement?.heroImageUrl ?? ""} />
-      </Field>
+        hint="Upload a photo, or paste a path/URL directly. Leave blank to use a default image."
+      />
 
       <label className="flex items-center gap-2 text-sm">
         <Checkbox name="registrationRequired" defaultChecked={announcement?.registrationRequired ?? false} />

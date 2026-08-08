@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormStatus } from "@/components/admin/form-status";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import type { ActionResult } from "@/lib/action-result";
 
 export function NextStepForm({
@@ -40,9 +41,14 @@ export function NextStepForm({
         <Textarea id="body" name="body" defaultValue={nextStep?.body} required />
       </Field>
 
-      <Field label="Image path (optional)" htmlFor="imageUrl" error={err("imageUrl")}>
-        <Input id="imageUrl" name="imageUrl" defaultValue={nextStep?.imageUrl ?? ""} placeholder="/images/next-steps/baptism.jpg" />
-      </Field>
+      <ImageUploadField
+        name="imageUrl"
+        label="Image (optional)"
+        category="next-steps"
+        defaultValue={nextStep?.imageUrl ?? ""}
+        error={err("imageUrl")}
+        hint="Upload an image, or paste a path/URL directly."
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="CTA label (optional)" htmlFor="ctaLabel" error={err("ctaLabel")}>

@@ -46,6 +46,18 @@ const nextConfig: NextConfig = {
     // passed to next/image, so it doesn't need a remotePattern).
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" },
+      // Admin-uploaded images (see actions/admin/upload.ts, lib/r2.ts) land
+      // in a Cloudflare R2 bucket at this host. R2_PUBLIC_URL is only set
+      // once real R2 credentials are configured, so this is conditionally
+      // omitted rather than given a placeholder — local/dev builds without
+      // R2 configured don't need one. Uses the global `URL` constructor
+      // (not a `node:url` import) — Edge-safe, same pattern middleware.ts
+      // already uses for its apex-to-www redirect, so this can't reintroduce
+      // the __dirname-in-Edge-bundle class of bug this file's history
+      // already warns about above.
+      ...(process.env.R2_PUBLIC_URL
+        ? [{ protocol: "https" as const, hostname: new URL(process.env.R2_PUBLIC_URL).hostname }]
+        : []),
     ],
     // These are static content images that only change via a new admin
     // upload + deploy, not per-request — the Next.js default (60s) means
@@ -67,6 +79,16 @@ const nextConfig: NextConfig = {
   // for the check that verifies this actually worked.
   outputFileTracingIncludes: {
     "/_next/image": ["./node_modules/sharp/**/*"],
+  },
+  // Server Actions default to a 1MB request-body cap — too small for the
+  // admin image-upload feature (actions/admin/upload.ts), where a typical
+  // unedited phone photo is 3-10MB. 10mb leaves headroom over that action's
+  // own 8MB file-size validation for multipart boundary/field overhead, per
+  // Next's own sizing guidance.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
   },
   // Preserves SEO/link equity from the legacy flat-file static site (see
   // _legacy-static-site/client/*.html) on domain cutover — without these,

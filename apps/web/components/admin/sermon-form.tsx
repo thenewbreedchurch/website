@@ -6,6 +6,7 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormStatus } from "@/components/admin/form-status";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import type { ActionResult } from "@/lib/action-result";
 import { youtubeThumbnailUrl } from "@/lib/youtube";
 
@@ -22,16 +23,10 @@ export function SermonForm({
   );
   const err = (f: string) => (state && !state.ok ? state.fieldErrors?.[f] : undefined);
 
-  // Controlled (not defaultValue) so the preview below can react as the
-  // admin types/pastes — the fields still submit via their name attributes
-  // exactly as before, this doesn't change what the Server Action receives.
+  // Controlled (not defaultValue) so ImageUploadField's fallback preview
+  // below can react as the admin types/pastes a new Video URL — the field
+  // still submits via its name attribute exactly as before.
   const [videoUrl, setVideoUrl] = useState(sermon?.videoUrl ?? "");
-  const [thumbnailUrl, setThumbnailUrl] = useState(sermon?.thumbnailUrl ?? "");
-  // Tracks which src actually 404'd/errored, so the preview only hides for
-  // that specific bad value — typing further (a new src) gets a fresh
-  // attempt rather than staying hidden forever from one earlier failure.
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const previewSrc = thumbnailUrl.trim() || youtubeThumbnailUrl(videoUrl);
 
   return (
     <form action={formAction} className="max-w-2xl space-y-5">
@@ -83,40 +78,15 @@ export function SermonForm({
         />
       </Field>
 
-      <Field
-        label="Thumbnail path (optional)"
-        htmlFor="thumbnailUrl"
+      <ImageUploadField
+        name="thumbnailUrl"
+        label="Thumbnail (optional)"
+        category="sermons"
+        defaultValue={sermon?.thumbnailUrl ?? ""}
         error={err("thumbnailUrl")}
-        hint="Leave blank to use the preview below (auto-derived from the YouTube link) — only fill this in to override it with your own image."
-      >
-        <Input
-          id="thumbnailUrl"
-          name="thumbnailUrl"
-          value={thumbnailUrl}
-          onChange={(e) => setThumbnailUrl(e.target.value)}
-          placeholder="/images/sermons/sermon-2026-06.jpg"
-        />
-      </Field>
-
-      {previewSrc && previewSrc !== failedSrc && (
-        <div className="flex items-center gap-3">
-          <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100 admin-dark:border-neutral-800 admin-dark:bg-neutral-800">
-            {/* eslint-disable-next-line @next/next/no-img-element -- transient
-                preview of an external, not-yet-saved URL as the admin types;
-                routing this through next/image's optimizer adds no value here */}
-            <img
-              src={previewSrc}
-              alt=""
-              loading="lazy"
-              className="h-full w-full object-cover"
-              onError={() => setFailedSrc(previewSrc)}
-            />
-          </div>
-          <p className="text-xs text-neutral-500 admin-dark:text-neutral-400">
-            {thumbnailUrl.trim() ? "Preview of the thumbnail path above." : "Preview of the thumbnail that will be used (derived from the YouTube link)."}
-          </p>
-        </div>
-      )}
+        hint="Upload an image, or paste a path/URL directly. Leave blank to use the preview below (auto-derived from the YouTube link)."
+        fallbackPreviewSrc={youtubeThumbnailUrl(videoUrl)}
+      />
 
       <Field label="Tags (comma-separated, optional)" htmlFor="tags" error={err("tags")}>
         <Input id="tags" name="tags" defaultValue={sermon?.tags?.join(", ") ?? ""} placeholder="faith, prayer, healing" />
