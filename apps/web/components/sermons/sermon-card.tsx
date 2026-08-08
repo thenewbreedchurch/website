@@ -2,19 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
 import type { Sermon } from "@nb-church/db";
-import { youtubeThumbnailUrl } from "@/lib/youtube";
-
-const FALLBACK_THUMBS = [
-  "/images/sermons/sermons-preaching-1.jpg",
-  "/images/sermons/sermons-preaching-2.jpg",
-  "/images/sermons/sermons-preaching-3.jpg",
-];
+import { youtubeThumbnailUrl, SERMON_FALLBACK_THUMBNAILS } from "@/lib/youtube";
 
 export function SermonCard({ sermon, index = 0 }: { sermon: Sermon; index?: number }) {
   const thumbnail =
     sermon.thumbnailUrl ??
     youtubeThumbnailUrl(sermon.videoUrl) ??
-    FALLBACK_THUMBS[index % FALLBACK_THUMBS.length];
+    SERMON_FALLBACK_THUMBNAILS[index % SERMON_FALLBACK_THUMBNAILS.length];
 
   return (
     <Link
