@@ -21,12 +21,18 @@ const TARGETS: Array<{ table: string; column: string }> = [
   { table: "ServiceTime", column: "endTime" },
   { table: "ServiceTime", column: "onlineUrl" },
   { table: "ServiceTime", column: "location" },
-  { table: "Announcement", column: "endDateTime" },
+  // Announcement.endDateTime and .registrationDeadline are DateTime? in
+  // the schema, not String? — deliberately excluded here (an "= ''"
+  // comparison against a timestamp column throws a Postgres type error).
+  // Confirmed they were never actually affected by the empty-string bug
+  // in the first place: actions/admin/announcements.ts already converts
+  // via `d.endDateTime ? fromZonedTime(...) : null`, a truthy check that
+  // treats "" and undefined identically, so both the old and new Zod
+  // schema behavior produce the same correct `null` here regardless.
   { table: "Announcement", column: "recurrenceRule" },
   { table: "Announcement", column: "location" },
   { table: "Announcement", column: "onlineUrl" },
   { table: "Announcement", column: "heroImageUrl" },
-  { table: "Announcement", column: "registrationDeadline" },
   { table: "Sermon", column: "series" },
   { table: "Sermon", column: "scripture" },
   { table: "Sermon", column: "description" },
@@ -46,17 +52,28 @@ const TARGETS: Array<{ table: string; column: string }> = [
 export default async function BackfillEmptyStringsPage() {
   await requireAdmin();
 
-  const results: Array<{ table: string; column: string; updated: number }> = [];
+  const results: Array<{ table: string; column: string; updated?: number; error?: string }> = [];
   for (const { table, column } of TARGETS) {
-    const updated = await prisma.$executeRawUnsafe(
-      `UPDATE "${table}" SET "${column}" = NULL WHERE "${column}" = ''`
-    );
-    results.push({ table, column, updated });
+    try {
+      const updated = await prisma.$executeRawUnsafe(
+        `UPDATE "${table}" SET "${column}" = NULL WHERE "${column}" = ''`
+      );
+      results.push({ table, column, updated });
+    } catch (err) {
+      results.push({ table, column, error: (err as Error).message });
+    }
   }
 
-  const totalUpdated = results.reduce((sum, r) => sum + r.updated, 0);
+  const totalUpdated = results.reduce((sum, r) => sum + (r.updated ?? 0), 0);
+  const errors = results.filter((r) => r.error);
 
   return (
-    <pre>{JSON.stringify({ totalUpdated, results: results.filter((r) => r.updated > 0) }, null, 2)}</pre>
+    <pre>
+      {JSON.stringify(
+        { totalUpdated, errors, updatedRows: results.filter((r) => (r.updated ?? 0) > 0) },
+        null,
+        2
+      )}
+    </pre>
   );
 }
