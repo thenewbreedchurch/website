@@ -122,7 +122,12 @@ async function getMostViewed() {
     by: ["path"],
     where: { createdAt: { gte: since } },
     _count: { path: true },
-    orderBy: { _count: { path: "desc" } },
+    // `path` as a secondary sort key breaks ties deterministically —
+    // without it, two paths with the same count (e.g. two pages both at
+    // 21 views) have no stable order between query executions, so which
+    // ones land in the `take: 8` cutoff (and in what order) could shuffle
+    // on every reload even though the underlying counts hadn't changed.
+    orderBy: [{ _count: { path: "desc" } }, { path: "asc" }],
     take: 8,
   });
 
@@ -271,7 +276,9 @@ export default async function AdminDashboardPage() {
             <Eye size={18} className="text-brand-700 admin-dark:text-brand-300" />
             <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">Most viewed</h2>
           </div>
-          <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">Last {VISIT_WINDOW_DAYS} days</p>
+          <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">
+            Last {windowDays} day{windowDays === 1 ? "" : "s"}
+          </p>
           {mostViewed.length === 0 ? (
             <p className="mt-4 text-sm text-neutral-400 admin-dark:text-neutral-500">No page views recorded yet.</p>
           ) : (
