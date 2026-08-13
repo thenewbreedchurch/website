@@ -32,6 +32,16 @@ FROM base AS builder
 # unless passed explicitly, so it must come in as a build arg here.
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
+# next.config.ts computes the R2 remotePatterns entry from R2_PUBLIC_URL at
+# `next build` time (it needs to know the hostname to allow-list before the
+# config is compiled into the build output) — Render only forwards a
+# dashboard env var into the Docker build step for vars the Dockerfile
+# explicitly declares with ARG, same as DATABASE_URL above. Without this,
+# every R2-uploaded image 400s from /_next/image in production
+# ("url" parameter is not allowed) even though the image itself is public
+# and the env var is set correctly in Render's dashboard — confirmed live.
+ARG R2_PUBLIC_URL
+ENV R2_PUBLIC_URL=$R2_PUBLIC_URL
 COPY pnpm-workspace.yaml package.json ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages/db/package.json packages/db/package.json

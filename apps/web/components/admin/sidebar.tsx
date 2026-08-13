@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, LayoutDashboard, LogOut } from "lucide-react";
+import { Menu, X, LayoutDashboard, LogOut, ExternalLink } from "lucide-react";
 import { ADMIN_NAV_GROUPS } from "@/lib/admin-nav";
 import { logoutAction } from "@/actions/admin-auth";
 import { ThemeToggle } from "@/components/admin/theme-toggle";
@@ -80,6 +80,16 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
         </Link>
         <ThemeToggle />
       </div>
+
+      <a
+        href="/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mx-2 flex items-center gap-2 rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 admin-dark:border-neutral-800 admin-dark:text-neutral-400 admin-dark:hover:bg-neutral-800 admin-dark:hover:text-neutral-100"
+      >
+        <ExternalLink size={16} className="text-neutral-400 admin-dark:text-neutral-500" />
+        View Public Site
+      </a>
 
       <nav className="mt-4 flex-1 space-y-6 overflow-y-auto px-2">
         <NavLink href="/admin" label="Dashboard" icon={LayoutDashboard} onNavigate={onNavigate} />
