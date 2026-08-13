@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
 import type { Sermon } from "@nb-church/db";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormStatus } from "@/components/admin/form-status";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import type { ActionResult } from "@/lib/action-result";
+import { useAdminForm } from "@/lib/use-admin-form";
 import { youtubeThumbnailUrl } from "@/lib/youtube";
 
 export function SermonForm({
@@ -17,10 +18,7 @@ export function SermonForm({
   sermon?: Sermon;
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
 }) {
-  const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
-    action,
-    null
-  );
+  const { state, formAction, isPending, onFormChange } = useAdminForm(action);
   const err = (f: string) => (state && !state.ok ? state.fieldErrors?.[f] : undefined);
 
   // Controlled (not defaultValue) so ImageUploadField's fallback preview
@@ -29,7 +27,7 @@ export function SermonForm({
   const [videoUrl, setVideoUrl] = useState(sermon?.videoUrl ?? "");
 
   return (
-    <form action={formAction} className="max-w-2xl space-y-5">
+    <form action={formAction} onChange={onFormChange} className="max-w-2xl space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Title" htmlFor="title" error={err("title")}>
           <Input id="title" name="title" defaultValue={sermon?.title} required placeholder="Walking in Faith" />

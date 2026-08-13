@@ -21,7 +21,7 @@ export default async function EditSermonPage({
         title="Edit Sermon"
         breadcrumbs={[{ label: "Sermons", href: "/admin/sermons" }, { label: sermon.title }]}
       />
-      <SermonForm sermon={sermon} action={updateSermonAction.bind(null, id)} />
+      <SermonForm key={id} sermon={sermon} action={updateSermonAction.bind(null, id)} />
     </div>
   );
 }

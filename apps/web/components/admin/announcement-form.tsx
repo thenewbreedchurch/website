@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAdminForm } from "@/lib/use-admin-form";
 import type { Announcement } from "@nb-church/db";
 import { toZonedTime, formatInTimeZone } from "date-fns-tz";
 import { Field } from "@/components/ui/field";
@@ -28,14 +28,11 @@ export function AnnouncementForm({
   announcement?: Announcement;
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
 }) {
-  const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
-    action,
-    null
-  );
+  const { state, formAction, isPending, onFormChange } = useAdminForm(action);
   const err = (f: string) => (state && !state.ok ? state.fieldErrors?.[f] : undefined);
 
   return (
-    <form action={formAction} className="max-w-2xl space-y-5">
+    <form action={formAction} onChange={onFormChange} className="max-w-2xl space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Title" htmlFor="title" error={err("title")}>
           <Input id="title" name="title" defaultValue={announcement?.title} required placeholder="Sunday Worship Service" />

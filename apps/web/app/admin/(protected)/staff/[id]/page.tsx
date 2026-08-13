@@ -21,7 +21,7 @@ export default async function EditStaffMemberPage({
         title="Edit Leader"
         breadcrumbs={[{ label: "Staff / Leadership", href: "/admin/staff" }, { label: staffMember.name }]}
       />
-      <StaffMemberForm staffMember={staffMember} action={updateStaffMemberAction.bind(null, id)} />
+      <StaffMemberForm key={id} staffMember={staffMember} action={updateStaffMemberAction.bind(null, id)} />
     </div>
   );
 }

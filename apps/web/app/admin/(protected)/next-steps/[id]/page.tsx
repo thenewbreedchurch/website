@@ -21,7 +21,7 @@ export default async function EditNextStepPage({
         title="Edit Next Step"
         breadcrumbs={[{ label: "Next Steps", href: "/admin/next-steps" }, { label: nextStep.title }]}
       />
-      <NextStepForm nextStep={nextStep} action={updateNextStepAction.bind(null, id)} />
+      <NextStepForm key={id} nextStep={nextStep} action={updateNextStepAction.bind(null, id)} />
     </div>
   );
 }

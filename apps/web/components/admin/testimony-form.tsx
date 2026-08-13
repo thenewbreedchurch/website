@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAdminForm } from "@/lib/use-admin-form";
 import type { Testimony } from "@nb-church/db";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -17,14 +17,11 @@ export function TestimonyForm({
   testimony?: Testimony;
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
 }) {
-  const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
-    action,
-    null
-  );
+  const { state, formAction, isPending, onFormChange } = useAdminForm(action);
   const err = (f: string) => (state && !state.ok ? state.fieldErrors?.[f] : undefined);
 
   return (
-    <form action={formAction} className="max-w-xl space-y-5">
+    <form action={formAction} onChange={onFormChange} className="max-w-xl space-y-5">
       <Field label="Author name" htmlFor="authorName" error={err("authorName")}>
         <Input id="authorName" name="authorName" defaultValue={testimony?.authorName} required />
       </Field>

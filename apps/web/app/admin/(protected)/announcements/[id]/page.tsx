@@ -30,7 +30,7 @@ export default async function EditAnnouncementPage({
           View registrations &rarr;
         </Link>
       )}
-      <AnnouncementForm announcement={announcement} action={updateAnnouncementAction.bind(null, id)} />
+      <AnnouncementForm key={id} announcement={announcement} action={updateAnnouncementAction.bind(null, id)} />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default async function EditTestimonyPage({
         title="Edit Testimony"
         breadcrumbs={[{ label: "Testimonies", href: "/admin/testimonies" }, { label: testimony.authorName }]}
       />
-      <TestimonyForm testimony={testimony} action={updateTestimonyAction.bind(null, id)} />
+      <TestimonyForm key={id} testimony={testimony} action={updateTestimonyAction.bind(null, id)} />
     </div>
   );
 }

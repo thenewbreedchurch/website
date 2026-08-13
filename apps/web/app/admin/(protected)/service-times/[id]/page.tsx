@@ -21,7 +21,7 @@ export default async function EditServiceTimePage({
         title="Edit Service Time"
         breadcrumbs={[{ label: "Service Times", href: "/admin/service-times" }, { label: serviceTime.label }]}
       />
-      <ServiceTimeForm serviceTime={serviceTime} action={updateServiceTimeAction.bind(null, id)} />
+      <ServiceTimeForm key={id} serviceTime={serviceTime} action={updateServiceTimeAction.bind(null, id)} />
     </div>
   );
 }

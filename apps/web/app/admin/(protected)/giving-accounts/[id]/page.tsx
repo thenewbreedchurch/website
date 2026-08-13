@@ -21,7 +21,7 @@ export default async function EditGivingAccountPage({
         title="Edit Giving Account"
         breadcrumbs={[{ label: "Giving Accounts", href: "/admin/giving-accounts" }, { label: account.fundName }]}
       />
-      <GivingAccountForm account={account} action={updateGivingAccountAction.bind(null, id)} />
+      <GivingAccountForm key={id} account={account} action={updateGivingAccountAction.bind(null, id)} />
     </div>
   );
 }

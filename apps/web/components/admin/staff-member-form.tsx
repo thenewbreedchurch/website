@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAdminForm } from "@/lib/use-admin-form";
 import type { StaffMember } from "@nb-church/db";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -17,14 +17,11 @@ export function StaffMemberForm({
   staffMember?: StaffMember;
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
 }) {
-  const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
-    action,
-    null
-  );
+  const { state, formAction, isPending, onFormChange } = useAdminForm(action);
   const err = (f: string) => (state && !state.ok ? state.fieldErrors?.[f] : undefined);
 
   return (
-    <form action={formAction} className="max-w-lg space-y-5">
+    <form action={formAction} onChange={onFormChange} className="max-w-lg space-y-5">
       <Field label="Name" htmlFor="name" error={err("name")}>
         <Input id="name" name="name" defaultValue={staffMember?.name} required />
       </Field>
