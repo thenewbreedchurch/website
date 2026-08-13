@@ -1,4 +1,4 @@
-/** Extracts a YouTube video ID from any common URL shape (youtu.be, watch?v=, embed/, shorts/). */
+/** Extracts a YouTube video ID from any common URL shape (youtu.be, watch?v=, embed/, shorts/, live/). */
 export function extractYoutubeId(url: string): string | null {
   try {
     const parsed = new URL(url);
@@ -8,7 +8,10 @@ export function extractYoutubeId(url: string): string | null {
     if (parsed.hostname.includes("youtube.com")) {
       const v = parsed.searchParams.get("v");
       if (v) return v;
-      const match = parsed.pathname.match(/\/(embed|shorts)\/([^/?]+)/);
+      // /live/<id> is YouTube's URL shape for livestreamed/premiered videos
+      // — this church streams services live, so sermon links commonly use
+      // this format rather than watch?v=.
+      const match = parsed.pathname.match(/\/(embed|shorts|live)\/([^/?]+)/);
       if (match) return match[2] ?? null;
     }
     return null;
