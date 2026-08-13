@@ -67,18 +67,22 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000, // 1 year
   },
   // Belt-and-suspenders for the standalone Docker build: `sharp` (added as
-  // a real apps/web dependency, see package.json) is required by Next's
-  // built-in image optimizer in any self-hosted deployment — without it,
-  // every image request falls back to a much slower, unoptimized path,
-  // which is what was actually causing 5-8s image loads and, by starving
-  // the single small Render instance's CPU, made unrelated clicks
-  // (nav, breadcrumbs, the admin dark-mode toggle) feel laggy too. Normal
-  // Node File Trace should already pick sharp up now that it's a real
-  // dependency, but this forces it into the traced output regardless, at
-  // zero cost if already found — see the Dockerfile's build-time assertion
-  // for the check that verifies this actually worked.
+  // a real apps/web dependency, see package.json) is required both by
+  // Next's built-in image optimizer AND by actions/admin/upload.ts (real
+  // admin image uploads, resized/recompressed server-side before landing in
+  // R2). Originally this was scoped to just "/_next/image" — but that left
+  // every admin Server Action route uncovered, since sharp's actual native
+  // binary lives in separate @img/sharp-<platform> packages, not nested
+  // under node_modules/sharp, and the old glob/route-key never reached
+  // them. "/*" is Next's documented catch-all route key (applies to every
+  // route with a server trace); the broadened glob covers the actual
+  // @img/sharp-* package tree sharp's `dlopen`/`externalImport` loading
+  // needs. Note: this alone did NOT fix the real production crash — see
+  // package.json's `sharp` pin (0.34.5, exact) for the actual root cause
+  // and fix. This stays as defense-in-depth so whichever sharp version is
+  // in use gets fully traced everywhere it's needed, not just /_next/image.
   outputFileTracingIncludes: {
-    "/_next/image": ["./node_modules/sharp/**/*"],
+    "/*": ["./node_modules/sharp/**/*", "./node_modules/@img/**/*"],
   },
   // Server Actions default to a 1MB request-body cap — too small for the
   // admin image-upload feature (actions/admin/upload.ts), where a typical

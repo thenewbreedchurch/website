@@ -40,14 +40,28 @@ RUN pnpm install --frozen-lockfile=false
 COPY . .
 RUN pnpm --filter @nb-church/db generate
 RUN pnpm --filter @nb-church/web build
-# sharp is required by Next's built-in image optimizer for self-hosted
-# deployments (see next.config.ts) but is easy to silently lose from the
-# traced standalone output (this bit the prisma CLI in this exact Dockerfile
-# before — see git log for "Fix Dockerfile runner stage: copy prisma CLI").
-# Fail the build loudly here instead of shipping a runner image with a
-# degraded/broken image optimizer.
-RUN find /app/apps/web/.next/standalone -type d -path "*/node_modules/sharp" | grep -q . \
-  || (echo "ERROR: sharp was not traced into apps/web/.next/standalone — image optimization will be broken or badly degraded in the runner image." && exit 1)
+# sharp is required by Next's built-in image optimizer AND by
+# actions/admin/upload.ts (real admin image uploads) for self-hosted
+# deployments (see next.config.ts). Two distinct failure modes have bitten
+# this exact spot before: (1) sharp silently dropped from the traced
+# standalone output entirely (same class of bug that hit the prisma CLI in
+# this Dockerfile — see git log "Fix Dockerfile runner stage: copy prisma
+# CLI"), and (2) a real pnpm bug where `pnpm install` silently produces an
+# incomplete @img/sharp-libvips-<platform>@1.3.2 package (present, but
+# missing its actual compiled libvips-cpp.so binary — confirmed via direct
+# repro: a plain `tar xzf` of the exact same npm tarball extracts it fine,
+# pnpm's own extraction does not), which crashed real sermon
+# creates/uploads in production even though this same directory-presence
+# check passed. package.json now pins `sharp` to the known-good 0.34.5
+# (whose libvips companion, @img/sharp-libvips-*@1.2.4, has never shown
+# this failure across repeated arm64 and amd64 rebuilds) rather than the
+# floating ^0.35.x range — do not loosen that pin without re-verifying a
+# real image upload against a real container build, not just this file
+# check. This assertion checks for the actual .so/.node binary, not just a
+# directory, so a regression of either failure mode fails the build loudly
+# instead of shipping a runner image where uploads 500 in production.
+RUN find /app/apps/web/.next/standalone -iname "libvips-cpp.so*" -o -iname "libvips-cpp*.dylib" | grep -q . \
+  || (echo "ERROR: sharp's native libvips binary was not traced into apps/web/.next/standalone — image optimization and admin image uploads will be broken in the runner image." && exit 1)
 RUN node -p "require('./packages/db/node_modules/prisma/package.json').version" > /prisma-version
 
 # ---------------------------------------------------------------------------
