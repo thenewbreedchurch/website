@@ -398,7 +398,7 @@ async function main() {
   // never logged anywhere but this local console), marked mustChangePassword
   // so the real credential is chosen by the person logging in. Existing
   // accounts are left untouched in this mode.
-  const adminEmails = (process.env.ADMIN_ALLOWLIST_EMAILS ?? "churchnewbreed@gmail.com")
+  const adminEmails = (process.env.ADMIN_ALLOWLIST_EMAILS ?? "admin@thenewbreedchurch.org")
     .split(",")
     .map((e) => e.trim())
     .filter(Boolean);
