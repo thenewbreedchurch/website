@@ -71,7 +71,7 @@ export default async function AnnouncementDetailPage({
   });
 
   return (
-    <article className="py-16">
+    <article className="py-16 sm:py-24">
       <script
         type="application/ld+json"
         nonce={nonce}
@@ -79,7 +79,7 @@ export default async function AnnouncementDetailPage({
       />
       <Container className="max-w-3xl">
         {announcement.heroImageUrl && (
-          <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-2xl">
+          <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-none">
             <Image
               src={announcement.heroImageUrl}
               alt=""
@@ -90,10 +90,10 @@ export default async function AnnouncementDetailPage({
           </div>
         )}
 
-        <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-800 dark:bg-white/10 dark:text-brand-200">
+        <span className="t-eyebrow inline-block bg-brand-700 px-3 py-2 text-white">
           {announcement.category}
         </span>
-        <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+        <h1 className="t-display-sm mt-5">
           {announcement.title}
         </h1>
 
@@ -135,7 +135,7 @@ export default async function AnnouncementDetailPage({
         </p>
 
         {announcement.registrationRequired && (
-          <div className="mt-10 rounded-2xl border border-border bg-surface-muted p-6">
+          <div className="mt-10 rounded-none border border-border bg-surface-muted p-6">
             <h2 className="font-display text-xl font-bold">Register</h2>
             {capacityReached ? (
               <p className="mt-2 text-sm text-current/70">

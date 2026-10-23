@@ -375,3 +375,311 @@ model PageView {
   @@index([createdAt])
   @@index([visitorId, createdAt])
 }
+
+enum WelfareGender {
+  MALE
+  FEMALE
+}
+
+enum WelfareMembershipStatus {
+  REGISTERED
+  UNREGISTERED
+}
+
+enum WelfareMembershipDuration {
+  LT_1_MONTH
+  LT_1_YEAR
+  LT_3_YEARS
+  THREE_YEARS
+  GT_3_YEARS
+}
+
+enum WelfareSupportType {
+  EMPLOYMENT
+  SCHOOL_FEES
+  FOOD
+  FINANCIAL
+  MEDICAL
+  RENT
+  OTHER
+}
+
+enum WelfareStatus {
+  NEW
+  IN_REVIEW
+  ASSISTED
+  CLOSED
+}
+
+// Submissions from the Welfare form on the Contact page (shown when the
+// visitor picks the "Welfare / Member Care" category). Mirrors the welfare
+// team's own intake form. Highly sensitive (finances, dependents, home
+// address): only ever read through the admin panel, and the notification
+// email goes to the welfare inbox only. No file attachments — see HANDOFF.md.
+model WelfareRequest {
+  id                    String                    @id @default(cuid())
+  email                 String
+  fullName              String
+  occupation            String
+  gender                WelfareGender
+  age                   Int
+  phone                 String
+  address               String
+  membershipStatus      WelfareMembershipStatus
+  membershipDuration    WelfareMembershipDuration
+  fellowshipGroup       String
+  isWorker              Boolean
+  department            String?
+  supportType           WelfareSupportType
+  supportOther          String?
+  description           String
+  specificRequest       String
+  firstTimeSupport      Boolean
+  lastAssistanceDate    DateTime?
+  lastAssistanceType    WelfareSupportType?
+  lastAssistanceOther   String?
+  triedElsewhere        String
+  hasDependents         Boolean
+  dependentsCount       Int?
+  dependentsAges        String?
+  homeVisitOk           Boolean
+  status                WelfareStatus             @default(NEW)
+  adminNotes            String?
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+  attachments           WelfareAttachment[]
+
+  @@index([status, createdAt])
+}
+
+// Supporting documents uploaded with a welfare request. Stored in Postgres
+// (not the public R2 bucket, which serves every object to anyone with the URL)
+// so they are only ever reachable through the authenticated admin download
+// route or as an attachment on the email to the welfare inbox. Deleted with
+// their request (cascade). Never select `data` in list queries.
+model WelfareAttachment {
+  id        String         @id @default(cuid())
+  requestId String
+  request   WelfareRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  filename  String
+  mimeType  String
+  size      Int
+  data      Bytes
+  createdAt DateTime       @default(now())
+
+  @@index([requestId])
+}
+
+// ---------------------------------------------------------------------------
+// Vendor directory (/directory). Accounts here are SEPARATE from AdminUser —
+// they belong to vendors and to community members who review them. Auth
+// tables deliberately mirror the admin ones (hashed tokens at rest, server
+// stored sessions, lockout) so the admin login stays untouched.
+// ---------------------------------------------------------------------------
+
+model DirectoryUser {
+  id                  String                        @id @default(cuid())
+  email               String                        @unique
+  name                String
+  passwordHash        String
+  emailVerifiedAt     DateTime?
+  failedLoginAttempts Int                           @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+  createdAt           DateTime                      @default(now())
+  updatedAt           DateTime                      @updatedAt
+  sessions            DirectorySession[]
+  verificationTokens  DirectoryVerificationToken[]
+  passwordResetTokens DirectoryPasswordResetToken[]
+  vendors             Vendor[]
+  reviews             VendorReview[]
+}
+
+model DirectorySession {
+  id           String        @id @default(cuid())
+  sessionToken String        @unique
+  userId       String
+  user         DirectoryUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  lastActiveAt DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model DirectoryVerificationToken {
+  id        String        @id @default(cuid())
+  userId    String
+  user      DirectoryUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String        @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@index([userId, expiresAt])
+}
+
+model DirectoryPasswordResetToken {
+  id        String        @id @default(cuid())
+  userId    String
+  user      DirectoryUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String        @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@index([userId, expiresAt])
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+model VendorCategory {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  slug          String   @unique
+  sortOrder     Int      @default(0)
+  subcategories String[]
+  vendors       Vendor[]
+}
+
+model Vendor {
+  id                 String          @id @default(cuid())
+  slug               String          @unique
+  ownerId            String?
+  owner              DirectoryUser?  @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  businessName       String
+  status             VendorStatus    @default(PENDING)
+  isVerified         Boolean         @default(false)
+  isFeatured         Boolean         @default(false)
+  categoryId         String
+  category           VendorCategory  @relation(fields: [categoryId], references: [id])
+  subcategory        String?
+  description        String
+  services           String[]
+  location           String
+  serviceAreas       String?
+  yearStarted        Int?
+  isRegistered       Boolean         @default(false)
+  registrationNumber String?
+  phone              String?
+  whatsapp           String?
+  email              String?
+  website            String?
+  instagram          String?
+  facebook           String?
+  linkedin           String?
+  tiktok             String?
+  businessHours      String?
+  priceRange         String?
+  logoUrl            String?
+  coverUrl           String?
+  // Shown to the owner (e.g. why a listing was rejected); not public.
+  adminNotes         String?
+  ratingAvg          Float           @default(0)
+  ratingCount        Int             @default(0)
+  viewsCount         Int             @default(0)
+  contactClicksCount Int             @default(0)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  images             VendorImage[]
+  reviews            VendorReview[]
+  reports            VendorReport[]
+  stats              VendorStatDaily[]
+
+  @@index([status, isFeatured])
+  @@index([status, createdAt])
+  @@index([categoryId, status])
+  @@index([location])
+  @@index([ownerId])
+  @@index([email])
+}
+
+model VendorImage {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  url       String
+  caption   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([vendorId, sortOrder])
+}
+
+enum ReviewStatus {
+  PUBLISHED
+  HIDDEN
+}
+
+model VendorReview {
+  id        String        @id @default(cuid())
+  vendorId  String
+  vendor    Vendor        @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  userId    String
+  user      DirectoryUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int
+  body      String
+  status    ReviewStatus  @default(PUBLISHED)
+  createdAt DateTime      @default(now())
+
+  @@unique([vendorId, userId])
+  @@index([vendorId, status, createdAt])
+  @@index([status, createdAt])
+}
+
+enum ReportReason {
+  SCAM
+  INAPPROPRIATE
+  WRONG_INFO
+  CLOSED
+  OTHER
+}
+
+enum ReportStatus {
+  NEW
+  REVIEWED
+  ACTIONED
+}
+
+model VendorReport {
+  id            String       @id @default(cuid())
+  vendorId      String
+  vendor        Vendor       @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  reason        ReportReason
+  details       String?
+  reporterEmail String?
+  status        ReportStatus @default(NEW)
+  createdAt     DateTime     @default(now())
+
+  @@index([status, createdAt])
+  @@index([vendorId])
+}
+
+enum VendorStatType {
+  VIEW
+  CALL
+  WHATSAPP
+  EMAIL
+  WEBSITE
+  SOCIAL
+}
+
+// Daily rolled-up counters (upsert-increment) instead of one row per click,
+// so analytics storage stays bounded no matter how popular a listing gets.
+// No IP, user-agent or visitor id is stored.
+model VendorStatDaily {
+  vendorId String
+  vendor   Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  date     DateTime       @db.Date
+  type     VendorStatType
+  count    Int            @default(0)
+
+  @@id([vendorId, date, type])
+  @@index([date])
+}

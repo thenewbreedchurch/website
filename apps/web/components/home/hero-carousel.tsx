@@ -79,7 +79,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[85vh] min-h-[520px] w-full overflow-hidden"
+      className="relative h-[88vh] min-h-[560px] w-full overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={onTouchStart}
@@ -109,54 +109,65 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 slide.objectPosition ?? DEFAULT_OBJECT_POSITIONS[slide.image] ?? "center",
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-night via-night/40 to-night/30" />
         </motion.div>
       </AnimatePresence>
 
-      <div className="relative z-10 flex h-full items-center">
-        <div className="mx-auto grid w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 flex h-full flex-col justify-end px-4 pb-12 sm:px-6 lg:px-9">
+        {/* Grid stacking: outgoing and incoming text share one cell, so the new
+            slide's text never sits below the old one while it fades out. */}
+        <div className="grid max-w-4xl self-start text-left">
           <AnimatePresence mode="sync">
             <motion.div
               key={slide.title}
               initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="col-start-1 row-start-1 max-w-xl text-white"
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="col-start-1 row-start-1 text-white"
             >
-              <h1 className="font-display text-4xl font-bold sm:text-5xl lg:text-6xl">
-                {slide.title}
-              </h1>
-              <p className="mt-4 text-lg text-white/90 sm:text-xl">{slide.subtitle}</p>
-              <Link
-                href={slide.ctaHref}
-                target={slide.external ? "_blank" : undefined}
-                rel={slide.external ? "noopener noreferrer" : undefined}
-                className="mt-8 flex h-12 w-full items-center justify-center rounded-full bg-brand-600 px-8 text-base font-medium text-white transition-[background-color,transform] hover:bg-brand-700 active:scale-[0.98] sm:inline-flex sm:w-auto"
-              >
-                {slide.ctaLabel}
-              </Link>
+              <h1 className="t-display">{slide.title}</h1>
+              <p className="t-body mt-5 max-w-lg text-base text-white/85 sm:text-lg">
+                {slide.subtitle}
+              </p>
             </motion.div>
           </AnimatePresence>
         </div>
-      </div>
 
-      {slides.length > 1 && (
-        <div className="absolute inset-x-0 bottom-6 z-10 flex justify-center gap-2">
-          {slides.map((s, i) => (
-            <button
-              key={s.image}
-              type="button"
-              onClick={() => goTo(i)}
-              aria-label={`Go to slide ${i + 1}`}
-              aria-current={i === index}
-              className={`h-2.5 rounded-full transition-all ${
-                i === index ? "w-8 bg-white" : "w-2.5 bg-white/50 hover:bg-white/75"
-              }`}
-            />
-          ))}
+        <div className="mt-10 flex flex-wrap justify-center gap-3 self-center">
+          <Link
+            href={slide.ctaHref}
+            target={slide.external ? "_blank" : undefined}
+            rel={slide.external ? "noopener noreferrer" : undefined}
+            className="bg-brand-600 px-6 py-4 text-sm font-bold uppercase tracking-tight text-white transition-colors hover:bg-brand-500"
+          >
+            {slide.ctaLabel}
+          </Link>
+          <Link
+            href="/about"
+            className="border border-brand-300 px-6 py-4 text-sm font-bold uppercase tracking-tight text-white transition-colors hover:bg-white/10"
+          >
+            About us
+          </Link>
         </div>
-      )}
+
+        {slides.length > 1 && (
+          <div className="mt-8 flex items-center gap-2 self-center">
+            {slides.map((s, i) => (
+              <button
+                key={s.image}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={i === index}
+                className={`h-[3px] transition-all ${
+                  i === index ? "w-10 bg-white" : "w-6 bg-white/40 hover:bg-white/70"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, HeartHandshake } from "lucide-react";
 import { prisma } from "@nb-church/db";
 import { pageMetadata } from "@/lib/metadata";
-import { Container } from "@/components/ui/container";
-import { RevealSection } from "@/components/journey/reveal-section";
-import { TiltCard } from "@/components/journey/tilt-card";
+import { SectionBand } from "@/components/ui/section-band";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { StaggeredHeading } from "@/components/ui/staggered-heading";
+import { TextLink } from "@/components/ui/text-link";
 import { NewConvertInquiryForm } from "@/components/new-converts/inquiry-form";
 
 export function generateMetadata(): Metadata {
@@ -26,96 +26,89 @@ export default async function NewConvertsPage() {
 
   return (
     <>
-      <section className="relative flex min-h-[70vh] items-center overflow-hidden">
+      <section className="relative isolate flex min-h-[70vh] items-end overflow-hidden bg-night text-white">
         <Image
           src="/images/new-converts/new-converts-altar-prayer.jpg"
           alt="Prayer at the altar"
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="-z-10 object-cover"
           style={{ objectPosition: "50% 35%" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-        <Container className="relative py-24 text-center text-white">
-          <HeartHandshake size={32} className="mx-auto text-brand-200" />
-          <h1 className="mx-auto mt-5 max-w-xl font-display text-4xl font-bold sm:text-5xl">
-            Welcome to your new life in Christ
-          </h1>
-          <p className="mx-auto mt-4 max-w-lg text-lg text-white/85">
-            Whatever brought you here today, we&apos;re genuinely glad you&apos;re
-            taking this step — and we want to walk it with you.
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-night via-night/50 to-night/20" />
+        <div className="px-4 pb-16 pt-32 sm:px-6 lg:px-9">
+          <Eyebrow>New converts</Eyebrow>
+          <StaggeredHeading
+            as="h1"
+            className="mt-6"
+            lines={["Welcome to", "your new life", "in Christ"]}
+            haloLine={2}
+          />
+          <p className="t-body mt-8 max-w-lg text-base text-white/85 sm:text-lg">
+            Whatever brought you here today, we&apos;re genuinely glad you&apos;re taking this step
+            — and we want to walk it with you.
           </p>
-        </Container>
+        </div>
       </section>
 
-      <section className="py-16 sm:py-20">
-        <Container>
-          <RevealSection className="mx-auto max-w-xl text-center">
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Your Next Steps
-            </h2>
-            <p className="mt-3 text-current/70">
-              Faith grows best in community. Here are a few simple ways to keep moving
-              forward.
-            </p>
-          </RevealSection>
+      <SectionBand tone="white">
+        <Eyebrow className="text-brand-700 dark:text-brand-300">Next steps</Eyebrow>
+        <StaggeredHeading className="mt-6" lines={["Your", "next steps"]} haloLine={1} haloClassName="text-brand-600" />
+        <p className="t-body mt-6 max-w-md text-current/70">
+          Faith grows best in community. Here are a few simple ways to keep moving forward.
+        </p>
 
-          {steps.length === 0 ? (
-            <p className="mt-10 text-center text-current/70">
-              We&apos;re updating this page — in the meantime,{" "}
-              <Link href="/contact" className="font-medium text-brand-700 hover:underline dark:text-brand-300">
-                reach out to us directly
-              </Link>
-              .
-            </p>
-          ) : (
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {steps.map((step, i) => (
-                <TiltCard
-                  key={step.id}
-                  className="flex flex-col rounded-3xl border border-border bg-surface p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <h3 className="mt-4 font-display text-xl font-bold">{step.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-current/75">
-                    {step.body}
-                  </p>
-                  {step.ctaUrl && step.ctaLabel && (
-                    <Link
-                      href={step.ctaUrl}
-                      target={step.ctaUrl.startsWith("http") ? "_blank" : undefined}
-                      rel={step.ctaUrl.startsWith("http") ? "noopener noreferrer" : undefined}
-                      className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
-                    >
-                      {step.ctaLabel} <ArrowRight size={14} />
-                    </Link>
-                  )}
-                </TiltCard>
-              ))}
-            </div>
-          )}
-        </Container>
-      </section>
+        {steps.length === 0 ? (
+          <p className="mt-10 text-current/70">
+            We&apos;re updating this page — in the meantime,{" "}
+            <Link href="/contact" className="font-semibold underline">
+              reach out to us directly
+            </Link>
+            .
+          </p>
+        ) : (
+          <ol className="mt-14">
+            {steps.map((step, i) => (
+              <li
+                key={step.id}
+                className="grid gap-4 border-t border-current/20 py-8 last:border-b sm:grid-cols-[5rem_1fr_auto] sm:items-start sm:gap-8"
+              >
+                <span className="font-display text-5xl font-bold leading-none text-brand-600">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="font-display text-2xl font-bold uppercase leading-none tracking-tight sm:text-3xl">
+                    {step.title}
+                  </h3>
+                  <p className="t-body mt-3 max-w-xl text-current/75">{step.body}</p>
+                </div>
+                {step.ctaUrl && step.ctaLabel && (
+                  <TextLink
+                    href={step.ctaUrl}
+                    external={step.ctaUrl.startsWith("http")}
+                  >
+                    {step.ctaLabel}
+                  </TextLink>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
+      </SectionBand>
 
-      <section className="bg-surface-muted py-16 sm:py-20">
-        <Container className="max-w-2xl">
-          <RevealSection className="text-center">
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Tell Us You&apos;re Here
-            </h2>
-            <p className="mt-3 text-current/70">
-              Fill this out and someone from our team will personally reach out — no
-              generic replies, just a real person glad to walk this with you.
-            </p>
-          </RevealSection>
-          <RevealSection className="mt-10">
+      <SectionBand tone="violet">
+        <div className="mx-auto max-w-2xl">
+          <StaggeredHeading size="sm" lines={["Tell us", "you're here"]} haloLine={1} haloClassName="text-white" />
+          <p className="t-body mt-6 text-white/85">
+            Fill this out and someone from our team will personally reach out — no generic
+            replies, just a real person glad to walk this with you.
+          </p>
+          <div className="mt-10">
             <NewConvertInquiryForm />
-          </RevealSection>
-        </Container>
-      </section>
+          </div>
+        </div>
+      </SectionBand>
     </>
   );
 }

@@ -7,6 +7,7 @@ import { staffMemberSchema } from "@/lib/admin-validation";
 import type { ActionResult } from "@/lib/action-result";
 
 function revalidateStaffPaths() {
+  revalidatePath("/"); // home page leadership teaser
   revalidatePath("/about");
   revalidatePath("/leadership");
 }

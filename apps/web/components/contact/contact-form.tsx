@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { contactAction } from "@/actions/contact";
 import type { ActionResult } from "@/lib/action-result";
 import { cn } from "@/lib/utils";
+import { WelfareForm } from "./welfare-form";
 
 async function submitContact(
   _prevState: ActionResult | null,
@@ -20,7 +21,7 @@ async function submitContact(
 }
 
 const inputClasses =
-  "w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-current transition-colors focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/25";
+  "w-full rounded-none border border-border bg-surface px-4 py-2.5 text-sm text-current transition-colors focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/25";
 
 const CATEGORY_OPTIONS = [
   { value: "GENERAL", label: "General" },
@@ -32,7 +33,7 @@ const CATEGORY_OPTIONS = [
 
 const MESSAGE_MAX_LENGTH = 500;
 
-export function ContactForm() {
+function GeneralContactForm({ category }: { category: string }) {
   const [state, formAction, isPending] = useActionState<ActionResult | null, FormData>(
     submitContact,
     null
@@ -46,7 +47,7 @@ export function ContactForm() {
     return (
       <div
         role="status"
-        className="rounded-2xl border border-brand-200 bg-brand-50 p-6 text-brand-900 dark:border-brand-800/60 dark:bg-brand-900/20 dark:text-brand-100"
+        className="rounded-none border border-brand-200 bg-brand-50 p-6 text-brand-900 dark:border-brand-800/60 dark:bg-brand-900/20 dark:text-brand-100"
       >
         <p className="font-display text-lg font-semibold">Message sent</p>
         <p className="mt-1 text-sm text-current/80">{state.message}</p>
@@ -64,7 +65,7 @@ export function ContactForm() {
   return (
     <form
       action={formAction}
-      className="space-y-6 rounded-3xl border border-border bg-surface p-6 shadow-sm sm:p-8"
+      className="space-y-6 rounded-none border border-border bg-surface p-6 sm:p-8"
       noValidate
     >
       <div className="grid gap-5 sm:grid-cols-2">
@@ -122,23 +123,7 @@ export function ContactForm() {
         )}
       </div>
 
-      <div>
-        <label htmlFor="category" className="block text-sm font-medium">
-          What&apos;s this about?
-        </label>
-        <select
-          id="category"
-          name="category"
-          defaultValue="GENERAL"
-          className={cn(inputClasses, "mt-2.5")}
-        >
-          {CATEGORY_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <input type="hidden" name="category" value={category} />
 
       <div>
         <label htmlFor="subject" className="block text-sm font-medium">
@@ -194,10 +179,47 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-60 sm:w-auto"
+        className="inline-flex h-11 w-full items-center justify-center rounded-none bg-brand-700 px-6 text-sm font-bold uppercase tracking-tight text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-60 sm:w-auto"
       >
         {isPending ? "Sending…" : "Send Message"}
       </button>
     </form>
+  );
+}
+
+/**
+ * The contact page's form. The topic picker comes first; choosing "Welfare /
+ * Member Care" swaps the generic fields for the welfare team's full intake form.
+ */
+export function ContactForm() {
+  const [category, setCategory] = useState<string>("GENERAL");
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <label htmlFor="category" className="block text-sm font-medium">
+          What&apos;s this about?
+        </label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className={cn(inputClasses, "mt-2.5")}
+        >
+          {CATEGORY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        {category === "WELFARE" && (
+          <p className="t-body mt-3 text-sm text-current/70">
+            Please complete the welfare team&apos;s form below so they have everything they need to help.
+          </p>
+        )}
+      </div>
+
+      {category === "WELFARE" ? <WelfareForm key="welfare" /> : <GeneralContactForm key="general" category={category} />}
+    </div>
   );
 }

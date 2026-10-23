@@ -35,13 +35,13 @@ export function NewsletterForm() {
             required
             aria-invalid={emailErrors ? true : undefined}
             aria-describedby={emailErrors ? "newsletter-email-error" : undefined}
-            className="h-12 w-full rounded-full border border-white/40 bg-white/25 px-5 text-sm text-white placeholder:text-white/70 shadow-sm backdrop-blur-sm outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="h-12 w-full border border-white/40 bg-white/10 px-5 text-sm text-white placeholder:text-white/70 outline-none focus-visible:ring-2 focus-visible:ring-white"
           />
         </div>
         <button
           type="submit"
           disabled={isPending}
-          className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-brand-800 transition-colors hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex h-12 shrink-0 items-center justify-center gap-2 bg-white px-6 text-sm font-bold uppercase tracking-tight text-brand-800 transition-colors hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isPending && <Loader2 size={16} className="animate-spin" />}
           {isPending ? "Subscribing…" : "Subscribe"}

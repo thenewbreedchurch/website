@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>You're offline — The New Breed Church</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+    background: #fff; color: #17131f;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  header { padding: 16px 24px; display: flex; align-items: center; gap: 10px; }
+  header img { height: 44px; width: auto; display: block; }
+  /* The wordmark is white artwork; turn it black for the white page. */
+  header .word { filter: brightness(0); }
+  main {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 8px 20px 40px; text-align: center;
+  }
+  .art { width: 100%; max-width: 560px; }
+  .art img { width: 100%; height: auto; display: block; }
+  h1 {
+    margin: 40px 0 0; max-width: 640px; text-wrap: balance;
+    font-family: Georgia, "Times New Roman", serif; font-weight: 700;
+    font-size: clamp(1.75rem, 6vw, 3rem); line-height: 1.1; letter-spacing: -0.02em;
+  }
+  p { margin: 20px 0 0; max-width: 440px; line-height: 1.5; color: rgba(23,19,31,.7); }
+  button {
+    margin-top: 40px; cursor: pointer; border: 0; border-radius: 0;
+    background: #6b46c1; color: #fff; padding: 16px 32px;
+    font: 700 14px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.01em; text-transform: uppercase;
+  }
+  button:hover { background: #5b21b6; }
+</style>
+</head>
+<body>
+<header><img src="/logo-mark.png" alt=""><img class="word" src="/logo-wordmark.png" alt="The New Breed Church"></header>
+<main>
+  <div class="art"><img src="/images/404.svg" alt="Two people holding a plug and a socket that aren't connected"></div>
+  <h1>Oops! Looks like you&rsquo;re offline.</h1>
+  <p>We can&rsquo;t reach the internet right now. Check your connection &mdash; this page will reload on its own when you&rsquo;re back online.</p>
+  <button id="retry" type="button">Try again</button>
+</main>
+<script src="/offline.js"></script>
+</body>
+</html>

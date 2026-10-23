@@ -17,7 +17,7 @@ export function TestimonyReveal({ testimonies }: { testimonies: TestimonyCardDat
 
   return (
     <motion.div
-      className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
@@ -27,13 +27,13 @@ export function TestimonyReveal({ testimonies }: { testimonies: TestimonyCardDat
         <motion.figure
           key={t.id}
           variants={cardVariants}
-          className="flex flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
+          className="flex flex-col border-t-2 border-brand-700 bg-transparent pt-6 dark:border-brand-400"
         >
-          <Quote size={22} className="text-brand-400" />
-          <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-current/85">
+          <Quote size={22} className="text-brand-600" />
+          <blockquote className="mt-3 flex-1 text-lg leading-snug tracking-tight text-current/90">
             &ldquo;{t.body}&rdquo;
           </blockquote>
-          <figcaption className="mt-4 text-sm font-semibold text-brand-700 dark:text-brand-300">
+          <figcaption className="t-eyebrow mt-5 text-brand-700 dark:text-brand-300">
             &ndash; {t.authorName}
           </figcaption>
         </motion.figure>

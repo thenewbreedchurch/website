@@ -7,7 +7,7 @@ import { loginAction } from "@/actions/admin-auth";
 import { AuthCard } from "@/components/admin/auth-card";
 
 const inputClasses =
-  "w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 focus:border-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-700/25 admin-dark:border-neutral-700 admin-dark:bg-neutral-900 admin-dark:text-neutral-100";
+  "w-full rounded-none border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 focus:border-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-700/25 admin-dark:border-neutral-700 admin-dark:bg-neutral-900 admin-dark:text-neutral-100";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
+          className="w-full rounded-none bg-brand-700 px-3 py-2.5 text-sm font-bold uppercase tracking-tight text-white transition hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Signing in…" : "Sign in"}
         </button>

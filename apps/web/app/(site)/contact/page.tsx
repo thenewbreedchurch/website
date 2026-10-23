@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Mail, MapPin, Phone } from "lucide-react";
 import { getChurchSettings } from "@/lib/settings";
 import { pageMetadata } from "@/lib/metadata";
-import { Container } from "@/components/ui/container";
+import { SectionBand } from "@/components/ui/section-band";
+import { PageHero } from "@/components/ui/page-hero";
+import { TextLink } from "@/components/ui/text-link";
 import { ContactForm } from "@/components/contact/contact-form";
 import { RevealSection } from "@/components/journey/reveal-section";
-import { TiltCard } from "@/components/journey/tilt-card";
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
@@ -21,71 +21,66 @@ export default async function ContactPage() {
   const fullAddress = `${settings.streetAddress}, ${settings.addressLocality}, ${settings.addressRegion}, ${settings.addressCountry}`;
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
+  const rows = [
+    {
+      label: "Visit us",
+      href: mapsUrl,
+      external: true,
+      value: (
+        <>
+          {settings.streetAddress}
+          <br />
+          {settings.addressLocality}, {settings.addressRegion}, {settings.addressCountry}
+        </>
+      ),
+      cta: "Get directions",
+    },
+    {
+      label: "Call us",
+      href: `tel:${settings.phone.replace(/\s+/g, "")}`,
+      value: settings.phone,
+      cta: "Call now",
+    },
+    {
+      label: "Email us",
+      href: `mailto:${settings.email}`,
+      value: settings.email,
+      cta: "Send email",
+    },
+  ];
+
   return (
-    <Container className="py-16 sm:py-20">
-      <RevealSection className="max-w-2xl">
-        <h1 className="font-display text-4xl font-bold sm:text-5xl">Get in Touch</h1>
-        <p className="mt-4 text-lg text-current/70">
-          Have a question, a prayer request, or just want to say hello? We&apos;d love to hear
-          from you — send us a message and someone from our team will get back to you soon.
-        </p>
-      </RevealSection>
+    <>
+      <PageHero
+        eyebrow="Contact"
+        lines={["Get", "in touch"]}
+        image="/images/general/general-congregation-worship-2.jpg"
+        description="Have a question, a prayer request, or just want to say hello? We'd love to hear from you — send us a message and someone from our team will get back to you soon."
+      />
 
-      <div className="mt-12 grid gap-10 lg:grid-cols-5 lg:gap-16">
-        <RevealSection className="lg:col-span-3">
-          <ContactForm />
-        </RevealSection>
+      <SectionBand tone="white">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-5">
+          <RevealSection className="min-w-0 lg:col-span-3">
+            <ContactForm />
+          </RevealSection>
 
-        <div className="space-y-4 lg:col-span-2">
-          <TiltCard>
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-start gap-4 rounded-2xl border border-border bg-surface p-5 shadow-sm transition-colors hover:border-brand-300 dark:hover:border-brand-700"
-            >
-              <MapPin size={20} className="mt-0.5 shrink-0 text-brand-700 dark:text-brand-300" />
-              <div>
-                <p className="text-sm font-semibold">Visit Us</p>
-                <p className="mt-1 text-sm text-current/70">
-                  {settings.streetAddress}
-                  <br />
-                  {settings.addressLocality}, {settings.addressRegion}, {settings.addressCountry}
+          <ul className="min-w-0 lg:col-span-2">
+            {rows.map((row) => (
+              <li key={row.label} className="border-t border-current/20 py-7 last:border-b">
+                <p className="t-eyebrow text-brand-700 dark:text-brand-300">{row.label}</p>
+                <p className="mt-3 break-words font-display text-xl font-bold uppercase leading-tight tracking-tight sm:text-2xl">
+                  {row.value}
                 </p>
-                <span className="mt-2 inline-block text-sm font-medium text-brand-700 dark:text-brand-300">
-                  Get directions →
-                </span>
-              </div>
-            </a>
-          </TiltCard>
-
-          <TiltCard>
-            <a
-              href={`tel:${settings.phone.replace(/\s+/g, "")}`}
-              className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-sm transition-colors hover:border-brand-300 dark:hover:border-brand-700"
-            >
-              <Phone size={20} className="shrink-0 text-brand-700 dark:text-brand-300" />
-              <div>
-                <p className="text-sm font-semibold">Call Us</p>
-                <p className="mt-1 text-sm text-current/70">{settings.phone}</p>
-              </div>
-            </a>
-          </TiltCard>
-
-          <TiltCard>
-            <a
-              href={`mailto:${settings.email}`}
-              className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-sm transition-colors hover:border-brand-300 dark:hover:border-brand-700"
-            >
-              <Mail size={20} className="shrink-0 text-brand-700 dark:text-brand-300" />
-              <div>
-                <p className="text-sm font-semibold">Email Us</p>
-                <p className="mt-1 text-sm text-current/70">{settings.email}</p>
-              </div>
-            </a>
-          </TiltCard>
+                <div className="mt-4">
+                  <TextLink href={row.href} external={row.external} prefetch={false}>
+                    {row.cta}
+                  </TextLink>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-    </Container>
+      </SectionBand>
+    </>
   );
 }

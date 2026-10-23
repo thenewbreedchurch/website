@@ -36,7 +36,11 @@ const nextConfig: NextConfig = {
   // trace into an Edge chunk.
   output: process.env.VERCEL ? undefined : "standalone",
   images: {
-    formats: ["image/avif", "image/webp"],
+    // WebP only: AVIF encoding of large photos is very CPU-heavy (multi-second
+    // first loads, and Render's 0.5 CPU tier makes it worse) for a marginal
+    // size win. Also stop generating 2048/3840px variants nobody needs.
+    formats: ["image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     // Sermon thumbnails auto-derive from YouTube when an admin leaves
     // thumbnailUrl blank (lib/youtube.ts's youtubeThumbnailUrl, used by
     // components/sermons/sermon-card.tsx) — next/image refuses to optimize
@@ -93,6 +97,11 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "10mb",
     },
+    // The welfare form uploads up to 3 documents x 10 MB through /api/welfare.
+    // Next buffers request bodies for middleware/proxy (default cap 10 MB) and
+    // silently truncates anything bigger, so raise it just above the largest
+    // legitimate request (30 MB of files + form fields).
+    proxyClientMaxBodySize: "32mb",
   },
   // Preserves SEO/link equity from the legacy flat-file static site (see
   // _legacy-static-site/client/*.html) on domain cutover — without these,

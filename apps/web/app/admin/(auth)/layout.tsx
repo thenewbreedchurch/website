@@ -10,7 +10,7 @@ import { AdminFooter } from "@/components/admin/admin-footer";
 export default function AdminAuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-1">
-      <div className="relative hidden w-[42%] max-w-lg flex-col justify-between overflow-hidden bg-gradient-to-br from-brand-950 via-brand-900 to-brand-700 p-12 lg:flex">
+      <div className="relative hidden w-[42%] max-w-lg flex-col justify-between overflow-hidden bg-gradient-to-br from-night via-brand-950 to-brand-800 p-12 lg:flex">
         <Image
           src="/logo-mark.png"
           alt="The New Breed Church"
@@ -20,18 +20,18 @@ export default function AdminAuthLayout({ children }: { children: React.ReactNod
         />
 
         <div>
-          <p className="font-sans text-4xl font-bold leading-tight tracking-tight text-white">
+          <p className="t-display-sm text-white">
             A place to grow
             <br />
             <span className="text-brand-300">in faith, hope, and love.</span>
           </p>
-          <p className="mt-5 max-w-sm text-sm text-white/60">
+          <p className="t-body mt-6 max-w-sm text-sm text-white/65">
             The admin panel behind The New Breed Church&apos;s announcements, sermons, and
             congregation care — keep it well tended.
           </p>
         </div>
 
-        <p className="text-xs text-white/40">
+        <p className="t-eyebrow text-[10px] text-white/40">
           &copy; {new Date().getFullYear()} The New Breed Church — Admin
         </p>
       </div>

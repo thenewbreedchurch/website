@@ -24,7 +24,7 @@ function ChipLabel({ label }: { label: string }) {
       {pending && (
         <span
           aria-hidden="true"
-          className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"
+          className="h-3 w-3 animate-spin rounded-none border-2 border-current border-t-transparent"
         />
       )}
     </span>
@@ -46,10 +46,10 @@ export function CategoryFilter({ active }: { active?: string }) {
             href={c.value ? `/announcements?category=${c.value}` : "/announcements"}
             scroll={false}
             className={cn(
-              "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors active:scale-[0.98]",
+              "t-eyebrow border px-4 py-3 transition-colors",
               isActive
-                ? "border-brand-700 bg-brand-700 text-white"
-                : "border-border bg-surface text-current/70 hover:border-brand-300 hover:text-brand-700 dark:hover:text-brand-300"
+                ? "border-brand-500 bg-brand-600 text-white"
+                : "border-white/25 text-white/75 hover:border-white hover:text-white"
             )}
           >
             <ChipLabel label={c.label} />

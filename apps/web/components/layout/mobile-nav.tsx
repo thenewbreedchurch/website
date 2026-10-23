@@ -1,67 +1,170 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
 import { NAV_LINKS, GIVE_LINK } from "@/lib/nav-links";
 import { cn } from "@/lib/utils";
 import { usePrefersReducedMotion } from "@/lib/motion";
 
-export function MobileNav() {
+// Full-screen menu overlay at every breakpoint (wearethenew.org pattern):
+// huge stacked display links on the left, a photo + primary action + mono
+// social links on the right.
+export function MobileNav({
+  instagramUrl,
+  youtubeUrl,
+}: {
+  instagramUrl?: string | null;
+  youtubeUrl?: string | null;
+}) {
   const [open, setOpen] = useState(false);
+  // Index into NAV_LINKS of the link being hovered/focused (-1 = Give).
+  const [preview, setPreview] = useState<number | null>(null);
   const pathname = usePathname();
   const reducedMotion = usePrefersReducedMotion();
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Lock page scroll while open, Esc to dismiss (links close it via onClick).
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const currentIndex = NAV_LINKS.findIndex((l) => l.href === pathname);
+  const previewLink =
+    preview === null
+      ? NAV_LINKS[Math.max(currentIndex, 0)]
+      : (NAV_LINKS[preview] ?? GIVE_LINK);
+  const previewSrc = previewLink?.image ?? NAV_LINKS[0].image!;
+
+  const socials = [
+    instagramUrl && { label: "Instagram", href: instagramUrl },
+    youtubeUrl && { label: "YouTube", href: youtubeUrl },
+  ].filter((s): s is { label: string; href: string } => Boolean(s));
 
   return (
-    <div className="md:hidden">
+    <>
       <button
         type="button"
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label="Open menu"
         aria-expanded={open}
-        aria-controls="mobile-nav-panel"
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full text-current"
+        aria-controls="site-menu"
+        onClick={() => setOpen(true)}
+        className="t-eyebrow border border-white/25 px-4 py-3 text-white transition-colors hover:bg-white hover:text-night"
       >
-        {open ? <X size={22} /> : <Menu size={22} />}
+        Menu
       </button>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            id="mobile-nav-panel"
-            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-x-0 top-full z-40 border-t border-border bg-surface shadow-lg"
+            id="site-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0 : 0.25 }}
+            className="fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-night text-white"
           >
-            <nav className="flex flex-col p-4">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-brand-50 dark:hover:bg-white/5",
-                    pathname === link.href && "text-brand-700 dark:text-brand-300"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                href={GIVE_LINK.href}
+            <div className="flex h-18 items-center justify-end px-4 sm:px-6 lg:px-9">
+              <button
+                ref={closeRef}
+                type="button"
                 onClick={() => setOpen(false)}
-                className="mt-2 w-full rounded-full bg-brand-700 px-4 py-3 text-center text-base font-medium text-white transition-[background-color,transform] hover:bg-brand-800 active:scale-[0.98]"
+                className="t-eyebrow border border-white/25 px-4 py-3 transition-colors hover:bg-white hover:text-night"
               >
-                {GIVE_LINK.label}
-              </Link>
-            </nav>
+                Close
+              </button>
+            </div>
+
+            <div className="flex flex-1 flex-col justify-between gap-12 px-4 pb-10 pt-6 sm:px-6 lg:grid lg:flex-none lg:grid-cols-[1fr_24rem] lg:gap-14 lg:px-9 lg:pb-24 lg:pt-8">
+              <nav aria-label="Primary" className="flex flex-col gap-1 sm:gap-2" onMouseLeave={() => setPreview(null)}>
+                {NAV_LINKS.map((link, i) => (
+                  <motion.div
+                    key={link.href}
+                    initial={reducedMotion ? false : { opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <Link
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      onMouseEnter={() => setPreview(i)}
+                      onFocus={() => setPreview(i)}
+                      aria-current={pathname === link.href ? "page" : undefined}
+                      className={cn(
+                        "t-display-sm block py-3 text-[clamp(2rem,9vw,2.75rem)] transition-colors hover:text-brand-300 focus-visible:text-brand-300 sm:py-3 sm:text-[clamp(1.6rem,3.6vw,2.5rem)]",
+                        pathname === link.href ? "text-brand-300" : "text-white/55"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+
+              <div className="space-y-6 lg:pt-3">
+                <div className="relative hidden aspect-[4/3] overflow-hidden bg-brand-950 lg:block">
+                  <AnimatePresence initial={false}>
+                    <motion.div
+                      key={previewSrc}
+                      className="absolute inset-0"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: reducedMotion ? 0 : 0.35 }}
+                    >
+                      <Image
+                        src={previewSrc}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 24rem, 100vw"
+                        className="object-cover"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+                <Link
+                  href={GIVE_LINK.href}
+                  onClick={() => setOpen(false)}
+                  onMouseEnter={() => setPreview(NAV_LINKS.length)}
+                  onFocus={() => setPreview(NAV_LINKS.length)}
+                  className="block bg-brand-600 px-6 py-4 text-center text-sm font-bold uppercase tracking-tight text-white transition-colors hover:bg-brand-500"
+                >
+                  {GIVE_LINK.label}
+                </Link>
+                {socials.length > 0 && (
+                  <div className="t-eyebrow flex justify-between text-white/70">
+                    {socials.map((s) => (
+                      <a
+                        key={s.label}
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-white"
+                      >
+                        {s.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }

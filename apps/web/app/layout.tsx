@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { Montserrat, Playfair_Display } from "next/font/google";
+import { Fraunces, Geist_Mono, Manrope } from "next/font/google";
 import { getChurchSettings } from "@/lib/settings";
 import { organizationJsonLd, safeJsonLdString, SITE_URL } from "@/lib/metadata";
+import { ServiceWorkerRegister } from "@/components/layout/sw-register";
 import { CookieConsentBanner } from "@/components/consent/cookie-consent-banner";
 import "./globals.css";
 
@@ -12,19 +13,26 @@ import "./globals.css";
 // globals.css keeps following the OS automatically, no class needed.
 const THEME_COOKIE = "nbc_theme";
 
-// Carried forward from the legacy site's actual brand fonts (Montserrat body
-// / Playfair Display headings, loaded from Google Fonts CDN there) — now
-// self-hosted via next/font so there's no third-party font request at all.
-const bodyFont = Montserrat({
+// Editorial type system modelled on wearethenew.org: a bold display serif
+// (Fraunces stands in for their paid Larken), Manrope for body/UI, and a mono
+// face for eyebrow labels and footer meta. All self-hosted via next/font so
+// there is no third-party font request.
+const bodyFont = Manrope({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-const headingFont = Playfair_Display({
+const headingFont = Fraunces({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  axes: ["opsz"],
+});
+
+const monoFont = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -74,7 +82,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bodyFont.variable} ${headingFont.variable} h-full antialiased ${resolvedThemeClass}`.trim()}
+      className={`${bodyFont.variable} ${headingFont.variable} ${monoFont.variable} h-full antialiased ${resolvedThemeClass}`.trim()}
     >
       <body className="min-h-full flex flex-col">
         <script
@@ -86,6 +94,7 @@ export default async function RootLayout({
         {/* Site-wide since consent is a site-wide concern — covers /admin
             and /linktree too, not just the (site) route group. */}
         <CookieConsentBanner />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

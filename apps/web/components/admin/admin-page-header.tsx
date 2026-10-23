@@ -31,17 +31,17 @@ export function AdminPageHeader({
   breadcrumbs?: Crumb[];
 }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 admin-dark:text-neutral-100">{title}</h1>
-          {description && <p className="mt-1 text-sm text-neutral-500 admin-dark:text-neutral-400">{description}</p>}
+          <h1 className="font-display text-3xl font-bold uppercase leading-none tracking-tight text-neutral-900 sm:text-4xl admin-dark:text-neutral-100">{title}</h1>
+          {description && <p className="t-body mt-3 max-w-2xl text-sm text-neutral-500 admin-dark:text-neutral-400">{description}</p>}
         </div>
         {newHref && (
           <Link
             href={newHref}
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-700 px-4 text-sm font-medium text-white transition-colors active:scale-[0.98] hover:bg-brand-800 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
+            className="inline-flex h-9 items-center gap-1.5 rounded-none bg-brand-700 px-4 text-sm font-bold uppercase tracking-tight text-white transition-colors active:scale-[0.98] hover:bg-brand-800 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
           >
             <NewLinkLabel label={newLabel} />
           </Link>

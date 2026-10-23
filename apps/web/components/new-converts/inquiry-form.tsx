@@ -6,7 +6,7 @@ import type { ActionResult } from "@/lib/action-result";
 import { cn } from "@/lib/utils";
 
 const inputClasses =
-  "w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-current transition-colors focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/25";
+  "w-full rounded-none border border-border bg-surface px-4 py-2.5 text-sm text-current transition-colors focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/25";
 
 const INTEREST_OPTIONS = [
   { value: "BAPTISM", label: "Getting baptized" },
@@ -45,7 +45,7 @@ export function NewConvertInquiryForm() {
     return (
       <div
         role="status"
-        className="rounded-3xl border border-brand-200 bg-brand-50 p-8 text-center text-brand-900 dark:border-brand-800/60 dark:bg-brand-900/20 dark:text-brand-100"
+        className="rounded-none border border-brand-200 bg-brand-50 p-8 text-center text-brand-900 dark:border-brand-800/60 dark:bg-brand-900/20 dark:text-brand-100"
       >
         <p className="font-display text-xl font-semibold">You&apos;re on our radar! 💜</p>
         <p className="mx-auto mt-2 max-w-sm text-sm text-current/80">{state.message}</p>
@@ -54,7 +54,7 @@ export function NewConvertInquiryForm() {
   }
 
   return (
-    <form action={formAction} className="space-y-6 rounded-3xl border border-border bg-surface p-6 sm:p-8" noValidate>
+    <form action={formAction} className="text-foreground space-y-6 rounded-none border border-border bg-surface p-6 sm:p-8" noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="nc-name" className="block text-sm font-medium">
@@ -106,7 +106,7 @@ export function NewConvertInquiryForm() {
           {INTEREST_OPTIONS.map((opt) => (
             <label
               key={opt.value}
-              className="flex items-center gap-2.5 rounded-xl border border-border bg-surface-muted px-3.5 py-2.5 text-sm has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 dark:has-[:checked]:bg-white/5"
+              className="flex items-center gap-2.5 rounded-none border border-border bg-surface-muted px-3.5 py-2.5 text-sm has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 dark:has-[:checked]:bg-white/5"
             >
               <input
                 type="checkbox"
@@ -155,7 +155,7 @@ export function NewConvertInquiryForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-60 sm:w-auto"
+        className="inline-flex h-11 w-full items-center justify-center rounded-none bg-brand-700 px-6 text-sm font-bold uppercase tracking-tight text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-60 sm:w-auto"
       >
         {isPending ? "Sending…" : "Let Us Know You're Here"}
       </button>

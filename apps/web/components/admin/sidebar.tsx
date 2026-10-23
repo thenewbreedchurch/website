@@ -35,15 +35,15 @@ function NavLink({ href, label, icon: Icon, onNavigate }: {
       onClick={onNavigate}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+        "flex items-center gap-3 rounded-none px-3 py-2.5 text-sm font-medium transition-colors",
         isActive
-          ? "bg-brand-50 text-brand-700 admin-dark:bg-brand-500/15 admin-dark:text-brand-300"
-          : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 admin-dark:text-neutral-400 admin-dark:hover:bg-neutral-800 admin-dark:hover:text-neutral-100"
+          ? "bg-brand-600/25 text-white"
+          : "text-white/65 hover:bg-white/5 hover:text-white"
       )}
     >
       <Icon
         size={17}
-        className={isActive ? "text-brand-700 admin-dark:text-brand-300" : "text-neutral-400 admin-dark:text-neutral-500"}
+        className={isActive ? "text-brand-300" : "text-white/40"}
       />
       {label}
     </Link>
@@ -60,7 +60,7 @@ function LogoutButton() {
       type="submit"
       disabled={pending}
       onClick={() => console.clear()}
-      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 disabled:opacity-50 admin-dark:text-neutral-400 admin-dark:hover:bg-neutral-800 admin-dark:hover:text-neutral-100"
+      className="flex w-full items-center gap-2 rounded-none px-3 py-2.5 text-sm font-medium text-white/65 transition-colors hover:bg-white/5 hover:text-white disabled:opacity-50"
     >
       <LogOut size={16} /> {pending ? "Logging out…" : "Log out"}
     </button>
@@ -74,8 +74,8 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
         <Link href="/admin" onClick={onNavigate} className="flex flex-1 items-center gap-2.5 min-w-0">
           <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-8 w-8 shrink-0" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-brand-800 admin-dark:text-brand-300">TNBC Admin</p>
-            <p className="truncate text-[11px] text-neutral-400 admin-dark:text-neutral-500">The New Breed Church</p>
+            <p className="truncate font-display text-base font-bold uppercase leading-none tracking-tight text-white">TNBC Admin</p>
+            <p className="t-eyebrow mt-1 truncate text-[10px] text-white/45">The New Breed Church</p>
           </div>
         </Link>
         <ThemeToggle />
@@ -85,9 +85,9 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
         href="/"
         target="_blank"
         rel="noopener noreferrer"
-        className="mx-2 flex items-center gap-2 rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 admin-dark:border-neutral-800 admin-dark:text-neutral-400 admin-dark:hover:bg-neutral-800 admin-dark:hover:text-neutral-100"
+        className="mx-2 flex items-center gap-2 rounded-none border border-white/20 px-3 py-2.5 text-sm font-medium text-white/75 transition-colors hover:bg-white/10 hover:text-white"
       >
-        <ExternalLink size={16} className="text-neutral-400 admin-dark:text-neutral-500" />
+        <ExternalLink size={16} className="text-white/45" />
         View Public Site
       </a>
 
@@ -95,7 +95,7 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
         <NavLink href="/admin" label="Dashboard" icon={LayoutDashboard} onNavigate={onNavigate} />
         {ADMIN_NAV_GROUPS.map((group) => (
           <div key={group.label}>
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 admin-dark:text-neutral-500">
+            <p className="t-eyebrow px-3 text-[10px] text-brand-300/80">
               {group.label}
             </p>
             <div className="mt-1.5 space-y-0.5">
@@ -107,8 +107,8 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
         ))}
       </nav>
 
-      <div className="border-t border-neutral-200 px-2 pt-3 admin-dark:border-neutral-800">
-        <p className="truncate px-3 text-xs text-neutral-500 admin-dark:text-neutral-400">{email}</p>
+      <div className="border-t border-white/10 px-2 pt-3">
+        <p className="t-eyebrow truncate px-3 text-[10px] text-white/50">{email}</p>
         <form action={logoutAction} className="mt-1.5">
           <LogoutButton />
         </form>
@@ -124,15 +124,15 @@ export function AdminSidebar({ email }: { email: string }) {
   return (
     <>
       {/* Desktop: fixed sidebar */}
-      <aside className="hidden w-64 shrink-0 border-r border-neutral-200 bg-white px-2 py-4 lg:block admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
+      <aside className="hidden w-64 shrink-0 border-r border-white/10 bg-night px-2 py-4 text-white lg:block">
         <SidebarContent email={email} />
       </aside>
 
       {/* Mobile: hamburger trigger + slide-out drawer */}
-      <div className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-3 lg:hidden admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
+      <div className="flex items-center justify-between border-b border-white/10 bg-night px-4 py-3 text-white lg:hidden">
         <Link href="/admin" className="flex items-center gap-2">
           <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-7 w-7" />
-          <span className="text-sm font-bold text-brand-800 admin-dark:text-brand-300">TNBC Admin</span>
+          <span className="font-display text-base font-bold uppercase tracking-tight text-white">TNBC Admin</span>
         </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
@@ -140,7 +140,7 @@ export function AdminSidebar({ email }: { email: string }) {
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 admin-dark:text-neutral-400 admin-dark:hover:bg-neutral-800"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-none text-white/75 hover:bg-white/10"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -161,7 +161,7 @@ export function AdminSidebar({ email }: { email: string }) {
               transition={{ duration: 0.2 }}
             />
             <motion.div
-              className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto bg-white px-2 py-4 shadow-xl admin-dark:bg-neutral-900"
+              className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto bg-night px-2 py-4 text-white shadow-xl"
               initial={reducedMotion ? { opacity: 0 } : { x: "-100%" }}
               animate={reducedMotion ? { opacity: 1 } : { x: 0 }}
               exit={reducedMotion ? { opacity: 0 } : { x: "-100%" }}

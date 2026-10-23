@@ -10,6 +10,11 @@ import {
   Mail,
   Inbox,
   HeartHandshake,
+  LifeBuoy,
+  Star,
+  Flag,
+  Store,
+  Tags,
   type LucideIcon,
 } from "lucide-react";
 
@@ -58,6 +63,35 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     ],
   },
   {
+    label: "Directory",
+    items: [
+      {
+        href: "/admin/directory/vendors",
+        label: "Businesses",
+        description: "Approve, verify and edit business listings.",
+        icon: Store,
+      },
+      {
+        href: "/admin/directory/categories",
+        label: "Categories",
+        description: "The categories businesses are listed under.",
+        icon: Tags,
+      },
+      {
+        href: "/admin/directory/reviews",
+        label: "Reviews",
+        description: "Moderate ratings and reviews left on businesses.",
+        icon: Star,
+      },
+      {
+        href: "/admin/directory/reports",
+        label: "Reports",
+        description: "Listings flagged by visitors.",
+        icon: Flag,
+      },
+    ],
+  },
+  {
     label: "People",
     items: [
       {
@@ -65,6 +99,12 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
         label: "Contact Messages",
         description: "Messages submitted via the Contact page.",
         icon: Inbox,
+      },
+      {
+        href: "/admin/welfare-requests",
+        label: "Welfare Requests",
+        description: "Confidential requests from the welfare form on the Contact page.",
+        icon: LifeBuoy,
       },
       {
         href: "/admin/new-convert-inquiries",

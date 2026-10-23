@@ -11,7 +11,8 @@
     "seed": "tsx prisma/seed.ts",
     "studio": "prisma studio",
     "lint": "echo 'no lint configured for db package' ",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "import:vendors": "tsx prisma/import-vendors.ts"
   },
   "dependencies": {
     "@prisma/client": "^6",

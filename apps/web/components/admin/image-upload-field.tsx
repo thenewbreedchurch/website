@@ -11,7 +11,15 @@ import { uploadImageAction } from "@/actions/admin/upload";
 // (not imported from the server action file, which is "use server" and
 // can't be imported for its types into a client bundle) so a typo here is
 // still caught by the "Unknown upload category" error path server-side.
-type UploadCategory = "announcements" | "sermons" | "staff" | "testimonies" | "next-steps";
+type UploadCategory =
+  | "announcements"
+  | "sermons"
+  | "staff"
+  | "testimonies"
+  | "next-steps"
+  | "vendor-logos"
+  | "vendor-covers"
+  | "vendor-portfolio";
 
 interface ImageUploadFieldProps {
   name: string;
@@ -89,7 +97,7 @@ export function ImageUploadField({
             type="button"
             disabled={isPending}
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-3.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-50 disabled:opacity-60 admin-dark:border-neutral-700 admin-dark:bg-neutral-900 admin-dark:text-neutral-300 admin-dark:hover:bg-neutral-800"
+            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-none border border-neutral-300 bg-white px-3.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-50 disabled:opacity-60 admin-dark:border-neutral-700 admin-dark:bg-neutral-900 admin-dark:text-neutral-300 admin-dark:hover:bg-neutral-800"
           >
             <Upload size={13} />
             {isPending ? "Uploading…" : "Upload image"}
@@ -116,7 +124,7 @@ export function ImageUploadField({
         {uploadError && <p className="text-xs text-red-600 admin-dark:text-red-400">{uploadError}</p>}
 
         {previewSrc && previewSrc !== failedSrc && (
-          <div className="relative h-20 w-32 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100 admin-dark:border-neutral-800 admin-dark:bg-neutral-800">
+          <div className="relative h-20 w-32 overflow-hidden rounded-none border border-neutral-200 bg-neutral-100 admin-dark:border-neutral-800 admin-dark:bg-neutral-800">
             {/* eslint-disable-next-line @next/next/no-img-element -- transient
                 preview of an external, not-yet-saved URL as the admin
                 uploads/types; routing this through next/image's optimizer

@@ -14,6 +14,8 @@ const STATIC_ROUTES = [
   "/give",
   "/contact",
   "/leadership",
+  "/directory",
+  "/directory/browse",
 ];
 
 // Sitemaps are one of the few places a full-table read is the correct
@@ -23,7 +25,7 @@ const STATIC_ROUTES = [
 const MAX_ENTRIES_PER_MODEL = 5000;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [sermons, announcements] = await Promise.all([
+  const [sermons, announcements, vendors] = await Promise.all([
     // Sermons have no draft/published flag in the schema — every row is
     // already public once created (see Sermon model in schema.prisma).
     prisma.sermon.findMany({
@@ -33,6 +35,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
     prisma.announcement.findMany({
       where: { status: "PUBLISHED" },
+      select: { slug: true, updatedAt: true },
+      orderBy: { updatedAt: "desc" },
+      take: MAX_ENTRIES_PER_MODEL,
+    }),
+    prisma.vendor.findMany({
+      where: { status: "APPROVED" },
       select: { slug: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
       take: MAX_ENTRIES_PER_MODEL,
@@ -54,5 +62,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: announcement.updatedAt,
   }));
 
-  return [...staticEntries, ...sermonEntries, ...announcementEntries];
+  const vendorEntries: MetadataRoute.Sitemap = vendors.map((vendor) => ({
+    url: `${SITE_URL}/directory/${vendor.slug}`,
+    lastModified: vendor.updatedAt,
+  }));
+
+  return [...staticEntries, ...sermonEntries, ...announcementEntries, ...vendorEntries];
 }

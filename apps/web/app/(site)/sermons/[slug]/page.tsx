@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@nb-church/db";
 import { pageMetadata } from "@/lib/metadata";
-import { Container } from "@/components/ui/container";
-import { LinkButton } from "@/components/ui/link-button";
+import { SectionBand } from "@/components/ui/section-band";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { TextLink } from "@/components/ui/text-link";
 import { youtubeEmbedUrl } from "@/lib/youtube";
 import { RevealSection } from "@/components/journey/reveal-section";
 
@@ -36,81 +37,66 @@ export default async function SermonDetailPage({
   const embedUrl = youtubeEmbedUrl(sermon.videoUrl);
 
   return (
-    <article className="py-16">
-      <Container className="max-w-3xl">
-        <LinkButton href="/sermons" variant="ghost" size="sm" className="mb-6 -ml-3">
-          &larr; All Sermons
-        </LinkButton>
+    <article>
+      <SectionBand tone="night" className="!pb-20">
+        <TextLink href="/sermons" className="mb-10 !border-b-0 [&>svg]:hidden">
+          &larr; All sermons
+        </TextLink>
 
-        <RevealSection>
-        {embedUrl ? (
-          <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
-            <iframe
-              src={embedUrl}
-              title={sermon.title}
-              className="absolute inset-0 h-full w-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        ) : (
-          <a
-            href={sermon.videoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block rounded-2xl border border-border bg-surface-muted p-6 text-center font-medium text-brand-700 hover:underline dark:text-brand-300"
-          >
-            Watch on YouTube &rarr;
-          </a>
-        )}
-
-        <div className="mt-8">
-          {sermon.series && (
-            <p className="text-sm font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300">
-              {sermon.series}
-            </p>
+        <RevealSection className="max-w-5xl">
+          {embedUrl ? (
+            <div className="relative aspect-video overflow-hidden bg-black">
+              <iframe
+                src={embedUrl}
+                title={sermon.title}
+                className="absolute inset-0 h-full w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <a
+              href={sermon.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="t-link"
+            >
+              Watch on YouTube
+            </a>
           )}
-          <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">{sermon.title}</h1>
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-current/70">
-            <span>{sermon.speaker}</span>
-            <span aria-hidden>&middot;</span>
-            <span>
+          <div className="mt-12">
+            {sermon.series && <Eyebrow>{sermon.series}</Eyebrow>}
+            <h1 className="t-display-sm mt-4">{sermon.title}</h1>
+
+            <p className="t-eyebrow mt-6 text-white/65">
+              {sermon.speaker} ·{" "}
               {sermon.publishedAt.toLocaleDateString("en-NG", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
               })}
-            </span>
-            {sermon.scripture && (
-              <>
-                <span aria-hidden>&middot;</span>
-                <span>{sermon.scripture}</span>
-              </>
+              {sermon.scripture ? ` · ${sermon.scripture}` : ""}
+            </p>
+
+            {sermon.description && (
+              <p className="t-body mt-8 max-w-2xl whitespace-pre-line text-base text-white/85">
+                {sermon.description}
+              </p>
+            )}
+
+            {sermon.tags.length > 0 && (
+              <div className="mt-8 flex flex-wrap gap-2">
+                {sermon.tags.map((tag) => (
+                  <span key={tag} className="t-eyebrow border border-white/25 px-3 py-2 text-white/80">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             )}
           </div>
-
-          {sermon.description && (
-            <p className="mt-6 whitespace-pre-line leading-relaxed text-current/85">
-              {sermon.description}
-            </p>
-          )}
-
-          {sermon.tags.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-2">
-              {sermon.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-800 dark:bg-white/10 dark:text-brand-200"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
         </RevealSection>
-      </Container>
+      </SectionBand>
     </article>
   );
 }

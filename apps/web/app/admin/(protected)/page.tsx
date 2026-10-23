@@ -231,7 +231,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-neutral-900 admin-dark:text-neutral-100">
+      <h1 className="font-display text-3xl font-bold uppercase leading-none tracking-tight text-neutral-900 sm:text-4xl admin-dark:text-neutral-100">
         Welcome back, {user.name ?? "Admin"}.
       </h1>
 
@@ -240,24 +240,24 @@ export default async function AdminDashboardPage() {
           <Link
             key={tile.href}
             href={tile.href}
-            className="group flex items-start gap-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md admin-dark:border-neutral-800 admin-dark:bg-neutral-900"
+            className="group flex items-start gap-4 rounded-none border border-neutral-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 admin-dark:border-neutral-800 admin-dark:bg-neutral-900"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-700 admin-dark:bg-brand-500/15 admin-dark:text-brand-300">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-none bg-brand-50 text-brand-700 admin-dark:bg-brand-500/15 admin-dark:text-brand-300">
               <tile.icon size={18} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-neutral-900 admin-dark:text-neutral-100">{tile.value}</p>
-              <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">{tile.label}</p>
+              <p className="font-display text-3xl font-bold leading-none text-neutral-900 admin-dark:text-neutral-100">{tile.value}</p>
+              <p className="t-eyebrow mt-2 text-neutral-500 admin-dark:text-neutral-400">{tile.label}</p>
             </div>
           </Link>
         ))}
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm admin-dark:border-neutral-800 admin-dark:bg-neutral-900 lg:col-span-2">
+        <div className="rounded-none border border-neutral-200 bg-white p-5 admin-dark:border-neutral-800 admin-dark:bg-neutral-900 lg:col-span-2">
           <div className="flex items-center gap-2">
             <TrendingUp size={18} className="text-brand-700 admin-dark:text-brand-300" />
-            <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">
+            <h2 className="font-display text-lg font-bold uppercase tracking-tight text-neutral-900 admin-dark:text-neutral-100">
               Site visits — last {windowDays} day{windowDays === 1 ? "" : "s"}
             </h2>
           </div>
@@ -271,10 +271,10 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
+        <div className="rounded-none border border-neutral-200 bg-white p-5 admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
           <div className="flex items-center gap-2">
             <Eye size={18} className="text-brand-700 admin-dark:text-brand-300" />
-            <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">Most viewed</h2>
+            <h2 className="font-display text-lg font-bold uppercase tracking-tight text-neutral-900 admin-dark:text-neutral-100">Most viewed</h2>
           </div>
           <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">
             Last {windowDays} day{windowDays === 1 ? "" : "s"}
@@ -295,8 +295,8 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
-        <h2 className="font-semibold text-neutral-900 admin-dark:text-neutral-100">Recent activity</h2>
+      <div className="mt-6 rounded-none border border-neutral-200 bg-white p-5 admin-dark:border-neutral-800 admin-dark:bg-neutral-900">
+        <h2 className="font-display text-lg font-bold uppercase tracking-tight text-neutral-900 admin-dark:text-neutral-100">Recent activity</h2>
         <p className="mt-0.5 text-sm text-neutral-500 admin-dark:text-neutral-400">
           Latest contact messages and new-convert inquiries.
         </p>
@@ -312,7 +312,7 @@ export default async function AdminDashboardPage() {
                 >
                   <span
                     className={
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-full " +
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-none " +
                       (item.type === "contact"
                         ? "bg-brand-50 text-brand-700 admin-dark:bg-brand-500/15 admin-dark:text-brand-300"
                         : "bg-rose-50 text-rose-700 admin-dark:bg-rose-500/15 admin-dark:text-rose-300")

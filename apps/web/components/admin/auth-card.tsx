@@ -39,10 +39,7 @@ export function AuthCard({
           className="h-5 w-auto"
         />
       </Link>
-      <h1
-        className="text-3xl font-bold tracking-tight text-neutral-900 admin-dark:text-neutral-100"
-        style={{ fontFamily: "var(--font-body), ui-sans-serif, system-ui, sans-serif" }}
-      >
+      <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-tight text-neutral-900 admin-dark:text-neutral-100">
         {title}
       </h1>
       {subtitle && <p className="mt-2 text-sm text-neutral-500 admin-dark:text-neutral-400">{subtitle}</p>}

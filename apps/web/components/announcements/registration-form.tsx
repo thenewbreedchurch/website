@@ -6,7 +6,7 @@ import type { ActionResult } from "@/lib/action-result";
 import { cn } from "@/lib/utils";
 
 const inputClasses =
-  "w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-current transition-colors focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/25";
+  "w-full rounded-none border border-border bg-surface px-4 py-2.5 text-sm text-current transition-colors focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/25";
 
 export function RegistrationForm({ announcementId }: { announcementId: string }) {
   const action = async (
@@ -34,7 +34,7 @@ export function RegistrationForm({ announcementId }: { announcementId: string })
     return (
       <div
         role="status"
-        className="rounded-2xl border border-brand-200 bg-brand-50 p-6 text-brand-900 dark:border-brand-800/60 dark:bg-brand-900/20 dark:text-brand-100"
+        className="rounded-none border border-brand-200 bg-brand-50 p-6 text-brand-900 dark:border-brand-800/60 dark:bg-brand-900/20 dark:text-brand-100"
       >
         <p className="font-display text-lg font-semibold">You&apos;re registered!</p>
         <p className="mt-1 text-sm text-current/80">{state.message}</p>
@@ -43,7 +43,7 @@ export function RegistrationForm({ announcementId }: { announcementId: string })
   }
 
   return (
-    <form action={formAction} className="space-y-4" noValidate>
+    <form action={formAction} className="text-foreground space-y-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="reg-name" className="block text-sm font-medium">
@@ -132,7 +132,7 @@ export function RegistrationForm({ announcementId }: { announcementId: string })
       <button
         type="submit"
         disabled={isPending}
-        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-60 sm:w-auto"
+        className="inline-flex h-11 w-full items-center justify-center rounded-none bg-brand-700 px-6 text-sm font-medium text-white transition-colors hover:bg-brand-800 disabled:pointer-events-none disabled:opacity-60 sm:w-auto"
       >
         {isPending ? "Registering…" : "Register"}
       </button>

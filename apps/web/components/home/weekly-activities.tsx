@@ -1,6 +1,9 @@
-import { Clock, Video } from "lucide-react";
 import type { ServiceTime, DayOfWeek } from "@nb-church/db";
-import { TiltCard } from "@/components/journey/tilt-card";
+import { SectionBand } from "@/components/ui/section-band";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { StaggeredHeading } from "@/components/ui/staggered-heading";
+import { RuledRow } from "@/components/ui/ruled-row";
+import { TextLink } from "@/components/ui/text-link";
 
 const WEEK_ORDER: DayOfWeek[] = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const DAY_LABELS: Record<DayOfWeek, string> = {
@@ -73,7 +76,13 @@ function buildActivityCards(serviceTimes: ServiceTime[]): ActivityCard[] {
   }));
 }
 
-export function WeeklyActivities({ serviceTimes }: { serviceTimes: ServiceTime[] }) {
+export function WeeklyActivities({
+  serviceTimes,
+  tone = "violet",
+}: {
+  serviceTimes: ServiceTime[];
+  tone?: "violet" | "night";
+}) {
   const cards = buildActivityCards(serviceTimes);
 
   if (cards.length === 0) {
@@ -81,45 +90,36 @@ export function WeeklyActivities({ serviceTimes }: { serviceTimes: ServiceTime[]
   }
 
   return (
-    <section className="bg-surface-muted py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 className="font-display text-3xl font-bold sm:text-4xl">Weekly Activities</h2>
-        <p className="mt-2 text-current/70">Join us in person or online — every week, real time.</p>
-
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card) => (
-            <TiltCard
-              key={card.key}
-              className="rounded-2xl border border-border bg-surface p-6 shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
-            >
-              <h3 className="font-display text-xl font-semibold text-brand-700 dark:text-brand-300">
-                {card.daysLabel}
-              </h3>
-              <ul className="mt-4 space-y-3">
-                {card.lines.map((line) => (
-                  <li key={`${line.label}-${line.time}`} className="flex items-start gap-2 text-sm">
-                    <Clock size={16} className="mt-0.5 shrink-0 text-current/50" />
-                    <span>
-                      <span className="font-medium">{line.time}</span> — {line.label}
-                      {line.isOnline && line.onlineUrl && (
-                        <a
-                          href={line.onlineUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-1.5 inline-flex items-center gap-1 text-brand-700 hover:underline dark:text-brand-300"
-                        >
-                          <Video size={14} />
-                          Join online
-                        </a>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </TiltCard>
-          ))}
-        </div>
+    <SectionBand tone={tone}>
+      <Eyebrow className={tone === "violet" ? "text-white/80" : undefined}>Weekly</Eyebrow>
+      <div className="mt-6 flex justify-center">
+        <StaggeredHeading
+          lines={["Weekly", "Gatherings"]}
+          haloLine={1}
+          haloClassName={tone === "violet" ? "text-white" : "text-brand-400"}
+          align="center"
+        />
       </div>
-    </section>
+
+      <div className="mt-16">
+        {cards.flatMap((card) =>
+          card.lines.map((line) => (
+            <RuledRow key={`${card.key}-${line.label}-${line.time}`}>
+              <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                <h3 className="t-display-sm !font-bold">{line.label}</h3>
+                <p className="t-eyebrow text-white/75">
+                  {card.daysLabel} · {line.time}
+                </p>
+              </div>
+              {line.isOnline && line.onlineUrl && (
+                <TextLink href={line.onlineUrl} external>
+                  Join online
+                </TextLink>
+              )}
+            </RuledRow>
+          ))
+        )}
+      </div>
+    </SectionBand>
   );
 }

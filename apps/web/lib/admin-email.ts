@@ -1,3 +1,4 @@
+import { emailInlineLogos } from "./email-logos";
 import "server-only";
 import { Resend } from "resend";
 import AdminEmailVerificationEmail from "../emails/admin-email-verification";
@@ -18,7 +19,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export async function sendVerificationEmail(to: string, token: string): Promise<void> {
   const verifyUrl = `${SITE_URL}/admin/verify/${token}`;
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
       from: FROM,
       to,
       subject: "Verify your admin account email",
@@ -36,7 +37,7 @@ export async function sendVerificationEmail(to: string, token: string): Promise<
 export async function sendPasswordResetEmail(to: string, token: string): Promise<void> {
   const resetUrl = `${SITE_URL}/admin/reset-password/${token}`;
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
       from: FROM,
       to,
       subject: "Reset your admin password",
@@ -64,7 +65,7 @@ export async function sendAccountLockedEmail(to: string, lockedUntil: Date): Pro
   // every lockout event (e.g. a repeated attack sending several of these).
   const resetUrl = `${SITE_URL}/admin/forgot-password`;
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
       from: FROM,
       to,
       subject: "Security alert: your admin account was locked",

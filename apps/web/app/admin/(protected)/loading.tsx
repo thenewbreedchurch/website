@@ -13,11 +13,11 @@ export default function AdminLoading() {
       <div className="h-7 w-48 rounded bg-neutral-200 admin-dark:bg-neutral-800" />
       <div className="mt-2 h-4 w-72 rounded bg-neutral-200 admin-dark:bg-neutral-800" />
 
-      <div className="mt-6 h-9 w-28 rounded-full bg-neutral-200 admin-dark:bg-neutral-800" />
+      <div className="mt-6 h-9 w-28 rounded-none bg-neutral-200 admin-dark:bg-neutral-800" />
 
       <div className="mt-6 space-y-3">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-14 rounded-xl bg-neutral-200 admin-dark:bg-neutral-800" />
+          <div key={i} className="h-14 rounded-none bg-neutral-200 admin-dark:bg-neutral-800" />
         ))}
       </div>
     </div>

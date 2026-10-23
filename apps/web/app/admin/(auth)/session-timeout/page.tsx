@@ -43,7 +43,7 @@ export default function SessionTimeoutPage() {
       <button
         type="button"
         onClick={() => router.push("/admin/login")}
-        className="mt-6 w-full rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-brand-800 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
+        className="mt-6 w-full rounded-none bg-brand-700 px-3 py-2.5 text-sm font-bold uppercase tracking-tight text-white transition hover:bg-brand-800 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
       >
         Return to sign in
       </button>

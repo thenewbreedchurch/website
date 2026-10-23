@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Mail, Phone } from "lucide-react";
-import { prisma, type StaffMember } from "@nb-church/db";
+import { prisma } from "@nb-church/db";
 import { pageMetadata } from "@/lib/metadata";
 import { initials } from "@/lib/utils";
-import { Container } from "@/components/ui/container";
-import { RevealSection } from "@/components/journey/reveal-section";
-import { TiltCard } from "@/components/journey/tilt-card";
+import { SectionBand } from "@/components/ui/section-band";
+import { PageHero } from "@/components/ui/page-hero";
+import { TextLink } from "@/components/ui/text-link";
 
 export function generateMetadata(): Metadata {
   return pageMetadata({
@@ -17,65 +16,6 @@ export function generateMetadata(): Metadata {
   });
 }
 
-function LeaderCard({ leader, priority = false }: { leader: StaffMember; priority?: boolean }) {
-  return (
-    <TiltCard>
-      <div className="group overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-        <div className="relative aspect-[4/5] overflow-hidden bg-brand-50 dark:bg-white/5">
-          {leader.photoUrl ? (
-            <Image
-              src={leader.photoUrl}
-              alt={leader.name}
-              fill
-              priority={priority}
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-5xl font-semibold text-brand-800 dark:text-white">
-              {initials(leader.name)}
-            </div>
-          )}
-        </div>
-
-        <div className="p-6 text-center">
-          <h2 className="font-display text-lg font-semibold">{leader.name}</h2>
-          <p className="mt-1 text-sm text-current/70">{leader.role}</p>
-          {leader.department && (
-            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-brand-700 dark:text-brand-300">
-              {leader.department}
-            </p>
-          )}
-          {leader.bio && (
-            <p className="mt-3 text-sm leading-relaxed text-current/70">{leader.bio}</p>
-          )}
-
-          {(leader.email || leader.phone) && (
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-              {leader.email && (
-                <a
-                  href={`mailto:${leader.email}`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-muted px-3.5 py-1.5 text-xs font-medium text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-white/10"
-                >
-                  <Mail size={13} /> Email
-                </a>
-              )}
-              {leader.phone && (
-                <a
-                  href={`tel:${leader.phone.replace(/\s+/g, "")}`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-muted px-3.5 py-1.5 text-xs font-medium text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-white/10"
-                >
-                  <Phone size={13} /> Call
-                </a>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </TiltCard>
-  );
-}
-
 export default async function LeadershipPage() {
   const leaders = await prisma.staffMember.findMany({
     where: { isActive: true },
@@ -84,35 +24,70 @@ export default async function LeadershipPage() {
 
   return (
     <>
-      <section className="bg-brand-900 py-16 text-white sm:py-20">
-        <Container className="max-w-2xl">
-          <h1 className="font-display text-4xl font-bold sm:text-5xl">Our Leadership</h1>
-          <p className="mt-3 text-lg text-white/85">
-            Not sure who to talk to about baptism, joining a team, or just getting connected?
-            Find the right person below and reach out directly.
-          </p>
-        </Container>
-      </section>
+      <PageHero
+        eyebrow="Leadership"
+        lines={["Our", "leadership team"]}
+        description="Not sure who to talk to about baptism, joining a team, or just getting connected? Find the right person below and reach out directly."
+      />
 
-      <section className="py-16 sm:py-20">
-        <Container>
-          {leaders.length === 0 ? (
-            <RevealSection className="text-center text-current/70">
-              We&apos;re updating this page — in the meantime,{" "}
-              <a href="/contact" className="font-medium text-brand-700 hover:underline dark:text-brand-300">
-                reach out to us directly
-              </a>
-              .
-            </RevealSection>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {leaders.map((leader, index) => (
-                <LeaderCard key={leader.id} leader={leader} priority={index === 0} />
-              ))}
-            </div>
-          )}
-        </Container>
-      </section>
+      <SectionBand tone="white">
+        {leaders.length === 0 ? (
+          <p className="text-current/70">
+            We&apos;re updating this page — in the meantime,{" "}
+            <a href="/contact" className="font-semibold underline">
+              reach out to us directly
+            </a>
+            .
+          </p>
+        ) : (
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-14 lg:grid-cols-4 lg:gap-x-6">
+            {leaders.map((leader, index) => (
+              <li key={leader.id}>
+                <div className="relative aspect-[4/5] overflow-hidden bg-brand-50 dark:bg-white/5">
+                  {leader.photoUrl ? (
+                    <Image
+                      src={leader.photoUrl}
+                      alt={leader.name}
+                      fill
+                      priority={index < 4}
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center font-display text-6xl font-bold text-brand-700 dark:text-white">
+                      {initials(leader.name)}
+                    </div>
+                  )}
+                </div>
+                <h2 className="mt-4 font-display text-xl font-bold uppercase leading-none tracking-tight sm:text-2xl">
+                  {leader.name}
+                </h2>
+                <p className="t-eyebrow mt-2 text-brand-700 dark:text-brand-300">
+                  {leader.role}
+                  {leader.department ? ` · ${leader.department}` : ""}
+                </p>
+                {leader.bio && (
+                  <p className="t-body mt-3 text-sm text-current/70">{leader.bio}</p>
+                )}
+                {(leader.email || leader.phone) && (
+                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3">
+                    {leader.email && (
+                      <TextLink href={`mailto:${leader.email}`} prefetch={false}>
+                        Email
+                      </TextLink>
+                    )}
+                    {leader.phone && (
+                      <TextLink href={`tel:${leader.phone.replace(/\s+/g, "")}`} prefetch={false}>
+                        Call
+                      </TextLink>
+                    )}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </SectionBand>
     </>
   );
 }

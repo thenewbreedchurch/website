@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import type { AnnouncementCategory } from "@nb-church/db";
 import { prisma } from "@nb-church/db";
 import { pageMetadata } from "@/lib/metadata";
@@ -9,11 +8,13 @@ import {
   buildThisWeekAgenda,
   getNextOccurrence,
 } from "@/lib/announcements";
-import { Container } from "@/components/ui/container";
+import { SectionBand } from "@/components/ui/section-band";
+import { PageHero } from "@/components/ui/page-hero";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { StaggeredHeading } from "@/components/ui/staggered-heading";
 import { WeekAgenda } from "@/components/announcements/week-agenda";
 import { CategoryFilter } from "@/components/announcements/category-filter";
 import { AnnouncementCard } from "@/components/announcements/announcement-card";
-import { TiltCard } from "@/components/journey/tilt-card";
 
 const UPCOMING_CANDIDATE_LIMIT = 50;
 const UPCOMING_PAGE_SIZE = 9;
@@ -81,76 +82,47 @@ export default async function AnnouncementsPage({
 
   return (
     <>
-      <section className="relative flex min-h-[65vh] items-center overflow-hidden">
-        <Image
-          src="/images/announcements/announcements-cultural-event.jpg"
-          alt="Cultural dancers performing on stage at The New Breed Church"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={{ objectPosition: "50% 30%" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-        <Container className="relative py-16 text-white">
-          <h1 className="font-display text-4xl font-bold sm:text-5xl">
-            Weekly Announcements
-          </h1>
-          <p className="mt-3 max-w-xl text-lg text-white/85">
-            Stay up to date on what&apos;s happening in church this week, and what&apos;s
-            coming up next.
-          </p>
-        </Container>
-      </section>
+      <PageHero
+        eyebrow="Announcements"
+        lines={["What's", "happening"]}
+        image="/images/announcements/announcements-cultural-event.jpg"
+        imagePosition="50% 30%"
+        description="Stay up to date on what's happening in church this week, and what's coming up next."
+      />
 
-      <section className="py-16 sm:py-20">
-        <Container>
-          {/* Not wrapped in RevealSection: this whole page re-renders on
-              every category-filter click (it's a real searchParams
-              navigation), which would remount the reveal-on-scroll
-              motion.div and re-hide already-visible content on every click —
-              a jarring flicker that's easy to mistake for a slow/stuck
-              navigation. */}
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">This Week</h2>
-          <div className="mt-6">
-            {agenda.length > 0 ? (
-              <WeekAgenda items={agenda} />
-            ) : (
-              <p className="text-current/70">Nothing scheduled this week yet.</p>
-            )}
-          </div>
-        </Container>
-      </section>
-
-      <section className="bg-surface-muted py-16 sm:py-20">
-        <Container>
-          {/* Same reasoning as the "This Week" heading above — this row
-              (and the filter chips within it) must stay visible across a
-              category-filter click, not replay a scroll-reveal fade. */}
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">
-              Upcoming Announcements
-            </h2>
-          </div>
-          <div className="mt-5">
-            <CategoryFilter active={category} />
-          </div>
-
-          {upcoming.length === 0 ? (
-            <p className="mt-10 text-current/70">
-              No upcoming announcements in this category right now — check back soon.
-            </p>
+      <SectionBand tone="white">
+        {/* Not wrapped in RevealSection: this whole page re-renders on every
+            category-filter click (a real searchParams navigation), which would
+            remount a reveal-on-scroll wrapper and flicker. */}
+        <Eyebrow className="text-brand-700 dark:text-brand-300">This week</Eyebrow>
+        <div className="mt-6">
+          {agenda.length > 0 ? (
+            <WeekAgenda items={agenda} />
           ) : (
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {upcoming.map(({ announcement, occurrence }) => (
-                <TiltCard key={announcement.id}>
-                  <AnnouncementCard announcement={announcement} occurrence={occurrence} />
-                </TiltCard>
-              ))}
-            </div>
+            <p className="text-current/70">Nothing scheduled this week yet.</p>
           )}
-        </Container>
-      </section>
+        </div>
+      </SectionBand>
+
+      <SectionBand tone="night">
+        <Eyebrow>Upcoming</Eyebrow>
+        <StaggeredHeading className="mt-6" size="sm" lines={["Upcoming", "announcements"]} haloLine={1} />
+        <div className="mt-8">
+          <CategoryFilter active={category} />
+        </div>
+
+        {upcoming.length === 0 ? (
+          <p className="t-body mt-10 text-white/70">
+            No upcoming announcements in this category right now — check back soon.
+          </p>
+        ) : (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {upcoming.map(({ announcement, occurrence }) => (
+              <AnnouncementCard key={announcement.id} announcement={announcement} occurrence={occurrence} />
+            ))}
+          </div>
+        )}
+      </SectionBand>
     </>
   );
 }

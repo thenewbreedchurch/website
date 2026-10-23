@@ -294,7 +294,7 @@ async function main() {
   // church's explicit request) — not seeded here, and the pre-existing DB
   // row was deleted directly.
   const staff: Array<Parameters<typeof prisma.staffMember.create>[0]["data"]> = [
-    { name: "Pastor Gbenga Olaniyan", role: "Pastor", sortOrder: 0 },
+    { name: "Pastor Gbenga Olaniyan", role: "Oversight Pastor", sortOrder: 0 },
   ];
   for (const member of staff) {
     const existing = await prisma.staffMember.findFirst({

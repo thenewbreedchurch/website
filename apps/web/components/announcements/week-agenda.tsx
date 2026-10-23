@@ -26,7 +26,7 @@ export function WeekAgenda({ items }: { items: AgendaItem[] }) {
         return (
           <TiltCard
             key={dayIndex}
-            className="rounded-2xl border border-border bg-surface p-6 shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="rounded-none border border-border bg-surface p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-1"
           >
             <h3 className="font-display text-xl font-semibold text-brand-700 dark:text-brand-300">
               {dayName}

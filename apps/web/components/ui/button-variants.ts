@@ -17,10 +17,17 @@ export const buttonVariants = cva(
         md: "h-11 px-6 text-sm",
         lg: "h-13 px-8 text-base",
       },
+      // "pill" is the default so admin screens are unchanged; the public site
+      // opts into "square" (wearethenew.org style: sharp corners, uppercase).
+      shape: {
+        pill: "",
+        square: "rounded-none font-bold uppercase tracking-tight",
+      },
     },
     defaultVariants: {
       variant: "primary",
       size: "md",
+      shape: "square",
     },
   }
 );

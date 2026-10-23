@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { getChurchSettings } from "@/lib/settings";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 
 // Every public marketing/content page (home, about, contact, give, sermons,
@@ -8,11 +9,12 @@ import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 // outside this group so they render their own minimal chrome instead — the
 // pageview tracker is scoped here for the same reason (public-site insight
 // only, not admin traffic).
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getChurchSettings();
   return (
     <>
       <PageViewTracker />
-      <Header />
+      <Header instagramUrl={settings.instagramUrl} youtubeUrl={settings.youtubeUrl} />
       <main className="flex-1">{children}</main>
       <Footer />
     </>

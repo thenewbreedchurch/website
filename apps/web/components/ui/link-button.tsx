@@ -14,11 +14,12 @@ export function LinkButton({
   className,
   variant,
   size,
+  shape,
   children,
   ...props
 }: LinkButtonProps) {
   return (
-    <Link className={cn(buttonVariants({ variant, size }), className)} {...props}>
+    <Link className={cn(buttonVariants({ variant, size, shape }), className)} {...props}>
       {children}
     </Link>
   );

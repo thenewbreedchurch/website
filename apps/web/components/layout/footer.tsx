@@ -1,14 +1,12 @@
 import Link from "next/link";
-import { Mail, MapPin, Phone } from "lucide-react";
-import { InstagramIcon, YoutubeIcon } from "@/components/icons/social-icons";
+import Image from "next/image";
 import { getChurchSettings, getServiceTimes } from "@/lib/settings";
-import { NAV_LINKS } from "@/lib/nav-links";
+import { NAV_LINKS, GIVE_LINK } from "@/lib/nav-links";
 import { groupConsecutiveServiceTimes } from "@/lib/service-times";
 
-// The legacy site hand-duplicated service times, contact info, and social
-// links across 4-6 files each; this is now the single rendering of all three,
-// sourced live from ChurchSettings/ServiceTime so editing content in /admin
-// updates every page that shows it.
+// Single rendering of contact info, service times and socials, sourced live
+// from ChurchSettings/ServiceTime so /admin edits update every page. Styled
+// after wearethenew.org: black field, mono uppercase meta, hairline rules.
 export async function Footer() {
   const [settings, serviceTimes] = await Promise.all([
     getChurchSettings(),
@@ -16,130 +14,79 @@ export async function Footer() {
   ]);
 
   const grouped = groupConsecutiveServiceTimes(serviceTimes);
+  const socials = [
+    settings.instagramUrl && { label: "Instagram", href: settings.instagramUrl },
+    settings.youtubeUrl && { label: "YouTube", href: settings.youtubeUrl },
+    settings.livestreamUrl && { label: "Watch Live", href: settings.livestreamUrl },
+  ].filter((s): s is { label: string; href: string } => Boolean(s));
 
   return (
-    <footer className="border-t border-border bg-surface-muted">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="font-display text-lg font-semibold">{settings.orgName}</p>
-            <p className="mt-2 text-sm text-current/70">{settings.tagline}</p>
-          </div>
+    <footer className="bg-night text-white">
+      <div className="grid gap-12 px-4 pb-12 pt-20 sm:px-6 lg:grid-cols-[1fr_auto_auto] lg:px-9">
+        <div className="max-w-sm">
+          <Image
+            src="/logo-mark.png"
+            alt=""
+            width={166}
+            height={160}
+            className="h-16 w-auto"
+          />
+          <p className="mt-4 font-display text-2xl font-bold uppercase leading-none tracking-tight">
+            {settings.orgName}
+          </p>
+          <p className="t-body mt-3 text-sm text-white/65">{settings.tagline}</p>
+        </div>
 
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-current/60">
-              Contact
-            </h3>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li className="flex items-start gap-2">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-brand-700" />
-                <span>
-                  {settings.streetAddress}, {settings.addressLocality},{" "}
-                  {settings.addressRegion}, {settings.addressCountry}
-                </span>
+        <div>
+          <p className="t-eyebrow text-brand-300">Weekly</p>
+          <ul className="t-eyebrow mt-4 hidden space-y-2.5 text-white/85 sm:block">
+            {grouped.map((entry) => (
+              <li key={entry.key}>
+                {entry.days} · {entry.time} {entry.label}
               </li>
-              <li className="flex items-center gap-2">
-                <Phone size={16} className="shrink-0 text-brand-700" />
-                <a href={`tel:${settings.phone.replace(/\s+/g, "")}`} className="hover:underline">
-                  {settings.phone}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail size={16} className="shrink-0 text-brand-700" />
-                <a href={`mailto:${settings.email}`} className="hover:underline">
-                  {settings.email}
-                </a>
-              </li>
-            </ul>
-          </div>
+            ))}
+          </ul>
+          <Link href="/about" className="t-eyebrow mt-4 inline-block text-white/85 underline sm:hidden">
+            See service times
+          </Link>
+        </div>
 
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-current/60">
-              Weekly Activities
-            </h3>
-            {/* Condensed on mobile — the full list is a lot of vertical
-                scroll to repeat below the address/contact block; a link to
-                the full schedule on /about covers it. */}
-            <Link
-              href="/about"
-              className="mt-3 inline-block text-sm font-medium text-brand-700 hover:underline dark:text-brand-300 sm:hidden"
-            >
-              See service times &rarr;
+        <nav aria-label="Footer" className="t-eyebrow grid grid-cols-2 gap-x-10 gap-y-2.5 text-white/85">
+          {[...NAV_LINKS.filter((l) => l.href !== "/"), GIVE_LINK].map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-white hover:underline">
+              {link.label}
             </Link>
-            <ul className="mt-3 hidden space-y-2 text-sm sm:block">
-              {grouped.map((entry) => (
-                <li key={entry.key}>
-                  <span className="font-medium">{entry.days}: </span>
-                  <span className="text-current/80">
-                    {entry.time} {entry.label}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          ))}
+        </nav>
+      </div>
 
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-current/60">
-              Follow Us
-            </h3>
-            <div className="mt-3 flex items-center gap-3">
-              {settings.instagramUrl && (
-                <a
-                  href={settings.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-brand-800 transition-[transform,background-color,color] duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:text-white dark:bg-white/10 dark:text-white"
-                >
-                  <InstagramIcon width={16} height={16} />
-                </a>
-              )}
-              {settings.youtubeUrl && (
-                <a
-                  href={settings.youtubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="YouTube"
-                  className="inline-flex h-9 items-center justify-center transition-[transform,opacity] duration-300 hover:-translate-y-0.5 hover:opacity-80"
-                >
-                  {/* No circular wrapper (unlike Instagram) — the real
-                      YouTube mark already carries its own red and its own
-                      wider-than-tall proportions, so forcing it into a
-                      square badge would distort it. */}
-                  <YoutubeIcon width={34} height={24} />
-                </a>
-              )}
-              {settings.livestreamUrl && (
-                <a
-                  href={settings.livestreamUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
-                >
-                  Watch Live
-                </a>
-              )}
-            </div>
-
-            {/* Hidden below sm: — the mobile hamburger menu (MobileNav)
-                already lists every one of these links, so repeating them
-                here just adds scroll on narrow screens. */}
-            <nav
-              className="mt-6 hidden flex-wrap gap-x-4 gap-y-2 text-sm text-current/70 sm:flex"
-              aria-label="Footer"
-            >
-              {NAV_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className="hover:underline">
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+      {socials.length > 0 && (
+        <div className="t-eyebrow flex flex-wrap justify-between gap-4 border-t border-white/15 px-4 py-5 text-white/70 sm:px-6 lg:px-9">
+          {socials.map((s) => (
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              {s.label}
+            </a>
+          ))}
         </div>
+      )}
 
-        <div className="mt-10 border-t border-border pt-6 text-sm text-current/60">
-          &copy; {new Date().getFullYear()} {settings.orgName}. All rights reserved.
-        </div>
+      <div className="t-eyebrow flex flex-col gap-3 border-t border-white/15 px-4 py-5 text-white/60 sm:px-6 lg:flex-row lg:justify-between lg:px-9">
+        <span>
+          &copy; {new Date().getFullYear()} {settings.orgName}
+        </span>
+        <span>
+          {settings.streetAddress}, {settings.addressLocality}, {settings.addressRegion},{" "}
+          {settings.addressCountry}
+        </span>
+        <span>
+          <a href={`tel:${settings.phone.replace(/\s+/g, "")}`} className="hover:text-white">
+            {settings.phone}
+          </a>{" "}
+          ·{" "}
+          <a href={`mailto:${settings.email}`} className="hover:text-white">
+            {settings.email}
+          </a>
+        </span>
       </div>
     </footer>
   );

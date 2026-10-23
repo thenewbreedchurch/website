@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 // breakage point.
 export function DataTable({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-200 admin-dark:border-neutral-800">
+    <div className="overflow-x-auto rounded-none border border-neutral-200 admin-dark:border-neutral-800">
       <table className="w-full min-w-[640px] text-left text-sm">{children}</table>
     </div>
   );
@@ -14,14 +14,14 @@ export function DataTable({ children }: { children: React.ReactNode }) {
 
 export function DataTableHead({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="border-b border-neutral-200 bg-brand-50/40 text-xs uppercase tracking-wide text-neutral-500 admin-dark:border-neutral-800 admin-dark:bg-brand-500/10 admin-dark:text-neutral-400">
+    <thead className="t-eyebrow border-b border-neutral-200 bg-brand-50/40 text-neutral-500 admin-dark:border-neutral-800 admin-dark:bg-brand-500/10 admin-dark:text-neutral-400">
       <tr>{children}</tr>
     </thead>
   );
 }
 
 export function Th({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <th className={cn("px-4 py-3 font-medium", className)}>{children}</th>;
+  return <th className={cn("px-4 py-4 font-normal", className)}>{children}</th>;
 }
 
 export function Td({ children, className }: { children: React.ReactNode; className?: string }) {

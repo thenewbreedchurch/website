@@ -118,7 +118,7 @@ export function SettingsForm({ settings }: { settings: ChurchSettings }) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-brand-700 px-6 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
+          className="inline-flex h-10 items-center rounded-none bg-brand-700 px-6 text-sm font-bold uppercase tracking-tight text-white hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
         >
           {isPending ? "Saving…" : "Save Settings"}
         </button>

@@ -28,11 +28,11 @@ export default function VerifyEmailPage() {
   return (
     <AuthCard title="Email Verification" center>
       {result?.ok ? (
-        <p className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 admin-dark:bg-green-500/10 admin-dark:text-green-400">
+        <p className="rounded-none bg-green-50 px-4 py-3 text-sm text-green-700 admin-dark:bg-green-500/10 admin-dark:text-green-400">
           Your email address has been verified.
         </p>
       ) : result && !result.ok ? (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 admin-dark:bg-red-500/10 admin-dark:text-red-400">
+        <p className="rounded-none bg-red-50 px-4 py-3 text-sm text-red-700 admin-dark:bg-red-500/10 admin-dark:text-red-400">
           {result.error}
         </p>
       ) : (
@@ -44,7 +44,7 @@ export default function VerifyEmailPage() {
             type="button"
             onClick={handleVerify}
             disabled={isPending}
-            className="mt-6 w-full rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
+            className="mt-6 w-full rounded-none bg-brand-700 px-3 py-2.5 text-sm font-bold uppercase tracking-tight text-white transition hover:bg-brand-800 disabled:opacity-60 admin-dark:bg-brand-600 admin-dark:hover:bg-brand-500"
           >
             {isPending ? "Verifying…" : "Verify my email"}
           </button>

@@ -30,10 +30,15 @@
   --color-brand-700: #6b46c1;
   --color-brand-800: #5b21b6;
   --color-brand-900: #4c1d95;
+  --color-brand-950: #2e1065;
 
   --color-surface: #ffffff;
   --color-surface-muted: #faf9fc;
   --color-border: #e7e3f0;
+
+  /* Deep section color (wearethenew.org's black bands) — a violet-tinted
+     near-black so it sits inside the brand rather than fighting it. */
+  --color-night: #0a0710;
 }
 
 @theme inline {
@@ -50,6 +55,8 @@
   --color-brand-700: var(--color-brand-700);
   --color-brand-800: var(--color-brand-800);
   --color-brand-900: var(--color-brand-900);
+  --color-brand-950: var(--color-brand-950);
+  --color-night: var(--color-night);
 
   --color-surface: var(--color-surface);
   --color-surface-muted: var(--color-surface-muted);
@@ -57,6 +64,7 @@
 
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
+  --font-mono: var(--font-mono);
 }
 
 /* Automatic default: follows the OS, unless an explicit .light override is
@@ -100,6 +108,59 @@ h2,
 h3,
 h4 {
   font-family: var(--font-heading), Georgia, serif;
+}
+
+/* Editorial type styles modelled on wearethenew.org (measured: display serif
+   700 / uppercase / -0.03em / line-height 1; Manrope body -0.02em; mono
+   eyebrows). One place to tune the whole site's typographic voice. */
+.t-display {
+  font-family: var(--font-heading), Georgia, serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-size: clamp(2rem, 9vw, 5rem);
+  text-wrap: balance;
+}
+
+.t-display-sm {
+  font-family: var(--font-heading), Georgia, serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-size: clamp(1.75rem, 7vw, 3.75rem);
+  text-wrap: balance;
+}
+
+.t-eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.t-body {
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+
+.t-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-bottom: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--link-accent, var(--color-brand-500));
+  transition: opacity 0.2s;
+}
+
+.t-link:hover {
+  opacity: 0.7;
 }
 
 /* prefers-reduced-motion is also checked in JS (lib/motion.ts) for

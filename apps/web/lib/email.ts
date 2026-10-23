@@ -1,9 +1,13 @@
+import { emailInlineLogos } from "./email-logos";
 import { Resend } from "resend";
 import type { ContactCategory, NewConvertInterest } from "@nb-church/db";
 import NewsletterWelcomeEmail from "../emails/newsletter-welcome";
 import ContactNotificationEmail from "../emails/contact-notification";
 import EventRegistrationConfirmationEmail from "../emails/event-registration-confirmation";
 import NewConvertInquiryEmail from "../emails/new-convert-inquiry";
+import WelfareRequestEmail, { type WelfareRequestEmailProps } from "../emails/welfare-request";
+import { describeSupport } from "./welfare";
+import { WELFARE_MAX_EMAIL_ATTACH_BYTES } from "./welfare-attachments";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -23,7 +27,7 @@ export async function sendNewsletterWelcomeEmail(params: {
   unsubscribeToken: string;
 }): Promise<void> {
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to: params.to,
       subject: `Welcome to ${params.orgName}!`,
@@ -85,7 +89,7 @@ export async function sendContactNotificationEmail(params: {
   if (to.length === 0) return;
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to,
       replyTo: params.email,
@@ -122,7 +126,7 @@ export async function sendNewConvertInquiryEmail(params: {
     return;
   }
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to,
       replyTo: params.email,
@@ -132,6 +136,52 @@ export async function sendNewConvertInquiryEmail(params: {
     if (error) console.error("[email] new convert inquiry send failed:", error);
   } catch (err) {
     console.error("[email] new convert inquiry send threw:", err);
+  }
+}
+
+// Welfare requests carry sensitive personal and financial detail, so they go
+// ONLY to the welfare inbox (unlike the generic contact form, which also
+// copies admin@). Reply-To is the applicant, so the team can answer directly.
+// Uploaded documents travel as real email attachments (downloadable, and
+// previewable in the mail client) up to a combined size every mail provider
+// accepts; anything beyond that stays in the admin panel and the email says so.
+export async function sendWelfareRequestEmail(
+  params: Omit<WelfareRequestEmailProps, "attachments" | "adminUrl"> & {
+    requestId: string;
+    files: { filename: string; mimeType: string; size: number; data: Buffer }[];
+  }
+): Promise<void> {
+  const to = process.env.WELFARE_NOTIFICATION_EMAIL;
+  if (!to) {
+    console.error("[email] WELFARE_NOTIFICATION_EMAIL is not set; skipping welfare notification send");
+    return;
+  }
+
+  let budget = WELFARE_MAX_EMAIL_ATTACH_BYTES;
+  const attached: { filename: string; content: Buffer; contentType: string }[] = [];
+  const summary = params.files.map((f) => {
+    const fits = f.size <= budget;
+    if (fits) {
+      budget -= f.size;
+      attached.push({ filename: f.filename, content: f.data, contentType: f.mimeType });
+    }
+    return { filename: f.filename, size: f.size, attached: fits };
+  });
+
+  const { files: _files, requestId, ...rest } = params;
+  void _files;
+  try {
+    const { error } = await resend.emails.send({
+      from: EMAIL_FROM,
+      to,
+      replyTo: params.email,
+      subject: `[Welfare] ${params.fullName} — ${describeSupport(params.supportType, params.supportOther)}`,
+      react: WelfareRequestEmail({ ...rest, attachments: summary, adminUrl: `${SITE_URL}/admin/welfare-requests/${requestId}` }),
+      attachments: [...emailInlineLogos(), ...attached],
+    });
+    if (error) console.error("[email] welfare request send failed:", error);
+  } catch (err) {
+    console.error("[email] welfare request send threw:", err);
   }
 }
 
@@ -146,7 +196,7 @@ export async function sendEventRegistrationConfirmation(params: {
   guestsCount: number;
 }): Promise<void> {
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to: params.to,
       subject: `You're registered for ${params.eventTitle}`,

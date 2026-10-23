@@ -1,6 +1,6 @@
-import { Hr, Link, Section, Text } from "@react-email/components";
+import { Link, Text } from "@react-email/components";
 import type { ContactCategory } from "@nb-church/db";
-import { EmailLayout, labelStyle, textStyle, valueStyle } from "./components/email-layout";
+import { EmailLayout, Field, P, SectionHeading, Title, linkStyle } from "./components/email-layout";
 
 export interface ContactNotificationEmailProps {
   name: string;
@@ -19,32 +19,25 @@ const CATEGORY_LABELS: Record<ContactCategory, string> = {
   TESTIMONY: "Testimony",
 };
 
+// Explicit background AND text colours, so the tag reads the same in light and dark mode.
 const CATEGORY_TONE: Record<ContactCategory, { bg: string; fg: string }> = {
-  GENERAL: { bg: "#f2eefa", fg: "#5B21B6" },
-  PRAYER: { bg: "#eef4fc", fg: "#1d4ed8" },
-  MEMBERSHIP: { bg: "#eafbf1", fg: "#15803d" },
-  WELFARE: { bg: "#fff3e6", fg: "#c2410c" },
-  TESTIMONY: { bg: "#fdeaea", fg: "#b91c1c" },
+  GENERAL: { bg: "#ede9fe", fg: "#4c1d95" },
+  PRAYER: { bg: "#dbeafe", fg: "#1e3a8a" },
+  MEMBERSHIP: { bg: "#dcfce7", fg: "#14532d" },
+  WELFARE: { bg: "#ffedd5", fg: "#7c2d12" },
+  TESTIMONY: { bg: "#fee2e2", fg: "#7f1d1d" },
 };
 
 // Internal notification sent to church staff when a public contact form is
 // submitted. All fields are user-supplied — rendered as JSX children, never
 // interpolated into a raw HTML string, so this can't be used as an injection
 // vector regardless of what a visitor types into the form.
-export default function ContactNotificationEmail({
-  name,
-  email,
-  phone,
-  category,
-  subject,
-  message,
-}: ContactNotificationEmailProps) {
+export default function ContactNotificationEmail({ name, email, phone, category, subject, message }: ContactNotificationEmailProps) {
   const tone = CATEGORY_TONE[category];
-
   return (
     <EmailLayout
       preview={`New message from ${name}: ${subject}`}
-      eyebrow="Website Contact Form"
+      eyebrow="Website contact form"
       orgName="The New Breed Church"
       footerNote="You're receiving this because someone submitted the contact form on thenewbreedchurch.org."
     >
@@ -53,46 +46,35 @@ export default function ContactNotificationEmail({
           display: "inline-block",
           backgroundColor: tone.bg,
           color: tone.fg,
-          fontSize: 12,
+          fontFamily: "Menlo, Consolas, 'Courier New', monospace",
+          fontSize: 10,
           fontWeight: 700,
-          padding: "4px 12px",
-          borderRadius: 999,
-          margin: "0 0 16px",
+          letterSpacing: 1.4,
+          textTransform: "uppercase",
+          padding: "6px 10px",
+          margin: "0 0 18px",
         }}
       >
         {CATEGORY_LABELS[category]}
       </Text>
 
-      <Text style={{ ...textStyle, fontSize: 17, fontWeight: 700, color: "#1f1730" }}>
-        {name} reached out through the website
-      </Text>
-      <Text style={textStyle}>Here&apos;s what they shared — you can reply directly to this email to respond to them.</Text>
+      <Title>{name} reached out</Title>
+      <P>Here&apos;s what they shared — reply directly to this email to respond to them.</P>
 
-      <Hr style={{ borderColor: "#efeaf7", margin: "20px 0" }} />
+      <SectionHeading />
 
-      <Section>
-        <Text style={labelStyle}>From</Text>
-        <Text style={valueStyle}>
-          {name} &lt;
-          <Link href={`mailto:${email}`} style={{ color: "#6b46c1" }}>
-            {email}
-          </Link>
-          &gt;
-        </Text>
-
-        {phone && (
-          <>
-            <Text style={labelStyle}>Phone</Text>
-            <Text style={valueStyle}>{phone}</Text>
-          </>
-        )}
-
-        <Text style={labelStyle}>Subject</Text>
-        <Text style={valueStyle}>{subject}</Text>
-
-        <Text style={labelStyle}>Message</Text>
-        <Text style={{ ...valueStyle, whiteSpace: "pre-wrap" as const }}>{message}</Text>
-      </Section>
+      <Field label="From">
+        {name} &lt;
+        <Link href={`mailto:${email}`} className="nb-link" style={linkStyle}>
+          {email}
+        </Link>
+        &gt;
+      </Field>
+      {phone && <Field label="Phone">{phone}</Field>}
+      <Field label="Subject">{subject}</Field>
+      <Field label="Message" pre last>
+        {message}
+      </Field>
     </EmailLayout>
   );
 }
