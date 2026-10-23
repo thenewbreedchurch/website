@@ -42,11 +42,13 @@ export async function Footer() {
           <ul className="t-eyebrow mt-4 hidden space-y-2.5 text-white/85 sm:block">
             {grouped.map((entry) => (
               <li key={entry.key}>
-                {entry.days} · {entry.time} {entry.label}
+                <Link href="/#weekly" className="hover:text-white hover:underline">
+                  {entry.days} · {entry.time} {entry.label}
+                </Link>
               </li>
             ))}
           </ul>
-          <Link href="/about" className="t-eyebrow mt-4 inline-block text-white/85 underline sm:hidden">
+          <Link href="/#weekly" className="t-eyebrow mt-4 inline-block text-white/85 underline sm:hidden">
             See service times
           </Link>
         </div>

@@ -56,12 +56,7 @@ export function StaggeredHeading({
             {showHalo ? (
               <span className="relative inline-block">
                 {last}
-                <Halo
-                  className={cn(
-                    "pointer-events-none absolute -inset-x-[6%] bottom-[-0.12em] h-[0.45em] w-[112%]",
-                    haloClassName
-                  )}
-                />
+                <Halo className={haloClassName} />
               </span>
             ) : (
               last

@@ -120,7 +120,7 @@ export function MobileNav({
                       onFocus={() => setPreview(i)}
                       aria-current={pathname === link.href ? "page" : undefined}
                       className={cn(
-                        "t-display-sm block py-2 text-[clamp(1.75rem,8vw,2.25rem)]! transition-colors hover:text-brand-300 focus-visible:text-brand-300 sm:py-[1.1vh] sm:text-[clamp(1.35rem,4.6vh,2.5rem)]!",
+                        "t-display-sm block py-2 text-[clamp(1.75rem,8vw,2.25rem)]! transition-colors hover:text-brand-300 focus-visible:text-brand-300 sm:py-[1.1vh] sm:text-[clamp(1.35rem,4.6vh,2.5rem)]! md:text-[clamp(1.6rem,5vh,3.25rem)]! lg:text-[clamp(1.35rem,4.6vh,2.5rem)]!",
                         pathname === link.href ? "text-brand-300" : "text-white/55"
                       )}
                     >

@@ -91,6 +91,7 @@
 }
 
 html {
+  scroll-behavior: smooth;
   /* Suppresses the browser's native overscroll "glow"/rubber-band effect at
      scroll boundaries (most noticeable on Android Chrome) — reported as a
      distracting glow around the page edges. */

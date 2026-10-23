@@ -90,7 +90,7 @@ export function WeeklyActivities({
   }
 
   return (
-    <SectionBand tone={tone}>
+    <SectionBand tone={tone} id="weekly" className="scroll-mt-20">
       <Eyebrow className={tone === "violet" ? "text-white/80" : undefined}>Weekly</Eyebrow>
       <div className="mt-6 flex justify-center">
         <StaggeredHeading

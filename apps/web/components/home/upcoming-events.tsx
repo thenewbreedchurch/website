@@ -56,9 +56,9 @@ export async function UpcomingEvents() {
         {upcoming.map(({ announcement, occurrence }) => (
           <RuledRow
             key={announcement.id}
-            className="flex-col items-center gap-y-4 text-center sm:flex-row sm:text-left"
+            className="flex-col items-center gap-y-4 text-center sm:items-start sm:text-left lg:flex-row lg:items-center lg:flex-nowrap"
           >
-            <div className="flex flex-col items-center gap-x-5 gap-y-2 sm:flex-row sm:items-baseline">
+            <div className="flex flex-col items-center gap-x-5 gap-y-2 sm:items-start lg:flex-row lg:items-baseline">
               <h3 className="text-balance text-[clamp(1.75rem,5.5vw,3.125rem)] font-bold uppercase leading-[1] tracking-tight">
                 {announcement.title}
               </h3>
@@ -67,7 +67,7 @@ export async function UpcomingEvents() {
                 {announcement.isOnline ? " · Online" : announcement.location ? ` · ${announcement.location}` : ""}
               </p>
             </div>
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 [--link-accent:var(--color-white)]">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 sm:justify-start lg:justify-end [--link-accent:var(--color-white)]">
               {announcement.isOnline && announcement.onlineUrl && (
                 <TextLink href={announcement.onlineUrl} external>
                   Join online

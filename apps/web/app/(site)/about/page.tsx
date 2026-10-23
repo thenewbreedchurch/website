@@ -173,7 +173,7 @@ export default async function AboutPage() {
         </RevealSection>
       </section>
 
-      <SectionBand tone="white">
+      <SectionBand tone="white" id="weekly" className="scroll-mt-20">
         <Eyebrow className="text-brand-700 dark:text-brand-300">Weekly</Eyebrow>
         <StaggeredHeading className="mt-6" size="sm" lines={["Weekly", "activities"]} haloLine={1} haloClassName="text-brand-600" />
         <div className="mt-12">

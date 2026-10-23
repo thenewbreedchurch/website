@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePrefersReducedMotion } from "@/lib/motion";
+import { SCRIBBLE_PATH, SCRIBBLE_POSITION, SCRIBBLE_VIEWBOX } from "@/components/ui/halo";
 
 export interface BeliefSlide {
   before?: string;
@@ -19,13 +20,13 @@ function Scribble({ active }: { active: boolean }) {
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 181 39"
+      viewBox={SCRIBBLE_VIEWBOX}
       fill="none"
       preserveAspectRatio="none"
-      className="pointer-events-none absolute -bottom-[0.22em] left-[-4%] h-[0.5em] w-[108%] text-white"
+      className={`${SCRIBBLE_POSITION} text-white`}
     >
       <path
-        d="M2 24.1566C57.9235 0.788094 178.723 -4.81191 178.557 10.7896C178.391 26.3912 24.9217 45.859 20.7234 31.3881C16.5252 16.9172 133.723 5.98809 163.123 13.3881"
+        d={SCRIBBLE_PATH}
         stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
