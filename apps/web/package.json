@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.699.0",
+    "@fontsource/fraunces": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
     "@nb-church/db": "workspace:*",
     "@react-email/components": "^1.0.12",
     "argon2": "^0.45.1",

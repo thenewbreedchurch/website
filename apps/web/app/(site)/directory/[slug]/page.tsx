@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${vendor.businessName} — ${vendor.category.name}`,
     description: vendor.description.slice(0, 155),
     path: `/directory/${vendor.slug}`,
-    ogImage: vendor.logoUrl ?? undefined,
+    ogImage: vendor.coverUrl ?? undefined,
   });
 }
 

@@ -1,19 +1,44 @@
 import type { Metadata } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.thenewbreedchurch.org";
-const DEFAULT_OG_IMAGE = "/images/og-default.png";
 
 export interface PageMetaInput {
   title: string;
   description: string;
   path: string;
+  /** Ignored — preview cards are generated from the title (kept so existing callers still compile). */
   ogImage?: string;
+  /** Small label above the title on the preview card; defaults to a label derived from the path. */
+  eyebrow?: string;
+}
+
+const EYEBROWS: Record<string, string> = {
+  about: "About us",
+  "first-timers": "I'm new",
+  "new-converts": "New converts",
+  announcements: "Announcements",
+  sermons: "Sermons",
+  give: "Give",
+  contact: "Contact",
+  leadership: "Leadership",
+  directory: "Business directory",
+  unsubscribe: "Newsletter",
+};
+
+/** URL of the generated 1200x630 preview card (app/api/og/route.tsx). Relative; metadataBase makes it absolute. */
+export function ogCardUrl({ title, path, eyebrow }: Pick<PageMetaInput, "title" | "path" | "eyebrow">): string {
+  const segment = path.split("/").filter(Boolean)[0] ?? "";
+  const params = new URLSearchParams({ title });
+  const label = eyebrow ?? (segment ? EYEBROWS[segment] : undefined);
+  if (label) params.set("eyebrow", label);
+  return `/api/og?${params.toString()}`;
 }
 
 /** Every page should call this for consistent title templating, canonical URL, and OG/Twitter tags — the legacy site only had this on 2 of 5 pages. */
-export function pageMetadata({ title, description, path, ogImage }: PageMetaInput): Metadata {
+export function pageMetadata({ title, description, path, ogImage, eyebrow }: PageMetaInput): Metadata {
   const url = new URL(path, SITE_URL).toString();
-  const image = ogImage ?? DEFAULT_OG_IMAGE;
+  void ogImage;
+  const image = ogCardUrl({ title, path, eyebrow });
 
   return {
     title,
@@ -24,7 +49,7 @@ export function pageMetadata({ title, description, path, ogImage }: PageMetaInpu
       description,
       url,
       siteName: "The New Breed Church",
-      images: [{ url: image }],
+      images: [{ url: image, width: 1200, height: 630, alt: title }],
       locale: "en_NG",
       type: "website",
     },
@@ -32,7 +57,7 @@ export function pageMetadata({ title, description, path, ogImage }: PageMetaInpu
       card: "summary_large_image",
       title,
       description,
-      images: [image],
+      images: [{ url: image, alt: title }],
     },
   };
 }

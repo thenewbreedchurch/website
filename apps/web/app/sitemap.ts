@@ -16,6 +16,7 @@ const STATIC_ROUTES = [
   "/leadership",
   "/directory",
   "/directory/browse",
+  "/directory/list-your-business",
 ];
 
 // Built per request, not at `next build`: the Docker build runs BEFORE the
