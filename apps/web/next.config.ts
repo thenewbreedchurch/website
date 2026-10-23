@@ -108,6 +108,16 @@ const nextConfig: NextConfig = {
   // every old bookmark, backlink, and indexed Google result for the old
   // URLs 404s the moment DNS points here instead of at the legacy host.
   // 308/permanent so search engines transfer ranking to the new URLs.
+  // The hero videos in /video are re-encoded under a new name when they change,
+  // so browsers and CDNs can keep them for a year instead of re-downloading.
+  async headers() {
+    return [
+      {
+        source: "/video/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: "/index.html", destination: "/", permanent: true },

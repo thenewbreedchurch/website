@@ -6,7 +6,7 @@ import { pageMetadata } from "@/lib/metadata";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { StaggeredHeading } from "@/components/ui/staggered-heading";
 import { TextLink } from "@/components/ui/text-link";
-import { HeroCarousel, type HeroSlide } from "@/components/home/hero-carousel";
+import { HeroVideo } from "@/components/home/hero-video";
 import { WeeklyActivities } from "@/components/home/weekly-activities";
 import { BeliefCarousel, type BeliefSlide } from "@/components/home/belief-carousel";
 import { TestimoniesSection } from "@/components/home/testimonies-section";
@@ -101,36 +101,14 @@ export default async function Home() {
     getServiceTimes(),
   ]);
 
-  const slides: HeroSlide[] = [
-    {
-      image: "/images/hero/hero-congregation-worship.jpg",
-      title: `Welcome to ${settings.orgName}`,
-      subtitle: settings.tagline,
-      ctaLabel: "Join Us Sunday",
-      ctaHref: settings.livestreamUrl ?? "/first-timers",
-      external: Boolean(settings.livestreamUrl),
-    },
-    {
-      image: "/images/hero/hero-preaching-purple.jpg",
-      title: "Experience God's Love",
-      subtitle: "Join our community of believers in worship and fellowship",
-      ctaLabel: "Register as a Member",
-      ctaHref: settings.memberRegistrationUrl ?? "/first-timers",
-      external: Boolean(settings.memberRegistrationUrl),
-    },
-    {
-      image: "/images/hero/hero-community-embrace.jpg",
-      title: "Grow in Community",
-      subtitle: "Connect with others on your spiritual journey",
-      ctaLabel: "Get Connected",
-      ctaHref: settings.instagramUrl ?? "/first-timers",
-      external: Boolean(settings.instagramUrl),
-    },
-  ];
-
   return (
     <>
-      <HeroCarousel slides={slides} />
+      <HeroVideo
+        orgName={settings.orgName}
+        ctaLabel="Join Us Sunday"
+        ctaHref={settings.livestreamUrl ?? "/first-timers"}
+        external={Boolean(settings.livestreamUrl)}
+      />
 
       <BeliefCarousel
         left={settings.missionStatement}

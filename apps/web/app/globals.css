@@ -92,10 +92,10 @@
 
 html {
   scroll-behavior: smooth;
-  /* Suppresses the browser's native overscroll "glow"/rubber-band effect at
-     scroll boundaries (most noticeable on Android Chrome) — reported as a
-     distracting glow around the page edges. */
-  overscroll-behavior-y: none;
+  /* Deliberately NO overscroll-behavior here: `none`/`contain` on the root
+     also disables the browser's pull-to-refresh gesture on phones/tablets
+     (it was set once to hide Android's edge glow, which cost visitors
+     pull-to-refresh). */
 }
 
 body {
@@ -162,6 +162,16 @@ h4 {
 
 .t-link:hover {
   opacity: 0.7;
+}
+
+/* Background hero video: never show a play button or any native controls, even
+   when iOS Low Power Mode blocks autoplay (the poster stays instead). */
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
 }
 
 /* prefers-reduced-motion is also checked in JS (lib/motion.ts) for
