@@ -28,6 +28,14 @@ export const contactSchema = z.object({
 });
 export type ContactInput = z.infer<typeof contactSchema>;
 
+export const testimonySubmissionSchema = z.object({
+  name: z.string().trim().min(2, "Name is too short").max(120),
+  email: z.string().trim().min(1, "Email is required").email("Enter a valid email address"),
+  body: z.string().trim().min(30, "Please share a little more (at least a couple of sentences)").max(2000, "Please keep it under 2000 characters"),
+  consent: z.literal("on", { error: "Please confirm we may share your testimony" }),
+});
+export type TestimonySubmissionInput = z.infer<typeof testimonySubmissionSchema>;
+
 export const newConvertInterestSchema = z.enum([
   "BAPTISM",
   "BIBLE_STUDY",

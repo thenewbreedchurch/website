@@ -1,10 +1,11 @@
+import Link from "next/link";
 import { prisma } from "@nb-church/db";
 import { SectionBand } from "@/components/ui/section-band";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { StaggeredHeading } from "@/components/ui/staggered-heading";
 import { TestimonyReveal } from "./testimony-reveal";
 
-export async function TestimoniesSection({ testimonyEmail }: { testimonyEmail: string }) {
+export async function TestimoniesSection() {
   const testimonies = await prisma.testimony.findMany({
     where: { isApproved: true },
     orderBy: { publishedAt: "desc" },
@@ -36,18 +37,18 @@ export async function TestimoniesSection({ testimonyEmail }: { testimonyEmail: s
               body: t.body,
             }))}
           />
-          <a href={`mailto:${testimonyEmail}`} className={`mt-12 ${cta}`}>
+          <Link href="/contact?category=TESTIMONY" className={`mt-12 ${cta}`}>
             Share Your Testimony
-          </a>
+          </Link>
         </>
       ) : (
         <div className="mt-10 border border-dashed border-border p-10">
           <p className="text-current/70">
             We&apos;d love to hear how God has been at work in your life.
           </p>
-          <a href={`mailto:${testimonyEmail}`} className={`mt-6 ${cta}`}>
+          <Link href="/contact?category=TESTIMONY" className={`mt-6 ${cta}`}>
             Share Your Testimony
-          </a>
+          </Link>
         </div>
       )}
     </SectionBand>

@@ -5,6 +5,7 @@ import { contactAction } from "@/actions/contact";
 import type { ActionResult } from "@/lib/action-result";
 import { cn } from "@/lib/utils";
 import { WelfareForm } from "./welfare-form";
+import { TestimonyForm } from "./testimony-form";
 
 async function submitContact(
   _prevState: ActionResult | null,
@@ -191,8 +192,10 @@ function GeneralContactForm({ category }: { category: string }) {
  * The contact page's form. The topic picker comes first; choosing "Welfare /
  * Member Care" swaps the generic fields for the welfare team's full intake form.
  */
-export function ContactForm() {
-  const [category, setCategory] = useState<string>("GENERAL");
+export function ContactForm({ initialCategory = "GENERAL" }: { initialCategory?: string }) {
+  const [category, setCategory] = useState<string>(
+    CATEGORY_OPTIONS.some((o) => o.value === initialCategory) ? initialCategory : "GENERAL"
+  );
 
   return (
     <div className="space-y-8">
@@ -212,6 +215,11 @@ export function ContactForm() {
             </option>
           ))}
         </select>
+        {category === "TESTIMONY" && (
+          <p className="t-body mt-3 text-sm text-current/70">
+            We love hearing what God has done. Share yours below. Our team reads each one before anything is published.
+          </p>
+        )}
         {category === "WELFARE" && (
           <p className="t-body mt-3 text-sm text-current/70">
             Please complete the welfare team&apos;s form below so they have everything they need to help.
@@ -219,7 +227,13 @@ export function ContactForm() {
         )}
       </div>
 
-      {category === "WELFARE" ? <WelfareForm key="welfare" /> : <GeneralContactForm key="general" category={category} />}
+      {category === "WELFARE" ? (
+        <WelfareForm key="welfare" />
+      ) : category === "TESTIMONY" ? (
+        <TestimonyForm key="testimony" />
+      ) : (
+        <GeneralContactForm key="general" category={category} />
+      )}
     </div>
   );
 }

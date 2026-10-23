@@ -11,7 +11,7 @@ import { deleteTestimonyAction, toggleTestimonyApprovalAction } from "@/actions/
 export default async function AdminTestimoniesPage() {
   await requireAdmin();
   const testimonies = await prisma.testimony.findMany({
-    orderBy: { submittedAt: "desc" },
+    orderBy: [{ isApproved: "asc" }, { submittedAt: "desc" }],
     take: 100,
   });
 
@@ -29,7 +29,10 @@ export default async function AdminTestimoniesPage() {
           {testimonies.length === 0 && <EmptyRow colSpan={4}>No testimonies yet.</EmptyRow>}
           {testimonies.map((t) => (
             <tr key={t.id}>
-              <Td className="font-medium">{t.authorName}</Td>
+              <Td className="font-medium">
+                {t.authorName}
+                {t.authorEmail && <div className="text-xs font-normal text-current/60">{t.authorEmail}</div>}
+              </Td>
               <Td className="max-w-sm truncate">{t.body}</Td>
               <Td>
                 <div className="flex flex-wrap gap-1.5">

@@ -3,6 +3,7 @@ import { getResend } from "./resend-client";
 import type { ContactCategory, NewConvertInterest } from "@nb-church/db";
 import NewsletterWelcomeEmail from "../emails/newsletter-welcome";
 import ContactNotificationEmail from "../emails/contact-notification";
+import TestimonySubmissionEmail from "../emails/testimony-submission";
 import EventRegistrationConfirmationEmail from "../emails/event-registration-confirmation";
 import NewConvertInquiryEmail from "../emails/new-convert-inquiry";
 import WelfareRequestEmail, { type WelfareRequestEmailProps } from "../emails/welfare-request";
@@ -52,9 +53,8 @@ export const CONTACT_CATEGORY_LABELS: Record<ContactCategory, string> = {
 
 // admin@ is always included; each non-GENERAL/TESTIMONY category adds its
 // own dedicated address on top (confirmed routing model — see HANDOFF.md).
-// TESTIMONY has no dedicated inbox of its own yet — same as GENERAL, it
-// just goes to admin@ — since none was requested; add one here the same
-// way PRAYER/MEMBERSHIP/WELFARE do if that changes.
+// TESTIMONY now has its own form (actions/testimony-submission.ts) and inbox,
+// so it no longer goes through here.
 function resolveContactRecipients(category: ContactCategory): string[] {
   const categoryEnvVar: Record<ContactCategory, string | undefined> = {
     GENERAL: undefined,
@@ -212,5 +212,45 @@ export async function sendEventRegistrationConfirmation(params: {
     if (error) console.error("[email] event registration confirmation send failed:", error);
   } catch (err) {
     console.error("[email] event registration confirmation send threw:", err);
+  }
+}
+
+// Testimonies go to their own inbox (TESTIMONY_NOTIFICATION_EMAIL) with admin@
+// copied, like every other category.
+export async function sendTestimonySubmissionEmail(params: {
+  id: string;
+  name: string;
+  email: string;
+  body: string;
+}): Promise<void> {
+  const to = Array.from(
+    new Set(
+      [process.env.CONTACT_NOTIFICATION_EMAIL, process.env.TESTIMONY_NOTIFICATION_EMAIL].filter(
+        (v): v is string => Boolean(v)
+      )
+    )
+  );
+  if (to.length === 0) {
+    console.error("[email] no testimony recipient env vars are set; skipping send");
+    return;
+  }
+
+  try {
+    const { error } = await getResend().emails.send({
+      attachments: emailInlineLogos(),
+      from: EMAIL_FROM,
+      to,
+      replyTo: params.email,
+      subject: `[Testimony] ${params.name} shared a testimony`,
+      react: TestimonySubmissionEmail({
+        name: params.name,
+        email: params.email,
+        body: params.body,
+        adminUrl: `${SITE_URL}/admin/testimonies/${params.id}`,
+      }),
+    });
+    if (error) console.error("[email] testimony notification send failed:", error);
+  } catch (err) {
+    console.error("[email] testimony notification send threw:", err);
   }
 }

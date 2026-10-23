@@ -16,7 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default async function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
   const settings = await getChurchSettings();
   const fullAddress = `${settings.streetAddress}, ${settings.addressLocality}, ${settings.addressRegion}, ${settings.addressCountry}`;
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
@@ -61,7 +66,7 @@ export default async function ContactPage() {
       <SectionBand tone="white">
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-5">
           <RevealSection className="min-w-0 lg:col-span-3">
-            <ContactForm />
+            <ContactForm initialCategory={category?.toUpperCase()} />
           </RevealSection>
 
           <ul className="min-w-0 lg:col-span-2">

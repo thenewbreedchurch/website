@@ -78,7 +78,22 @@ export function MobileNav({
             transition={{ duration: reducedMotion ? 0 : 0.25 }}
             className="fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-night text-white"
           >
-            <div className="flex h-18 items-center justify-end px-4 sm:px-6 lg:px-9">
+            <div className="flex h-18 shrink-0 items-center justify-between px-4 sm:px-6 lg:px-9">
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                aria-label="The New Breed Church — home"
+                className="flex items-center gap-2.5"
+              >
+                <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-10 w-auto sm:h-12" />
+                <Image
+                  src="/logo-wordmark.png"
+                  alt=""
+                  width={467}
+                  height={160}
+                  className="h-10 w-auto brightness-0 invert sm:h-12"
+                />
+              </Link>
               <button
                 ref={closeRef}
                 type="button"
@@ -89,8 +104,8 @@ export function MobileNav({
               </button>
             </div>
 
-            <div className="flex flex-1 flex-col justify-between gap-12 px-4 pb-10 pt-6 sm:px-6 lg:grid lg:flex-none lg:grid-cols-[1fr_24rem] lg:gap-14 lg:px-9 lg:pb-24 lg:pt-8">
-              <nav aria-label="Primary" className="flex flex-col sm:gap-0" onMouseLeave={() => setPreview(null)}>
+            <div className="flex flex-1 flex-col justify-between gap-10 px-4 pb-8 pt-4 sm:px-6 lg:grid lg:grid-cols-[1fr_24rem] lg:content-center lg:gap-14 lg:px-9 lg:pb-16 lg:pt-0">
+              <nav aria-label="Primary" className="flex flex-col lg:self-center" onMouseLeave={() => setPreview(null)}>
                 {NAV_LINKS.map((link, i) => (
                   <motion.div
                     key={link.href}
@@ -116,7 +131,7 @@ export function MobileNav({
               </nav>
 
               <div className="space-y-6 lg:pt-3">
-                <div className="relative hidden aspect-[4/3] overflow-hidden bg-brand-950 lg:block">
+                <div className="relative hidden aspect-[5/4] max-h-[42vh] w-full overflow-hidden bg-brand-950 lg:block">
                   <AnimatePresence initial={false}>
                     <motion.div
                       key={previewSrc}

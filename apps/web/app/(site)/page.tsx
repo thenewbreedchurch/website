@@ -3,12 +3,12 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getChurchSettings, getServiceTimes } from "@/lib/settings";
 import { pageMetadata } from "@/lib/metadata";
-import { SectionBand } from "@/components/ui/section-band";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { StaggeredHeading } from "@/components/ui/staggered-heading";
 import { TextLink } from "@/components/ui/text-link";
 import { HeroCarousel, type HeroSlide } from "@/components/home/hero-carousel";
 import { WeeklyActivities } from "@/components/home/weekly-activities";
+import { BeliefCarousel, type BeliefSlide } from "@/components/home/belief-carousel";
 import { TestimoniesSection } from "@/components/home/testimonies-section";
 import { UpcomingEvents } from "@/components/home/upcoming-events";
 import { LeadershipTeaser } from "@/components/home/leadership-teaser";
@@ -25,6 +25,22 @@ const STRIP_IMAGES = [
 // Simple shape-matching skeletons so each section's own Suspense boundary
 // doesn't cause a jarring blank-to-content jump while its (independent)
 // query resolves — see the Suspense wrappers below.
+// Drawn from the church's own mission and tagline ("rooted in the Word, alive in
+// worship, committed to serving God and their community"; "grow in faith, hope,
+// and love"). Edit freely — the highlighted word gets the hand-drawn circle.
+const BELIEF_SLIDES: BeliefSlide[] = [
+  { before: "We are a ", mark: "new breed" },
+  { before: "We are rooted in the ", mark: "Word", long: true },
+  { before: "We are alive in ", mark: "worship" },
+  { before: "We love ", mark: "God", after: " and we love people", long: true },
+  { before: "We grow in ", mark: "faith" },
+  { before: "We stand on ", mark: "hope" },
+  { before: "We walk in ", mark: "love" },
+  { before: "We are committed to ", mark: "serving", long: true },
+  { before: "We love our ", mark: "community" },
+  { before: "We raise a ", mark: "generation", after: " of believers", long: true },
+];
+
 function TestimoniesSkeleton() {
   return (
     <section className="py-20">
@@ -116,25 +132,11 @@ export default async function Home() {
     <>
       <HeroCarousel slides={slides} />
 
-      {/* Belief band — mission left, big statement center, tagline right. */}
-      <SectionBand tone="violet" className="!py-16 sm:!py-24">
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_2fr_1fr]">
-          {settings.missionStatement && (
-            <p className="t-body max-w-xs text-base text-white/90">{settings.missionStatement}</p>
-          )}
-          <StaggeredHeading
-            as="h2"
-            lines={["We are", "a new breed"]}
-            haloLine={1}
-            haloClassName="text-white"
-            align="center"
-            className="lg:text-center"
-          />
-          <p className="t-body max-w-xs text-base text-white/90 lg:ml-auto lg:text-right">
-            {settings.tagline}
-          </p>
-        </div>
-      </SectionBand>
+      <BeliefCarousel
+        left={settings.missionStatement}
+        right={settings.tagline}
+        slides={BELIEF_SLIDES}
+      />
 
       {/* Edge-to-edge photo strip, no gutters or gaps. */}
       <section aria-hidden="true" className="grid h-64 grid-cols-2 sm:h-96 lg:h-[30rem] lg:grid-cols-[1fr_1fr_1.6fr_1.2fr]">
@@ -192,7 +194,7 @@ export default async function Home() {
       </section>
 
       <Suspense fallback={<TestimoniesSkeleton />}>
-        <TestimoniesSection testimonyEmail={settings.email} />
+        <TestimoniesSection />
       </Suspense>
 
       {/* 50/50 split — text | photo (Discipleship block pattern). */}

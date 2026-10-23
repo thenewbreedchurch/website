@@ -225,6 +225,9 @@ model Testimony {
   id             String    @id @default(cuid())
   authorName     String
   authorPhotoUrl String?
+  // Set when the testimony came in through the public form (so staff can follow
+  // up); null for ones an admin typed in by hand. Never shown publicly.
+  authorEmail    String?
   body           String
   isFeatured     Boolean   @default(false)
   isApproved     Boolean   @default(false)
