@@ -18,8 +18,13 @@ import { RRule } from "rrule";
 // as "" instead of null when left blank — confirmed live in production
 // against a real sermon whose blank thumbnail never fell back to its
 // YouTube thumbnail because of exactly this.
+//
+// The blank check must run BEFORE the inner schema (preprocess, not
+// transform): .email()/.url()/.regex() reject "" outright, so a blank
+// optional email failed with "Enter a valid email address" when it was
+// checked first and only blanked afterwards.
 function optionalText<T extends z.ZodString>(schema: T) {
-  return schema.optional().transform((v) => (v === "" ? undefined : v));
+  return z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), schema.optional());
 }
 
 export const churchSettingsSchema = z.object({
