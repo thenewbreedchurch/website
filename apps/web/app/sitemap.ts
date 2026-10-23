@@ -18,6 +18,13 @@ const STATIC_ROUTES = [
   "/directory/browse",
 ];
 
+// Built per request, not at `next build`: the Docker build runs BEFORE the
+// container-start migrations (scripts/entrypoint.sh), so on a deploy that adds
+// tables the build-time database doesn't have them yet — querying vendors then
+// crashed the build ("table public.Vendor does not exist"). Search engines
+// fetch the sitemap rarely, so a live query is cheap.
+export const dynamic = "force-dynamic";
+
 // Sitemaps are one of the few places a full-table read is the correct
 // call (Google needs every published URL), but it's still capped well
 // above any realistic table size for this church site rather than left
@@ -39,12 +46,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       orderBy: { updatedAt: "desc" },
       take: MAX_ENTRIES_PER_MODEL,
     }),
-    prisma.vendor.findMany({
-      where: { status: "APPROVED" },
-      select: { slug: true, updatedAt: true },
-      orderBy: { updatedAt: "desc" },
-      take: MAX_ENTRIES_PER_MODEL,
-    }),
+    prisma.vendor
+      .findMany({
+        where: { status: "APPROVED" },
+        select: { slug: true, updatedAt: true },
+        orderBy: { updatedAt: "desc" },
+        take: MAX_ENTRIES_PER_MODEL,
+      })
+      // Never let a directory problem take down the whole sitemap.
+      .catch(() => [] as { slug: string; updatedAt: Date }[]),
   ]);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((path) => ({
