@@ -24,7 +24,7 @@ const ORDER: Record<BrowseSort, Prisma.VendorOrderByWithRelationInput[]> = {
 export const vendorCardInclude = { category: { select: { name: true, slug: true } } } as const;
 export type VendorCardData = Prisma.VendorGetPayload<{ include: typeof vendorCardInclude }>;
 
-/** URL-driven, always-bounded vendor search for /directory/browse. Only APPROVED listings are ever public. */
+/** URL-driven, always-bounded vendor search for /marketplace/browse. Only APPROVED listings are ever public. */
 export async function browseVendors(params: BrowseParams) {
   const q = params.q?.trim().slice(0, 80);
   const location = params.location?.trim().slice(0, 80);

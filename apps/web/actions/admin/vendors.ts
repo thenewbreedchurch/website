@@ -13,10 +13,10 @@ import { sendVendorStatusEmail } from "@/lib/directory-email";
 import type { ActionResult } from "@/lib/action-result";
 
 function revalidateDirectory(slug?: string) {
-  revalidatePath("/directory");
-  revalidatePath("/directory/browse");
-  if (slug) revalidatePath(`/directory/${slug}`);
-  revalidatePath("/admin/directory/vendors");
+  revalidatePath("/marketplace");
+  revalidatePath("/marketplace/browse");
+  if (slug) revalidatePath(`/marketplace/${slug}`);
+  revalidatePath("/admin/marketplace/vendors");
 }
 
 type Parsed = z.infer<typeof adminVendorSchema>;
@@ -88,7 +88,7 @@ export async function createVendorAction(_prev: ActionResult | null, formData: F
   const created = await prisma.vendor.create({ data: { ...(built.data as object), slug } as never });
   revalidateDirectory(slug);
   await notifyOwner(created.id, parsed.data.status);
-  redirect(`/admin/directory/vendors/${created.id}`);
+  redirect(`/admin/marketplace/vendors/${created.id}`);
 }
 
 export async function updateVendorAction(id: string, _prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
@@ -128,7 +128,7 @@ export async function deleteVendorAction(id: string): Promise<void> {
   await requireAdmin();
   const v = await prisma.vendor.delete({ where: { id } });
   revalidateDirectory(v.slug);
-  redirect("/admin/directory/vendors");
+  redirect("/admin/marketplace/vendors");
 }
 
 // ---- Categories ----
@@ -144,7 +144,7 @@ export async function createCategoryAction(_prev: ActionResult | null, formData:
   if (clash) return { ok: false, error: "Please check the form for errors.", fieldErrors: { name: ["A category with that name already exists."] } };
   await prisma.vendorCategory.create({ data: { ...parsed.data, slug } });
   revalidateDirectory();
-  revalidatePath("/admin/directory/categories");
+  revalidatePath("/admin/marketplace/categories");
   return { ok: true, message: "Category added." };
 }
 
@@ -157,7 +157,7 @@ export async function updateCategoryAction(id: string, _prev: ActionResult | nul
   // The slug stays stable so existing links keep working after a rename.
   await prisma.vendorCategory.update({ where: { id }, data: parsed.data });
   revalidateDirectory();
-  revalidatePath("/admin/directory/categories");
+  revalidatePath("/admin/marketplace/categories");
   return { ok: true, message: "Category saved." };
 }
 
@@ -167,5 +167,5 @@ export async function deleteCategoryAction(id: string): Promise<void> {
   if (count > 0) return; // UI explains: move or delete its businesses first
   await prisma.vendorCategory.delete({ where: { id } });
   revalidateDirectory();
-  revalidatePath("/admin/directory/categories");
+  revalidatePath("/admin/marketplace/categories");
 }

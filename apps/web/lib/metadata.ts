@@ -21,7 +21,7 @@ const EYEBROWS: Record<string, string> = {
   give: "Give",
   contact: "Contact",
   leadership: "Leadership",
-  directory: "Business directory",
+  directory: "Marketplace",
   unsubscribe: "Newsletter",
 };
 

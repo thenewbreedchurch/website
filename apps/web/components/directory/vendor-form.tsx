@@ -214,7 +214,7 @@ export function VendorForm({ variant, categories, vendor, action, upload, submit
                 ))}
               </select>
             </Field>
-            <Field styles={s} error={err("ownerEmail")} name="ownerEmail" label="Owner account email" hint="Attach this listing to a directory account (must already exist). Leave blank for no owner.">
+            <Field styles={s} error={err("ownerEmail")} name="ownerEmail" label="Owner account email" hint="Attach this listing to a marketplace account (must already exist). Leave blank for no owner.">
               <input id="ownerEmail" name="ownerEmail" type="email" defaultValue={vendor?.owner?.email ?? ""} className={s.input} />
             </Field>
             <label className="flex items-center gap-3 text-sm">

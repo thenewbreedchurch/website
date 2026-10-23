@@ -12,7 +12,7 @@ export interface VendorStatusEmailProps {
 const COPY = {
   APPROVED: {
     title: "Your listing is live",
-    body: "Your business has been approved and is now visible in the New Breed Church directory.",
+    body: "Your business has been approved and is now visible in the New Breed Church marketplace.",
     cta: "View your public profile",
   },
   REJECTED: {
@@ -22,7 +22,7 @@ const COPY = {
   },
   SUSPENDED: {
     title: "Your listing has been paused",
-    body: "Your listing has been temporarily hidden from the directory.",
+    body: "Your listing has been temporarily hidden from the marketplace.",
     cta: "Open your dashboard",
   },
 } as const;
@@ -33,9 +33,9 @@ export default function VendorStatusEmail({ name, businessName, status, note, pr
   return (
     <EmailLayout
       preview={`${businessName}: ${c.title}`}
-      eyebrow="Business directory"
+      eyebrow="Marketplace"
       orgName="The New Breed Church"
-      footerNote="You're receiving this because you manage a listing on the New Breed Church business directory."
+      footerNote="You're receiving this because you manage a listing on the New Breed Church marketplace."
     >
       <Title>{c.title}</Title>
       <P>Hi {name},</P>

@@ -90,7 +90,7 @@ export function MobileNav({
             </div>
 
             <div className="flex flex-1 flex-col justify-between gap-12 px-4 pb-10 pt-6 sm:px-6 lg:grid lg:flex-none lg:grid-cols-[1fr_24rem] lg:gap-14 lg:px-9 lg:pb-24 lg:pt-8">
-              <nav aria-label="Primary" className="flex flex-col gap-1 sm:gap-2" onMouseLeave={() => setPreview(null)}>
+              <nav aria-label="Primary" className="flex flex-col sm:gap-0" onMouseLeave={() => setPreview(null)}>
                 {NAV_LINKS.map((link, i) => (
                   <motion.div
                     key={link.href}
@@ -105,7 +105,7 @@ export function MobileNav({
                       onFocus={() => setPreview(i)}
                       aria-current={pathname === link.href ? "page" : undefined}
                       className={cn(
-                        "t-display-sm block py-3 text-[clamp(2rem,9vw,2.75rem)] transition-colors hover:text-brand-300 focus-visible:text-brand-300 sm:py-3 sm:text-[clamp(1.6rem,3.6vw,2.5rem)]",
+                        "t-display-sm block py-2 text-[clamp(1.75rem,8vw,2.25rem)]! transition-colors hover:text-brand-300 focus-visible:text-brand-300 sm:py-[1.1vh] sm:text-[clamp(1.35rem,4.6vh,2.5rem)]!",
                         pathname === link.href ? "text-brand-300" : "text-white/55"
                       )}
                     >

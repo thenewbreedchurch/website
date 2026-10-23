@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
-  { href: "/directory/dashboard", label: "Overview" },
-  { href: "/directory/dashboard/listing", label: "My listing" },
-  { href: "/directory/dashboard/portfolio", label: "Portfolio" },
+  { href: "/marketplace/dashboard", label: "Overview" },
+  { href: "/marketplace/dashboard/listing", label: "My listing" },
+  { href: "/marketplace/dashboard/portfolio", label: "Portfolio" },
 ];
 
 export function DashboardNav() {

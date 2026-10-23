@@ -38,8 +38,8 @@ export async function addPortfolioImageAction(formData: FormData): Promise<Actio
   await prisma.vendorImage.create({
     data: { vendorId: vendor.id, url: result.url, caption, sortOrder: vendor._count.images },
   });
-  revalidatePath(`/directory/${vendor.slug}`);
-  revalidatePath("/directory/dashboard/portfolio");
+  revalidatePath(`/marketplace/${vendor.slug}`);
+  revalidatePath("/marketplace/dashboard/portfolio");
   return { ok: true, message: "Photo added." };
 }
 
@@ -48,6 +48,6 @@ export async function deletePortfolioImageAction(imageId: string): Promise<void>
   const image = await prisma.vendorImage.findUnique({ where: { id: imageId }, include: { vendor: { select: { ownerId: true, slug: true } } } });
   if (!image || image.vendor.ownerId !== user.id) return;
   await prisma.vendorImage.delete({ where: { id: imageId } });
-  revalidatePath(`/directory/${image.vendor.slug}`);
-  revalidatePath("/directory/dashboard/portfolio");
+  revalidatePath(`/marketplace/${image.vendor.slug}`);
+  revalidatePath("/marketplace/dashboard/portfolio");
 }

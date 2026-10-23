@@ -8,7 +8,7 @@ import type { VendorCardData } from "@/lib/directory-queries";
 export function VendorCard({ vendor }: { vendor: VendorCardData }) {
   return (
     <Link
-      href={`/directory/${vendor.slug}`}
+      href={`/marketplace/${vendor.slug}`}
       className="group flex h-full flex-col border border-border bg-surface text-foreground transition-colors hover:border-brand-500"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-brand-900">

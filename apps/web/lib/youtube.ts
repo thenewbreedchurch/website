@@ -25,9 +25,12 @@ export function youtubeEmbedUrl(url: string): string | null {
   return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
 }
 
-export function youtubeThumbnailUrl(url: string): string | null {
+export function youtubeThumbnailUrl(
+  url: string,
+  quality: "hqdefault" | "maxresdefault" = "hqdefault"
+): string | null {
   const id = extractYoutubeId(url);
-  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
+  return id ? `https://i.ytimg.com/vi/${id}/${quality}.jpg` : null;
 }
 
 // Shared last-resort fallback for any sermon card that has neither a saved

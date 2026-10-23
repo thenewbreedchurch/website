@@ -10,15 +10,15 @@ import { sendDirectoryAdminNotice } from "@/lib/directory-email";
 import type { ActionResult } from "@/lib/action-result";
 
 function revalidateDirectory(slug?: string) {
-  revalidatePath("/directory");
-  revalidatePath("/directory/browse");
-  revalidatePath("/directory/dashboard", "layout");
-  if (slug) revalidatePath(`/directory/${slug}`);
+  revalidatePath("/marketplace");
+  revalidatePath("/marketplace/browse");
+  revalidatePath("/marketplace/dashboard", "layout");
+  if (slug) revalidatePath(`/marketplace/${slug}`);
 }
 
 /** Creates the signed-in user's listing (as PENDING) or updates the one they own. */
 export async function saveOwnListingAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
-  const user = await requireDirectoryUser("/directory/dashboard/listing");
+  const user = await requireDirectoryUser("/marketplace/dashboard/listing");
   if (!user.emailVerifiedAt) {
     return { ok: false, error: "Please verify your email address first — we sent you a link when you signed up." };
   }
@@ -77,7 +77,7 @@ export async function saveOwnListingAction(_prev: ActionResult | null, formData:
         subject: `[Directory] Resubmitted: ${updated.businessName}`,
         title: "A listing was updated and resubmitted",
         body: [`${updated.businessName} was edited after being rejected and is waiting for review.`],
-        path: `/admin/directory/vendors/${updated.id}`,
+        path: `/admin/marketplace/vendors/${updated.id}`,
       });
     }
     revalidateDirectory(existing.slug);
@@ -98,7 +98,7 @@ export async function saveOwnListingAction(_prev: ActionResult | null, formData:
     subject: `[Directory] New listing to review: ${created.businessName}`,
     title: "A new business listing is waiting for review",
     body: [`${created.businessName} (${created.location}) was submitted by ${user.name} <${user.email}>.`],
-    path: `/admin/directory/vendors/${created.id}`,
+    path: `/admin/marketplace/vendors/${created.id}`,
     replyTo: user.email,
   });
   revalidateDirectory();

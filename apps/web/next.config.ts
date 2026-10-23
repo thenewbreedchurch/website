@@ -115,6 +115,9 @@ const nextConfig: NextConfig = {
       { source: "/donate.html", destination: "/give", permanent: true },
       { source: "/events.html", destination: "/announcements", permanent: true },
       { source: "/linktree.html", destination: "/linktree", permanent: true },
+      // The marketplace launched briefly at /directory.
+      { source: "/directory", destination: "/marketplace", permanent: true },
+      { source: "/directory/:path*", destination: "/marketplace/:path*", permanent: true },
     ];
   },
 };

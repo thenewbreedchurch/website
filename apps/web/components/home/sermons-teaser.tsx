@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SermonThumb } from "@/components/home/sermon-thumb";
 import { Play } from "lucide-react";
 import { prisma } from "@nb-church/db";
 import { youtubeThumbnailUrl, SERMON_FALLBACK_THUMBNAILS } from "@/lib/youtube";
@@ -57,10 +57,13 @@ export async function SermonsTeaser() {
               className="group relative block aspect-video overflow-hidden"
               aria-label={`Watch ${latest.title}`}
             >
-              <Image
-                src={thumb(latest, 0)}
-                alt=""
-                fill
+              <SermonThumb
+                src={
+                  latest.thumbnailUrl ??
+                  youtubeThumbnailUrl(latest.videoUrl, "maxresdefault") ??
+                  thumb(latest, 0)
+                }
+                fallbackSrc={thumb(latest, 0)}
                 sizes="(min-width: 1024px) 70vw, 100vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />

@@ -14,9 +14,9 @@ const STATIC_ROUTES = [
   "/give",
   "/contact",
   "/leadership",
-  "/directory",
-  "/directory/browse",
-  "/directory/list-your-business",
+  "/marketplace",
+  "/marketplace/browse",
+  "/marketplace/list-your-business",
 ];
 
 // Built per request, not at `next build`: the Docker build runs BEFORE the
@@ -74,7 +74,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const vendorEntries: MetadataRoute.Sitemap = vendors.map((vendor) => ({
-    url: `${SITE_URL}/directory/${vendor.slug}`,
+    url: `${SITE_URL}/marketplace/${vendor.slug}`,
     lastModified: vendor.updatedAt,
   }));
 

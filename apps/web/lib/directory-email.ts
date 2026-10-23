@@ -31,8 +31,8 @@ export async function sendVendorStatusEmail(params: {
         businessName: params.businessName,
         status: params.status,
         note: params.note,
-        profileUrl: `${DIRECTORY_SITE_URL}/directory/${params.slug}`,
-        dashboardUrl: `${DIRECTORY_SITE_URL}/directory/dashboard`,
+        profileUrl: `${DIRECTORY_SITE_URL}/marketplace/${params.slug}`,
+        dashboardUrl: `${DIRECTORY_SITE_URL}/marketplace/dashboard`,
       }),
     });
     if (error) console.error("[email] vendor status send failed:", error);
@@ -51,11 +51,11 @@ async function sendAction(to: string | string[], subject: string, props: Directo
 }
 
 export function sendDirectoryVerificationEmail(to: string, name: string, token: string) {
-  const url = `${DIRECTORY_SITE_URL}/directory/verify/${token}`;
-  return sendAction(to, "Verify your email — New Breed business directory", {
-    preview: "Confirm your email to finish setting up your directory account",
+  const url = `${DIRECTORY_SITE_URL}/marketplace/verify/${token}`;
+  return sendAction(to, "Verify your email — New Breed marketplace", {
+    preview: "Confirm your email to finish setting up your marketplace account",
     title: "Confirm your email",
-    body: [`Hi ${name},`, "Thanks for joining the New Breed Church business directory. Please confirm your email address to list your business or leave reviews.", "This link expires in 24 hours."],
+    body: [`Hi ${name},`, "Thanks for joining the New Breed Church marketplace. Please confirm your email address to list your business or leave reviews.", "This link expires in 24 hours."],
     buttonLabel: "Verify my email",
     url,
     footerNote: "If you didn't create this account you can safely ignore this email.",
@@ -63,11 +63,11 @@ export function sendDirectoryVerificationEmail(to: string, name: string, token: 
 }
 
 export function sendDirectoryResetEmail(to: string, name: string, token: string) {
-  const url = `${DIRECTORY_SITE_URL}/directory/reset/${token}`;
-  return sendAction(to, "Reset your directory password", {
-    preview: "Reset your business directory password",
+  const url = `${DIRECTORY_SITE_URL}/marketplace/reset/${token}`;
+  return sendAction(to, "Reset your marketplace password", {
+    preview: "Reset your marketplace password",
     title: "Reset your password",
-    body: [`Hi ${name},`, "A password reset was requested for your business directory account. This link expires in 1 hour.", "If you didn't ask for this, ignore this email — your password won't change."],
+    body: [`Hi ${name},`, "A password reset was requested for your marketplace account. This link expires in 1 hour.", "If you didn't ask for this, ignore this email — your password won't change."],
     buttonLabel: "Reset my password",
     url,
   });
@@ -89,7 +89,7 @@ export function sendDirectoryAdminNotice(params: { subject: string; title: strin
       body: params.body,
       buttonLabel: "Open in admin",
       url: `${DIRECTORY_SITE_URL}${params.path}`,
-      eyebrow: "Business Directory — Admin",
+      eyebrow: "Marketplace — Admin",
     },
     params.replyTo
   );

@@ -63,28 +63,28 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     ],
   },
   {
-    label: "Directory",
+    label: "Marketplace",
     items: [
       {
-        href: "/admin/directory/vendors",
+        href: "/admin/marketplace/vendors",
         label: "Businesses",
         description: "Approve, verify and edit business listings.",
         icon: Store,
       },
       {
-        href: "/admin/directory/categories",
+        href: "/admin/marketplace/categories",
         label: "Categories",
         description: "The categories businesses are listed under.",
         icon: Tags,
       },
       {
-        href: "/admin/directory/reviews",
+        href: "/admin/marketplace/reviews",
         label: "Reviews",
         description: "Moderate ratings and reviews left on businesses.",
         icon: Star,
       },
       {
-        href: "/admin/directory/reports",
+        href: "/admin/marketplace/reports",
         label: "Reports",
         description: "Listings flagged by visitors.",
         icon: Flag,

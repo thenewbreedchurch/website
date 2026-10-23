@@ -37,8 +37,8 @@ export async function submitReviewAction(_prev: ActionResult | null, formData: F
     update: { rating, body },
   });
   await recomputeVendorRating(vendorId);
-  revalidatePath(`/directory/${vendor.slug}`);
-  revalidatePath("/directory/browse");
+  revalidatePath(`/marketplace/${vendor.slug}`);
+  revalidatePath("/marketplace/browse");
   return { ok: true, message: "Thanks — your review has been posted." };
 }
 
@@ -67,7 +67,7 @@ export async function reportVendorAction(_prev: ActionResult | null, formData: F
     subject: `[Directory] Listing reported: ${vendor.businessName}`,
     title: `${vendor.businessName} was reported`,
     body: [`Reason: ${REPORT_REASON_LABELS[parsed.data.reason]}`, ...(parsed.data.details ? [parsed.data.details] : [])],
-    path: "/admin/directory/reports",
+    path: "/admin/marketplace/reports",
     replyTo: parsed.data.reporterEmail,
   });
   return { ok: true, message: "Thank you — the team will look into it." };

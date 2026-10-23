@@ -67,10 +67,10 @@ export function SignInForm({ next }: { next?: string }) {
         {pending ? "Signing in…" : "Sign in"}
       </button>
       <p className="flex flex-wrap justify-between gap-3 text-sm">
-        <Link href="/directory/forgot-password" className={link}>
+        <Link href="/marketplace/forgot-password" className={link}>
           Forgot your password?
         </Link>
-        <Link href="/directory/sign-up" className={link}>
+        <Link href="/marketplace/sign-up" className={link}>
           Create an account
         </Link>
       </p>
@@ -92,7 +92,7 @@ export function SignUpForm() {
       </button>
       <p className="text-sm">
         Already have an account?{" "}
-        <Link href="/directory/sign-in" className={link}>
+        <Link href="/marketplace/sign-in" className={link}>
           Sign in
         </Link>
       </p>
@@ -111,7 +111,7 @@ export function ForgotPasswordForm() {
         {pending ? "Sending…" : "Email me a reset link"}
       </button>
       <p className="text-sm">
-        <Link href="/directory/sign-in" className={link}>
+        <Link href="/marketplace/sign-in" className={link}>
           Back to sign in
         </Link>
       </p>
@@ -125,7 +125,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
     return (
       <div className="space-y-5">
         <Status state={state} />
-        <Link href="/directory/sign-in" className={cn(submit, "inline-flex items-center justify-center")}>
+        <Link href="/marketplace/sign-in" className={cn(submit, "inline-flex items-center justify-center")}>
           Sign in
         </Link>
       </div>
@@ -148,7 +148,7 @@ export function VerifyEmailButton({ token }: { token: string }) {
     return (
       <div className="space-y-5">
         <Status state={result} />
-        <Link href="/directory/sign-in" className={cn(submit, "inline-flex items-center justify-center")}>
+        <Link href="/marketplace/sign-in" className={cn(submit, "inline-flex items-center justify-center")}>
           Continue
         </Link>
       </div>

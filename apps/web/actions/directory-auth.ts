@@ -32,7 +32,7 @@ const getDummyHash = () => (dummyHash ??= hashPassword("timing-attack-mitigation
 
 /** Only ever redirect back into the directory (never to an arbitrary URL). */
 function safeNext(next: unknown): string {
-  return typeof next === "string" && /^\/directory(\/|$)/.test(next) && !next.startsWith("//") ? next : "/directory/dashboard";
+  return typeof next === "string" && /^\/marketplace(\/|$)/.test(next) && !next.startsWith("//") ? next : "/marketplace/dashboard";
 }
 
 export async function signUpAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
@@ -109,7 +109,7 @@ export async function signInAction(_prev: ActionResult | null, formData: FormDat
 
 export async function signOutAction(): Promise<void> {
   await destroyDirectorySession();
-  redirect("/directory");
+  redirect("/marketplace");
 }
 
 export async function requestResetAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {

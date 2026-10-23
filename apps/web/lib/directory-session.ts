@@ -66,8 +66,8 @@ export async function destroyAllDirectorySessions(userId: string): Promise<void>
 }
 
 /** For server components/actions that need a signed-in user; redirects to sign-in otherwise. */
-export async function requireDirectoryUser(next = "/directory/dashboard"): Promise<DirectoryUser> {
+export async function requireDirectoryUser(next = "/marketplace/dashboard"): Promise<DirectoryUser> {
   const user = await getDirectoryUser();
-  if (!user) redirect(`/directory/sign-in?next=${encodeURIComponent(next)}`);
+  if (!user) redirect(`/marketplace/sign-in?next=${encodeURIComponent(next)}`);
   return user;
 }

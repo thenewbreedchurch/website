@@ -152,9 +152,9 @@ export function middleware(request: NextRequest) {
   }
 
   // Directory dashboard: quick cookie-presence bounce (the real session check
-  // happens in app/(site)/directory/dashboard/layout.tsx, in the Node runtime).
-  if (pathname.startsWith("/directory/dashboard") && !request.cookies.has("nbc_directory_session")) {
-    const signInUrl = new URL("/directory/sign-in", request.url);
+  // happens in app/(site)/marketplace/dashboard/layout.tsx, in the Node runtime).
+  if (pathname.startsWith("/marketplace/dashboard") && !request.cookies.has("nbc_directory_session")) {
+    const signInUrl = new URL("/marketplace/sign-in", request.url);
     signInUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(signInUrl);
   }
