@@ -1,5 +1,5 @@
 import { emailInlineLogos } from "./email-logos";
-import { Resend } from "resend";
+import { getResend } from "./resend-client";
 import type { ContactCategory, NewConvertInterest } from "@nb-church/db";
 import NewsletterWelcomeEmail from "../emails/newsletter-welcome";
 import ContactNotificationEmail from "../emails/contact-notification";
@@ -9,7 +9,6 @@ import WelfareRequestEmail, { type WelfareRequestEmailProps } from "../emails/we
 import { describeSupport } from "./welfare";
 import { WELFARE_MAX_EMAIL_ATTACH_BYTES } from "./welfare-attachments";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 const EMAIL_FROM = process.env.EMAIL_FROM ?? "The New Breed Church <no-reply@thenewbreedchurch.org>";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -27,7 +26,7 @@ export async function sendNewsletterWelcomeEmail(params: {
   unsubscribeToken: string;
 }): Promise<void> {
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to: params.to,
       subject: `Welcome to ${params.orgName}!`,
@@ -89,7 +88,7 @@ export async function sendContactNotificationEmail(params: {
   if (to.length === 0) return;
 
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to,
       replyTo: params.email,
@@ -126,7 +125,7 @@ export async function sendNewConvertInquiryEmail(params: {
     return;
   }
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to,
       replyTo: params.email,
@@ -171,7 +170,7 @@ export async function sendWelfareRequestEmail(
   const { files: _files, requestId, ...rest } = params;
   void _files;
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       from: EMAIL_FROM,
       to,
       replyTo: params.email,
@@ -196,7 +195,7 @@ export async function sendEventRegistrationConfirmation(params: {
   guestsCount: number;
 }): Promise<void> {
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to: params.to,
       subject: `You're registered for ${params.eventTitle}`,

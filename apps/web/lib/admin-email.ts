@@ -1,6 +1,6 @@
 import { emailInlineLogos } from "./email-logos";
 import "server-only";
-import { Resend } from "resend";
+import { getResend } from "./resend-client";
 import AdminEmailVerificationEmail from "../emails/admin-email-verification";
 import AdminPasswordResetEmail from "../emails/admin-password-reset";
 import AdminAccountLockedEmail from "../emails/admin-account-locked";
@@ -12,14 +12,13 @@ import AdminAccountLockedEmail from "../emails/admin-account-locked";
 // provider must not turn into an account-existence oracle or a broken UX for
 // requestPasswordResetAction's always-generic response.
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.EMAIL_FROM ?? "The New Breed Church <no-reply@thenewbreedchurch.org>";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export async function sendVerificationEmail(to: string, token: string): Promise<void> {
   const verifyUrl = `${SITE_URL}/admin/verify/${token}`;
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: FROM,
       to,
       subject: "Verify your admin account email",
@@ -37,7 +36,7 @@ export async function sendVerificationEmail(to: string, token: string): Promise<
 export async function sendPasswordResetEmail(to: string, token: string): Promise<void> {
   const resetUrl = `${SITE_URL}/admin/reset-password/${token}`;
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: FROM,
       to,
       subject: "Reset your admin password",
@@ -65,7 +64,7 @@ export async function sendAccountLockedEmail(to: string, lockedUntil: Date): Pro
   // every lockout event (e.g. a repeated attack sending several of these).
   const resetUrl = `${SITE_URL}/admin/forgot-password`;
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: FROM,
       to,
       subject: "Security alert: your admin account was locked",

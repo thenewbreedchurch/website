@@ -1,10 +1,9 @@
 import { emailInlineLogos } from "./email-logos";
 import "server-only";
-import { Resend } from "resend";
+import { getResend } from "./resend-client";
 import VendorStatusEmail, { type VendorStatusEmailProps } from "../emails/vendor-status";
 import DirectoryActionEmail, { type DirectoryActionEmailProps } from "../emails/directory-action";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const EMAIL_FROM = process.env.EMAIL_FROM ?? "The New Breed Church <no-reply@thenewbreedchurch.org>";
 export const DIRECTORY_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -21,7 +20,7 @@ export async function sendVendorStatusEmail(params: {
   note?: string | null;
 }): Promise<void> {
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(),
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(),
       from: EMAIL_FROM,
       to: params.to,
       subject: `${params.businessName}: ${
@@ -44,7 +43,7 @@ export async function sendVendorStatusEmail(params: {
 
 async function sendAction(to: string | string[], subject: string, props: DirectoryActionEmailProps, replyTo?: string): Promise<void> {
   try {
-    const { error } = await resend.emails.send({ attachments: emailInlineLogos(), from: EMAIL_FROM, to, replyTo, subject, react: DirectoryActionEmail(props) });
+    const { error } = await getResend().emails.send({ attachments: emailInlineLogos(), from: EMAIL_FROM, to, replyTo, subject, react: DirectoryActionEmail(props) });
     if (error) console.error("[email] directory email send failed:", error);
   } catch (err) {
     console.error("[email] directory email send threw:", err);
