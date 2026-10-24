@@ -31,6 +31,7 @@ export async function Footer() {
             width={166}
             height={160}
             className="h-16 w-auto"
+            unoptimized
           />
           <p className="mt-4 font-display text-2xl font-bold uppercase leading-none tracking-tight">
             {settings.orgName}

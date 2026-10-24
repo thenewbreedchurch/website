@@ -92,7 +92,9 @@ export function HeroVideo({ orgName, ctaLabel, ctaHref, external }: HeroVideoPro
       <h1 className="sr-only">Welcome to {orgName}</h1>
 
       <div className="relative h-[min(88vh,56.25vw)] w-full overflow-hidden">
-        <Image src={POSTER} alt="" fill priority sizes="100vw" className="object-cover object-[50%_12%]" />
+        {/* Served as the plain file (not via /_next/image): it is already a 60 KB JPEG, and the image
+            preparer can wedge on a first request that the browser cancels (see patches/next). */}
+        <Image src={POSTER} alt="" fill priority unoptimized sizes="100vw" className="object-cover object-[50%_12%]" />
         <video
           ref={videoRef}
           autoPlay

@@ -27,6 +27,7 @@ export function Header({
             height={160}
             className="h-10 w-auto sm:h-12"
             priority
+            unoptimized
           />
           <Image
             src="/logo-wordmark.png"
@@ -35,6 +36,7 @@ export function Header({
             height={160}
             className="h-10 w-auto brightness-0 invert sm:h-12"
             priority
+            unoptimized
           />
         </Link>
         <MobileNav instagramUrl={instagramUrl} youtubeUrl={youtubeUrl} />

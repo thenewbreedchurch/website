@@ -85,13 +85,14 @@ export function MobileNav({
                 aria-label="The New Breed Church — home"
                 className="flex items-center gap-2.5"
               >
-                <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-10 w-auto sm:h-12" />
+                <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-10 w-auto sm:h-12" unoptimized />
                 <Image
                   src="/logo-wordmark.png"
                   alt=""
                   width={467}
                   height={160}
                   className="h-10 w-auto brightness-0 invert sm:h-12"
+                  unoptimized
                 />
               </Link>
               <button

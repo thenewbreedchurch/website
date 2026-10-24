@@ -1,0 +1,17 @@
+diff --git a/dist/server/image-optimizer.js b/dist/server/image-optimizer.js
+index 9913770ca7669f1eb0ad05959c62099b4ae49456..d649d9f5672fd6f216f67d680741209b6c74d839 100644
+--- a/dist/server/image-optimizer.js
++++ b/dist/server/image-optimizer.js
+@@ -998,7 +998,11 @@ async function fetchInternalImage(href, _req, _res, maximumResponseBody, handleR
+         const mocked = (0, _mockrequest.createRequestResponseMocks)({
+             url: href,
+             method,
+-            socket: _req.socket,
++            // PATCH (nb-church): do NOT borrow the visitor's socket for this internal fetch.
++            // If the browser cancels while a first-time optimisation is running, the borrowed
++            // socket dies, mocked.res never finishes, and the shared in-flight cache entry for
++            // that image variant never resolves - every later request for it hangs until restart.
++            socket: new (require('net').Socket)(),
+             maximumResponseBody
+         });
+         await handleRequest(mocked.req, mocked.res, _url.default.parse(href, true));

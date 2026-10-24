@@ -17,6 +17,7 @@ export default function AdminAuthLayout({ children }: { children: React.ReactNod
           width={166}
           height={160}
           className="h-11 w-11 shrink-0 self-start object-contain"
+          unoptimized
         />
 
         <div>

@@ -57,6 +57,7 @@ export default async function LinktreePage() {
         width={166}
         height={160}
         className="h-20 w-auto"
+        unoptimized
       />
       <h1 className="mt-4 font-display text-2xl font-bold">{settings.orgName}</h1>
       <p className="mt-1 text-sm text-white/70">{settings.tagline}</p>

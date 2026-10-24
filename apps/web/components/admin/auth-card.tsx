@@ -30,13 +30,14 @@ export function AuthCard({
         aria-label="The New Breed Church — home"
         className={`mb-8 inline-flex items-center gap-2 lg:hidden ${center ? "justify-center" : ""}`}
       >
-        <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-10 w-auto" />
+        <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-10 w-auto" unoptimized />
         <Image
           src="/logo-wordmark.png"
           alt="The New Breed Church"
           width={467}
           height={160}
           className="h-5 w-auto"
+          unoptimized
         />
       </Link>
       <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-tight text-neutral-900 admin-dark:text-neutral-100">

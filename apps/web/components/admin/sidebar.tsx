@@ -72,7 +72,7 @@ function SidebarContent({ email, onNavigate }: { email: string; onNavigate?: () 
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2.5 px-2 pb-2">
         <Link href="/admin" onClick={onNavigate} className="flex flex-1 items-center gap-2.5 min-w-0">
-          <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-8 w-8 shrink-0" />
+          <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-8 w-8 shrink-0" unoptimized />
           <div className="min-w-0">
             <p className="truncate font-display text-base font-bold uppercase leading-none tracking-tight text-white">TNBC Admin</p>
             <p className="t-eyebrow mt-1 truncate text-[10px] text-white/45">The New Breed Church</p>
@@ -131,7 +131,7 @@ export function AdminSidebar({ email }: { email: string }) {
       {/* Mobile: hamburger trigger + slide-out drawer */}
       <div className="flex items-center justify-between border-b border-white/10 bg-night px-4 py-3 text-white lg:hidden">
         <Link href="/admin" className="flex items-center gap-2">
-          <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-7 w-7" />
+          <Image src="/logo-mark.png" alt="" width={166} height={160} className="h-7 w-7" unoptimized />
           <span className="font-display text-base font-bold uppercase tracking-tight text-white">TNBC Admin</span>
         </Link>
         <div className="flex items-center gap-1">

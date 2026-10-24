@@ -10,6 +10,10 @@ WORKDIR /app
 # ---------------------------------------------------------------------------
 FROM base AS dev
 COPY pnpm-workspace.yaml package.json ./
+# pnpm-workspace.yaml lists patchedDependencies (patches/next@*.patch: stops /_next/image
+# hanging forever when a browser cancels a first-time request), so the patch file must
+# exist BEFORE `pnpm install` runs or the install fails.
+COPY patches patches
 COPY apps/web/package.json apps/web/package.json
 COPY packages/db/package.json packages/db/package.json
 COPY packages/config/package.json packages/config/package.json
@@ -43,6 +47,10 @@ ENV DATABASE_URL=$DATABASE_URL
 ARG R2_PUBLIC_URL
 ENV R2_PUBLIC_URL=$R2_PUBLIC_URL
 COPY pnpm-workspace.yaml package.json ./
+# pnpm-workspace.yaml lists patchedDependencies (patches/next@*.patch: stops /_next/image
+# hanging forever when a browser cancels a first-time request), so the patch file must
+# exist BEFORE `pnpm install` runs or the install fails.
+COPY patches patches
 COPY apps/web/package.json apps/web/package.json
 COPY packages/db/package.json packages/db/package.json
 COPY packages/config/package.json packages/config/package.json
