@@ -40,6 +40,10 @@ function pickRendition(): string {
  * a phone-shaped slice. Phones/tablets get the CTAs in a strip under the video;
  * wide screens float them bottom-right, clear of the burned-in captions.
  *
+ * On laptops the box is shorter than 16:9 (capped at 88vh), so the picture is
+ * cropped vertically; the crop is anchored near the top (12%) because the
+ * channel logo lives in the top 4-16% of the frame while the captions end by ~88%.
+ *
  * The poster paints immediately (priority image), the video fades in once it is
  * actually playing, and it never loads at all for visitors who asked for less
  * motion or less data.
@@ -88,7 +92,7 @@ export function HeroVideo({ orgName, ctaLabel, ctaHref, external }: HeroVideoPro
       <h1 className="sr-only">Welcome to {orgName}</h1>
 
       <div className="relative h-[min(88vh,56.25vw)] w-full overflow-hidden">
-        <Image src={POSTER} alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image src={POSTER} alt="" fill priority sizes="100vw" className="object-cover object-[50%_12%]" />
         <video
           ref={videoRef}
           autoPlay
@@ -102,7 +106,7 @@ export function HeroVideo({ orgName, ctaLabel, ctaHref, external }: HeroVideoPro
           disableRemotePlayback
           controlsList="nodownload nofullscreen noremoteplayback"
           onPlaying={() => setPlaying(true)}
-          className={`hero-video absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+          className={`hero-video absolute inset-0 h-full w-full object-cover object-[50%_12%] transition-opacity duration-700 ${
             playing ? "opacity-100" : "opacity-0"
           }`}
         />

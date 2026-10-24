@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getChurchSettings } from "@/lib/settings";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { HashScroll } from "@/components/layout/hash-scroll";
 
 // Every public marketing/content page (home, about, contact, give, sermons,
 // announcements, first-timers, new-converts...) lives under this route group
@@ -14,6 +15,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <>
       <PageViewTracker />
+      <HashScroll />
       <Header instagramUrl={settings.instagramUrl} youtubeUrl={settings.youtubeUrl} />
       <main className="flex-1">{children}</main>
       <Footer />

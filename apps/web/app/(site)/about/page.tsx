@@ -3,7 +3,6 @@ import Image from "next/image";
 import type { ServiceTime } from "@nb-church/db";
 import { getChurchSettings, getServiceTimes } from "@/lib/settings";
 import { pageMetadata } from "@/lib/metadata";
-import { Suspense } from "react";
 import { SectionBand } from "@/components/ui/section-band";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { StaggeredHeading } from "@/components/ui/staggered-heading";
@@ -201,9 +200,7 @@ export default async function AboutPage() {
         </p>
       </SectionBand>
 
-      <Suspense fallback={null}>
-        <LeadershipTeaser />
-      </Suspense>
+      <LeadershipTeaser />
 
       {/* "Welcome Home" is a designed graphic — the vertical crop anchored to the bottom removes
           its small circular badge on every screen size (it ends ~10.6% down the source frame; the

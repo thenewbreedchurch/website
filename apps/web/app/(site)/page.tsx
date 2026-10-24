@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getChurchSettings, getServiceTimes } from "@/lib/settings";
 import { pageMetadata } from "@/lib/metadata";
@@ -22,9 +21,6 @@ const STRIP_IMAGES = [
   "/images/general/general-worship-portrait.jpg",
 ];
 
-// Simple shape-matching skeletons so each section's own Suspense boundary
-// doesn't cause a jarring blank-to-content jump while its (independent)
-// query resolves — see the Suspense wrappers below.
 // Drawn from the church's own mission and tagline ("rooted in the Word, alive in
 // worship, committed to serving God and their community"; "grow in faith, hope,
 // and love"). Edit freely — the highlighted word gets the hand-drawn circle.
@@ -40,50 +36,6 @@ const BELIEF_SLIDES: BeliefSlide[] = [
   { before: "We love our ", mark: "community" },
   { before: "We raise a ", mark: "generation", after: " of believers", long: true },
 ];
-
-function TestimoniesSkeleton() {
-  return (
-    <section className="py-20">
-      <div className="mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
-        <div className="mx-auto h-9 w-48 animate-pulse rounded bg-surface-muted" />
-        <div className="mx-auto mt-3 h-5 w-72 animate-pulse rounded bg-surface-muted" />
-        <div className="mt-10 grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-3">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-40 animate-pulse border border-border bg-surface-muted" />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function LeadershipSkeleton() {
-  return (
-    <section className="bg-surface px-4 py-20 sm:px-6 lg:px-9">
-      <div className="h-20 w-64 animate-pulse bg-surface-muted" />
-      <div className="mt-14 grid grid-cols-2 gap-6 lg:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="aspect-[4/5] animate-pulse bg-surface-muted" />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function SermonsTeaserSkeleton() {
-  return (
-    <section className="bg-surface-muted py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="h-9 w-56 animate-pulse rounded bg-surface" />
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="aspect-[4/5] animate-pulse bg-surface" />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getChurchSettings();
@@ -125,17 +77,11 @@ export default async function Home() {
         ))}
       </section>
 
-      <Suspense fallback={<SermonsTeaserSkeleton />}>
-        <SermonsTeaser />
-      </Suspense>
+      <SermonsTeaser />
 
-      <Suspense fallback={null}>
-        <UpcomingEvents />
-      </Suspense>
+      <UpcomingEvents />
 
-      <Suspense fallback={<LeadershipSkeleton />}>
-        <LeadershipTeaser />
-      </Suspense>
+      <LeadershipTeaser />
 
       <WeeklyActivities serviceTimes={serviceTimes} tone="night" />
 
@@ -171,9 +117,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <Suspense fallback={<TestimoniesSkeleton />}>
-        <TestimoniesSection />
-      </Suspense>
+      <TestimoniesSection />
 
       {/* 50/50 split — text | photo (Discipleship block pattern). */}
       <section className="grid lg:grid-cols-2">
