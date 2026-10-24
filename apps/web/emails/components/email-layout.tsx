@@ -1,5 +1,5 @@
-import { EMAIL_LOGO_CID } from "../../lib/email-logos";
-import { Body, Button, Column, Container, Head, Hr, Html, Img, Preview, Row, Section, Text } from "@react-email/components";
+import { EMAIL_LOGO_CID, EMAIL_LOGO_SIZE } from "../../lib/email-logos";
+import { Body, Button, Container, Head, Hr, Html, Img, Preview, Section, Text } from "@react-email/components";
 
 // Shared visual shell for every transactional email in apps/web/emails/.
 // Mirrors the website: a near-black header band with the logo, a mono
@@ -70,14 +70,15 @@ export function EmailLayout({
       <Body className="nb-body" style={{ backgroundColor: "#f4f2f9", fontFamily: SANS, margin: 0, padding: 0 }}>
         <Container className="nb-outer" style={{ maxWidth: 600, width: "100%", margin: "0 auto", padding: "24px 12px" }}>
           <Section className="nb-head" style={{ backgroundColor: NIGHT, backgroundImage: `linear-gradient(${NIGHT}, ${NIGHT})`, borderTop: `4px solid ${BRAND}`, padding: "22px 28px 26px" }}>
-            <Row>
-              <Column style={{ width: 46, verticalAlign: "middle" }}>
-                <Img src={`cid:${EMAIL_LOGO_CID.mark}`} width="40" height="40" alt="" style={{ display: "block", height: 40, width: "auto" }} />
-              </Column>
-              <Column style={{ verticalAlign: "middle" }}>
-                <Img src={`cid:${EMAIL_LOGO_CID.wordmark}`} height="30" alt={orgName} style={{ display: "block", height: 30, width: "auto" }} />
-              </Column>
-            </Row>
+            {/* One image (seal + wordmark on its own dark backing) so the logo stays legible
+                even when a mail app recolours the header in dark mode. */}
+            <Img
+              src={`cid:${EMAIL_LOGO_CID.lockup}`}
+              width={EMAIL_LOGO_SIZE.width}
+              height={EMAIL_LOGO_SIZE.height}
+              alt={orgName}
+              style={{ display: "block", width: EMAIL_LOGO_SIZE.width, height: EMAIL_LOGO_SIZE.height, margin: "0 auto", backgroundColor: NIGHT }}
+            />
             <Text
               style={{
                 color: "#c4b5fd",
@@ -86,6 +87,7 @@ export function EmailLayout({
                 letterSpacing: 2,
                 lineHeight: "16px",
                 textTransform: "uppercase",
+                textAlign: "center",
                 margin: "22px 0 0",
               }}
             >
@@ -190,24 +192,26 @@ export function SectionHeading({ children }: { children?: React.ReactNode }) {
 /** Square violet call-to-action. */
 export function EmailButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Button
-      href={href}
-      className="nb-btn"
-      style={{
-        backgroundColor: BRAND,
-        color: "#ffffff",
-        fontFamily: SANS,
-        fontSize: 14,
-        fontWeight: 700,
-        letterSpacing: -0.2,
-        textTransform: "uppercase",
-        textDecoration: "none",
-        padding: "15px 28px",
-        display: "inline-block",
-      }}
-    >
-      {children}
-    </Button>
+    <div style={{ paddingTop: 24 }}>
+      <Button
+        href={href}
+        className="nb-btn"
+        style={{
+          backgroundColor: BRAND,
+          color: "#ffffff",
+          fontFamily: SANS,
+          fontSize: 14,
+          fontWeight: 700,
+          letterSpacing: -0.2,
+          textTransform: "uppercase",
+          textDecoration: "none",
+          padding: "15px 28px",
+          display: "inline-block",
+        }}
+      >
+        {children}
+      </Button>
+    </div>
   );
 }
 

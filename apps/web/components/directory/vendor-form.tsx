@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { Upload } from "lucide-react";
 import { useKeepForm } from "@/lib/use-keep-form";
@@ -77,7 +77,7 @@ function Field({
       {children}
       {hint && !error && <p className={styles.hint}>{hint}</p>}
       {error && (
-        <p role="alert" className="text-xs text-red-600">
+        <p role="alert" data-field-error className="text-xs text-red-600">
           {error}
         </p>
       )}
@@ -85,11 +85,48 @@ function Field({
   );
 }
 
+// Plain-English names for the "please fix:" summary next to the Save button.
+const FIELD_LABELS: Record<string, string> = {
+  businessName: "Business name",
+  categoryId: "Category",
+  subcategory: "Subcategory",
+  description: "About your business",
+  services: "Services",
+  location: "Based in",
+  serviceAreas: "Areas you serve",
+  businessHours: "Business hours",
+  priceRange: "Price range",
+  yearStarted: "Year started",
+  registrationNumber: "Registration number",
+  phone: "Phone",
+  whatsapp: "WhatsApp",
+  email: "Email",
+  website: "Website",
+  instagram: "Instagram",
+  facebook: "Facebook",
+  linkedin: "LinkedIn",
+  tiktok: "TikTok",
+  logoUrl: "Logo",
+  coverUrl: "Cover image",
+  status: "Status",
+  ownerEmail: "Owner account email",
+  adminNotes: "Note to owner",
+};
+
 export function VendorForm({ variant, categories, vendor, action, upload, submitLabel = "Save" }: VendorFormProps) {
   const s = STYLES[variant];
   const { state, onSubmit, isPending } = useKeepForm(action);
   const errors = state && !state.ok ? (state.fieldErrors ?? {}) : {};
   const err = (f: string) => errors[f]?.[0];
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // After a failed save, bring the first problem into view — on a long form it is
+  // usually far above the Save button, which made Save look like it did nothing.
+  useEffect(() => {
+    if (state && !state.ok && state.fieldErrors) {
+      formRef.current?.querySelector("[data-field-error]")?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }, [state]);
 
   const [categoryId, setCategoryId] = useState(vendor?.categoryId ?? "");
   const subOptions = categories.find((c) => c.id === categoryId)?.subcategories ?? [];
@@ -99,7 +136,7 @@ export function VendorForm({ variant, categories, vendor, action, upload, submit
   );
 
   return (
-    <form onSubmit={onSubmit} className="max-w-3xl space-y-10">
+    <form ref={formRef} noValidate onSubmit={onSubmit} className="max-w-3xl space-y-10">
       <section className="space-y-5">
         <h2 className={s.section}>Basics</h2>
         <div className="grid gap-5 sm:grid-cols-2">
@@ -231,9 +268,22 @@ export function VendorForm({ variant, categories, vendor, action, upload, submit
       )}
 
       {state && !state.ok && (
-        <p role="alert" className="text-sm font-medium text-red-600">
-          {state.fieldErrors ? "Please check the highlighted fields." : state.error}
-        </p>
+        <div role="alert" className="space-y-1 text-sm font-medium text-red-600">
+          {state.fieldErrors ? (
+            <>
+              <p>Not saved yet — please fix:</p>
+              <ul className="list-inside list-disc font-normal">
+                {Object.entries(state.fieldErrors).map(([field, messages]) => (
+                  <li key={field}>
+                    <strong className="font-semibold">{FIELD_LABELS[field] ?? field}:</strong> {messages?.[0]}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p>{state.error}</p>
+          )}
+        </div>
       )}
       {state?.ok && (
         <p role="status" className="text-sm font-medium text-green-700 dark:text-green-400">

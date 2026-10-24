@@ -31,11 +31,10 @@ export async function GET(request: Request) {
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 16, display: "flex", background: "#6b46c1" }} />
 
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "64px 80px 60px 96px", width: "100%", height: "100%", position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {/* The lockup carries its own near-black backing (same as this card), so it blends in. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={dataUri(EMAIL_LOGO_CID.mark)} alt="" height={72} style={{ height: 72 }} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={dataUri(EMAIL_LOGO_CID.wordmark)} alt="" height={54} style={{ height: 54 }} />
+            <img src={dataUri(EMAIL_LOGO_CID.lockup)} alt="" height={96} style={{ height: 96, marginLeft: -16 }} />
           </div>
 
           <div style={{ display: "flex", flexDirection: "column" }}>
