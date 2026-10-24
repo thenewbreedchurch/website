@@ -1,3 +1,4 @@
+import { ServiceTimesLink } from "./service-times-link";
 import Link from "next/link";
 import Image from "next/image";
 import { getChurchSettings, getServiceTimes } from "@/lib/settings";
@@ -42,15 +43,15 @@ export async function Footer() {
           <ul className="t-eyebrow mt-4 hidden space-y-2.5 text-white/85 sm:block">
             {grouped.map((entry) => (
               <li key={entry.key}>
-                <Link href="/#weekly" className="hover:text-white hover:underline">
+                <ServiceTimesLink className="hover:text-white hover:underline">
                   {entry.days} · {entry.time} {entry.label}
-                </Link>
+                </ServiceTimesLink>
               </li>
             ))}
           </ul>
-          <Link href="/#weekly" className="t-eyebrow mt-4 inline-block text-white/85 underline sm:hidden">
+          <ServiceTimesLink className="t-eyebrow mt-4 inline-block text-white/85 underline sm:hidden">
             See service times
-          </Link>
+          </ServiceTimesLink>
         </div>
 
         <nav aria-label="Footer" className="t-eyebrow grid grid-cols-2 gap-x-10 gap-y-2.5 text-white/85">

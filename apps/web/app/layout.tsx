@@ -85,6 +85,17 @@ export default async function RootLayout({
       className={`${bodyFont.variable} ${headingFont.variable} ${monoFont.variable} h-full antialiased ${resolvedThemeClass}`.trim()}
     >
       <body className="min-h-full flex flex-col">
+        {/* A refresh should start at the top. The browser restores the old scroll position (or
+            jumps to a leftover #section) before any React code runs, which showed up as the page
+            flashing at the wrong section on phones. Turning restoration off for reloads, this
+            early, prevents that; HashScroll finishes the job once the page has loaded. */}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'){history.scrollRestoration='manual';if(location.hash){history.replaceState(history.state,'',location.pathname+location.search)}}}catch(e){}",
+          }}
+        />
         <script
           type="application/ld+json"
           nonce={nonce}
