@@ -143,6 +143,26 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  // A link pasted together with its chat message ("https://…/  Please check it out…")
+  // opens fine in Chrome (it cuts at the first space) but Safari takes the whole
+  // sentence as the address, so the path becomes "  Please check it out…" and lands
+  // on the 404 page. No real route, slug or API path contains whitespace, so
+  // cut the path at the first whitespace and send the visitor to what came before
+  // it (the real page, or the home page when nothing did). 307: it only tidies a
+  // messy paste, so nothing should be remembered as a permanent redirect.
+  let decodedPath = pathname;
+  try {
+    decodedPath = decodeURIComponent(pathname);
+  } catch {
+    // Malformed %-escapes: leave the path as-is and let the app 404 normally.
+  }
+  const whitespaceAt = decodedPath.search(/\s/);
+  if (whitespaceAt !== -1) {
+    const url = request.nextUrl.clone();
+    url.pathname = decodedPath.slice(0, whitespaceAt) || "/";
+    return NextResponse.redirect(url, 307);
+  }
+
   if (pathname.startsWith("/admin") && !isPublicAdminPath(pathname)) {
     const hasSessionCookie = request.cookies.has(SESSION_COOKIE_NAME);
     if (!hasSessionCookie) {
